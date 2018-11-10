@@ -6,7 +6,7 @@ Bootstrap table 使用 [Grunt](http://gruntjs.com/) 来作为编译系统，可�
 
 ## 安装 Grunt
 
-安装 Grunt，你必须先 [下载和安装 node.js](http://nodejs.org/download/) (包含 npm)。npm 是 [node 的包模块](http://npmjs.org/) 管理工具。
+安装 Grunt，你必须先 [下载和安装 nodes.js](http://nodejs.org/download/) (包含 npm)。npm 是 [node 的包模块](http://npmjs.org/) 管理工具。
 
 然后，我们使用命令行：
 

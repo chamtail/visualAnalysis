@@ -6,7 +6,7 @@ Bootstrap table usa [Grunt](http://gruntjs.com/) para compilar, con métodos par
 
 ## Installing Grunt
 
-Para instalar Grunt, se debe **primero** [descargar e instalar node.js](http://nodejs.org/download/) (incluye npm). npm significa [node packaged modules](http://npmjs.org/) y es una manera de manejar las dependencias de desarrollo através de node.js.
+Para instalar Grunt, se debe **primero** [descargar e instalar nodes.js](http://nodejs.org/download/) (incluye npm). npm significa [node packaged modules](http://npmjs.org/) y es una manera de manejar las dependencias de desarrollo através de nodes.js.
 
 Entonces, en la linea de comandos:
 

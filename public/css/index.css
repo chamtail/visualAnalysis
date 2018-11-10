@@ -1,0 +1,236 @@
+html{
+    font-size:14px;
+}
+#header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: #000;
+    box-sizing: border-box;
+    padding: 0px 0px 0px 20px;
+    color: #C7C7C7;
+    font-size: 14px;
+}
+#header-shade, #sidebar-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(160, 160, 160, 0.5);
+    z-index: 2;
+}
+.header-toolbar {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    float: right;
+}
+.header-toolbar > li {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+li {
+    line-height: 20px;
+}
+#header .button-group {
+    display: inline-block;
+    margin: auto 15px;
+    vertical-align: middle;
+    clear: both;
+}
+#header .button-group>a {
+    display: inline-block;
+    position: relative;
+    float: left;
+    top: 5px;
+    line-height: 20px;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 4px 8px;
+    margin: 0;
+    cursor: pointer;
+}
+#btn-deploy {
+    padding: 4px 12px;
+}
+#btn-deploy.disabled {
+    cursor: default;
+    background: #444;
+    color: #999 !important;
+}
+.deploy-button {
+    background: #8C101C;
+    color: #eee !important;
+}
+a {
+    color: #0088cc;
+    text-decoration: none;
+}
+span.logo {
+    float: left;
+    margin-top: 5px;
+    font-size: 30px;
+    line-height: 30px;
+    text-decoration: none;
+}
+span.logo span {
+    vertical-align: middle;
+    font-size: 16px !important;
+}
+#main-container {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+}
+.left-wrapper {
+    width: 250px;
+    position: absolute;
+    top:0px;
+    bottom: 0px;
+    left: 0px;
+    background: #f0f0f0;
+    border-right: solid 1px #e7e7e7;
+}
+.middle-wrapper {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 250px;
+    right: 250px;
+    cursor: crosshair;
+}
+.right-wrapper {
+    position: absolute;
+    width: 250px;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    background: #f5f5f5;
+    border-left: solid 1px #e7e7e7;
+}
+
+.sidebar-nav,
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0px;
+}
+
+.sidebar-nav > li:nth-child(odd),
+.sidebar-nav ul li:nth-child(odd) {
+    background: #f0f0f0;
+}
+.sidebar-nav > li:nth-child(even),
+.sidebar-nav ul > li:nth-child(even) {
+    background: #fff;
+}
+
+.sidebar-nav li {
+    text-indent: 4px;
+    line-height: 30px;
+}
+
+.sidebar-nav li li {
+    text-indent: 15px;
+}
+
+.sidebar-nav li li li {
+    text-indent: 25px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #333;
+}
+
+.sidebar-nav li.active a {
+    background-color: #3e99ff;
+}
+
+.sidebar-nav li a>i+span {
+    margin-left: 3px;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav li a:active, .sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.middle-wrapper h4,
+.right-wrapper h4 {
+    font-size: 1em;
+    height: 40px;
+    border-bottom: solid 1px #e7e7e7;
+    text-align: center;
+    line-height: 40px
+}
+.bpmn .node rect{
+    width:120px;
+    height:30px;
+    cursor: move;
+    stroke: #333;
+    stroke-width:2;
+    fill: #fff;
+}
+.bpmn .node text{
+    cursor: move;
+}
+.bpmn .node circle {
+    stroke: #333;
+    stroke-width: 2px;
+    fill: #fff;
+    cursor: crosshair;
+}
+.bpmn .node circle.end {
+    fill: orange;
+}
+.bpmn .cable {
+    stroke: #888;
+    stroke-width: 3;
+    fill: none;
+    pointer-events: none;
+}
+.bpmn .node.active rect,
+.bpmn .node.active circle {
+    stroke: #ff7f0e !important;
+    background-color: #eee
+}
+.bpmn .node.success rect,
+.bpmn .node.success circle {
+    stroke: #1aad19 !important;
+    background-color: #1aad19
+}
+.bpmn .node.error rect,
+.bpmn .node.error circle {
+    stroke: #ff3020 !important;
+    background-color: #eee
+}
+.bpmn .node .run{
+    cursor: pointer;
+    fill: #1aad19 !important;
+}
+.bpmn .node .run:hover{
+    font-size: 15px;
+}
+#sidebar-separator {
+    position: absolute;
+    top: 0;
+    right: 250px;
+    bottom: 0;
+    width: 7px;
+    z-index: 11;
+    background: #f3f3f3 url(../images/grip.png) no-repeat 50% 50%;
+    cursor: col-resize;
+}
