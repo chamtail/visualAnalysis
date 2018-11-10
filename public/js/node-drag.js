@@ -42,14 +42,15 @@ function init() {
                 text: ui.helper.text()
             };
 
+            console.log(node.type);
             // 注入不同节点的属性
             node = nodeInject(node);
 
             // 记录节点
             if(!workflow.nodes[currentTab]){
-                workflow.nodes[currentTab] = [];
+                workflow.nodes[currentTab] = {};
             }
-            workflow.nodes[currentTab].push(node);
+            workflow.nodes[currentTab][node.id] = node;
 
             // 计算节点编号
             if (workflow.used[node.type]) {
@@ -231,10 +232,13 @@ function dragEnded() {
 function addNode(svg, node) {
     var g = svg.append('g')
         .attr('class', 'node')
-        .attr('data-id', node.type)
+        .attr('data-template-name', node.type)
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
-        .attr('onclick', 'onNodeClick(' + node.id + ')');
+        .attr('onclick', 'onNodeClick(' + node.id + ')')
+        .attr('data-toggle', 'modal')
+        .attr('data-target', '#nodeParamsModal')
+        .attr('data-whatever', 'modal');
 
     var rect = g.append('rect')
         .attr('rx', 5)
@@ -303,31 +307,13 @@ function addNode(svg, node) {
     return g;
 }
 
-function onNodeClick(id) {
-    $('.node').attr('class', 'node');
-    $('#' + id).attr('class', 'node active');
-}
-
-function onNodeRun(id) {
-    $('#' + id + ' .run')
-        .attr('onclick', 'onNodePause(' + id + ')')
-        .attr('fill', '#ff7f0e !important')
-        .text('\uf04c');
-}
-
-function onNodePause(id) {
-    $('#' + id + ' .run')
-        .attr('onclick', 'onNodeRun(' + id + ')')
-        .attr('fill', '#1aad19 !important')
-        .text('\uf04b');
-}
-
 // 给节点注入属性
 function nodeInject(node) {
-    var injectedNode = params[node.type];
+    var injectedNode = params[node.type]['attr'];
     for (var i=0, len=injectedNode.length; i<len; i++){
         var paramKey = injectedNode[i].name;
         node[paramKey] = injectedNode[i].default;
     }
+    console.log(node);
     return node;
 }
