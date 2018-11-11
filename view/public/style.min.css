@@ -1393,24 +1393,7 @@ span.logo a:hover {
     height: 35px;
     vertical-align: middle
 }
-
-#palette {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    background: #f3f3f3;
-    width: 180px;
-    text-align: center;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    border: 1px solid #bbb;
-    box-sizing: border-box;
-    transition: width 0.2s ease-in-out
-}
+red-ui-searchBox-container
 
 .palette-expanded #palette {
     width: 380px;

@@ -1,0 +1,218 @@
+.node_label {
+    font-size: 13px;
+    margin: 5px 0 5px 20px;
+    overflow: hidden;
+    text-align: center;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.node_label_right {
+    margin: 4px 32px 4px 0
+}
+.node {
+    display: block;
+    cursor: move;
+    margin: 10px auto;
+    width: 120px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #999;
+    background-size: contain;
+}
+
+.node:hover {
+    border-color: #ff7f0e;
+    background-color: #eee
+}
+
+.node_port {
+    position: relative;
+    top: 8px;
+    left: -5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background: #d9d9d9;
+    border-radius: 3px;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #999
+}
+
+.node_port_output {
+    left: auto;
+    right: -113px;
+}
+
+.node:hover .node_port {
+    border-color: #999;
+    background-color: #eee
+}
+
+.node_icon_container {
+    position: relative;
+    text-align: center;
+    top: -29px;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 100%;
+    border-radius: 5px 0 0 5px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.node_icon_container_right {
+    left: 88px;
+    top: -27px;
+    border-radius: 0 5px 5px 0;
+    border-right: none;
+    border-left: 1px solid rgba(0, 0, 0, 0.1)
+}
+
+.node_icon {
+    display: inline-block;
+    width: 20px;
+    height: 100%;
+    background-position: 50% 50%;
+    background-size: contain;
+    background-repeat: no-repeat
+}
+
+.node_small {
+    display: inline-block;
+    position: relative;
+    width: 18px;
+    height: 15px;
+    margin: 3px 0;
+    vertical-align: middle;
+    cursor: default
+}
+
+.node_small .node_icon_container {
+    width: 18px;
+    border-right: none
+}
+
+.node_small .node_icon {
+    margin-left: -1px;
+    width: 15px
+}
+
+#node > .node-spinner {
+    padding-top: 80px
+}
+.searchBox-container {
+    position: relative;
+}
+.searchBox-container i.fa-search {
+     position: absolute;
+     pointer-events: none;
+     left: 8px;
+     top: 9px;
+ }
+.searchBox-container input {
+    border-radius: 0;
+    border: none;
+    width: 100%;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    padding: 3px 17px 3px 22px;
+    margin: 0px;
+    height: 30px;
+    box-sizing: border-box;
+}
+.node-search {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    text-align: center;
+    height: 35px;
+    padding: 3px;
+    border-bottom: 1px solid #bbb;
+    box-sizing: border-box
+}
+.searchBox-container .searchBox-resultCount {
+    position: absolute;
+    right: 18px;
+    top: 4px;
+    background: #eee;
+    color: #666;
+    padding: 1px 8px;
+    font-size: 9px;
+    border-radius: 4px;
+}
+.node-header {
+    position: relative;
+    background: #f3f3f3;
+    cursor: pointer;
+    text-align: left;
+    padding: 10px;
+    font-weight: bold;
+    overflow: hidden;
+    user-select: none;
+}
+
+.node-category {
+    border-bottom: 1px solid #ccc
+}
+.node-scroll {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    bottom: 25px;
+    left: 0;
+    padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.node-content {
+    background: #fff;
+    padding: 1px;
+}
+
+#node-footer {
+    border-top: 1px solid #bbb;
+    background: #f3f3f3;
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 25px;
+    line-height: 23px;
+    padding: 0 10px;
+    user-select: none;
+}
+#node-shade, #editor-shade, #header-shade, #sidebar-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(160,160,160,0.5);
+    z-index: -1;
+}
+.node-button {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    box-sizing: border-box;
+    display: inline-block;
+    color: #888 !important;
+    background: #fff;
+    border: 1px solid #ccc;
+    text-align: center;
+    margin: 0;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 17px;
+    width: 18px;
+    height: 18px;
+}

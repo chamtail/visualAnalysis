@@ -7,16 +7,20 @@ var nodes_category = {
     "input": {
         "display": {
             "zh": "输入模块",
-            "en": "input module"
+            "en": "input module",
         },
         "nodes": {
             "data-upload": {
                 "zh": "上传数据集",
-                "en": "upload data"
+                "en": "upload data",
+                "in": 0,
+                "out": 1,
             },
             "data-load": {
                 "zh": "加载数据集",
-                "en": "load data"
+                "en": "load data",
+                "in": 0,
+                "out": 1,
             },
         }
     },
@@ -34,7 +38,9 @@ var nodes_category = {
                 "nodes": {
                     "normalization": {
                         "zh": "标准化",
-                        "en": "normalization"
+                        "en": "normalization",
+                        "in": 1,
+                        "out": 1,
                     },
                 },
             },
@@ -46,7 +52,9 @@ var nodes_category = {
                 "nodes": {
                     "outlier-detection": {
                         "zh": "异常检测",
-                        "en": "outlier detection"
+                        "en": "outlier detection",
+                        "in": 1,
+                        "out": 1,
                     },
                 },
             },
@@ -54,17 +62,21 @@ var nodes_category = {
     },
     "output": {
         "display": {
-            "zh": "处理模块",
+            "zh": "输出模块",
             "en": "process module"
         },
         "nodes": {
             "data-save": {
                 "zh": "保存数据",
-                "en": "save data"
+                "en": "save data",
+                "in": 1,
+                "out": 0,
             },
             "model-save": {
                 "zh": "保存模型",
-                "en": "save model"
+                "en": "save model",
+                "in": 1,
+                "out": 0,
             },
         }
     }
