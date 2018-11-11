@@ -245,6 +245,14 @@
         },
         mounted: function () {
             $(function () {
+                // 默认有一个tabs
+                workflow.tab.push({
+                    id: currentTab,
+                    type: "tab",
+                    label: "Flow " + currentTab,
+                    disabled: false,
+                    info: "",
+                });
                 // 初始化左侧组件栏
                 vm.nodes = nodes_category;
                 if (vm.lang == "") {

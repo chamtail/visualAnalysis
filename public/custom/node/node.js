@@ -17,15 +17,6 @@ var workflow = {
 };
 
 function init() {
-    // 默认有一个tabs
-    workflow.tab.push({
-        id: currentTab,
-        type: "tab",
-        label: "Flow " + currentTab,
-        disabled: false,
-        info: "",
-    });
-
     var svg = d3.select('svg');
     // 绑定拖拽
     $('#left-wrapper .node').draggable({
