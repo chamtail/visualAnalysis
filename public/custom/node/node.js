@@ -30,8 +30,8 @@ function init() {
             var node = {
                 id: new Date().getTime(),
                 type: ui.helper.attr('data-template-name'),
-                x: ui.position.left - 225,
-                y: ui.position.top,
+                x: ui.position.left - 180,
+                y: ui.position.top + 50,
                 z: currentTab,
                 text: ui.helper.text()
             };
