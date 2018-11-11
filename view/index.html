@@ -21,7 +21,6 @@
     <script src="../public/js/d3.min.js"></script>
     <script src="../public/js/d3-transform.min.js"></script>
     <script src="../public/js/vue.min.js"></script>
-
 </head>
 <body>
 <div id="vm">
@@ -52,80 +51,52 @@
         <div id="header-shade" class="hide" style="display: none;"></div>
     </div>
     <div id="main-container">
+        <!-- 动态加载工作流组件 -->
         <div id="left-wrapper" class="left-wrapper">
             <ul class="sidebar-nav">
-                <li>
-                    <a class="open">
-                        <i class="fa fa-folder-o"></i>
-                        <span>Input</span>
-                    </a>
-                    <ul>
-                        <li class="node" data-template-name="data-upload">
-                            <a href="#">
-                                <i class="fa fa-database"></i>
-                                <span>数据上传</span>
-                            </a>
-                        </li>
-                        <li class="node" data-template-name="data-load">
-                            <a href="#">
-                                <i class="fa fa-database"></i>
-                                <span>数据加载</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a>
-                        <i class="fa fa-folder-o"></i>
-                        <span>Process</span>
-                    </a>
-                    <ul>
-                        <li class="node" data-template-name="outlier-detection">
-                            <a href="#">
-                                <i class="fa fa-crosshairs" aria-hidden="true"></i>
-                                <span>异常检测</span>
-                            </a>
-                        </li>
-                        <li class="node" data-template-name="normalization">
-                            <a href="#">
-                                <i class="fa fa-crosshairs" aria-hidden="true"></i>
-                                <span>标准化</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a>
-                        <i class="fa fa-folder-o"></i>
-                        <span>Output</span>
-                    </a>
-                    <ul>
-                        <li class="node" data-template-name="data-save">
-                            <a href="#">
-                                <i class="fa fa-crosshairs" aria-hidden="true"></i>
-                                <span>保存数据</span>
-                            </a>
-                        </li>
-                        <li class="node" data-template-name="model-save">
-                            <a href="#">
-                                <i class="fa fa-crosshairs" aria-hidden="true"></i>
-                                <span>保存模型</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <template v-for="module in nodes">
+                    <li>
+                        <a class="open">
+                            <i class="fa fa-folder-o"></i>
+                            <span>{{module['display'][lang]}}</span>
+                        </a>
+                        <ul v-for="(info, key) in module">
+                            <template v-if="key=='nodes'">
+                                <template v-for="(label, key) in info">
+                                    <li class="node" :data-template-name="key">
+                                        <a href="#">
+                                            <i class="fa fa-database"></i>
+                                            <span>{{label[lang]}}</span>
+                                        </a>
+                                    </li>
+                                </template>
+                            </template>
+                            <template v-else-if="key=='sub_modules'">
+                                <template v-for="module in info">
+                                    <a class="open">
+                                        <i class="fa fa-plus-circle"></i>
+                                        <span>{{module['display'][lang]}}</span>
+                                    </a>
+                                    <ul v-for="(node, key) in module['nodes']">
+                                        <li class="node" :data-template-name="key">
+                                            <a href="#">
+                                                <i class="fa fa-database"></i>
+                                                <span>{{node[lang]}}</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </template>
+                            </template>
+
+
+                        </ul>
+                    </li>
+                </template>
             </ul>
         </div>
         <div class="middle-wrapper">
             <div id="idsw-bpmn" class="bpmn" style="position: relative; width: 100%; height: 100%;">
-                <svg width="100%" height="100%">
-                    <defs>
-                        <marker id="arrowhead" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6"
-                                orient="auto">
-                            <path d="M 0 0 L 10 5 L 0 10 z" stroke-width="0" stroke="#333"></path>
-                        </marker>
-                    </defs>
-                </svg>
+                <svg width="100%" height="100%"></svg>
             </div>
             <!--<div style="height: 40px; border-top: solid 1px #e7e7e7; text-align: center; line-height: 40px; position: absolute;bottom: 2px; width: 100%">-->
             <!--<a class="btn btn-link" href="#"><i class="fa fa-play-circle-o" aria-hidden="true"></i>&nbsp;运行</a>-->
@@ -159,18 +130,23 @@
                                         <select :name="model.name" class="col-sm-8">
                                             <option value="">全部</option>
                                             <template v-for="(option, id) in model.list">
-                                                <option :value="option" :selected="model.default == id || model.default == option">{{option}}</option>
+                                                <option :value="option"
+                                                        :selected="model.default == id || model.default == option">
+                                                    {{option}}
+                                                </option>
                                             </template>
                                         </select>
                                     </template>
                                     <template v-else-if="model.type == 'richtext'">
-                                        <textarea :type="model.type" class="col-sm-8" :name="model.name" :placeholder="model.default">{{model.default}}</textarea>
+                                        <textarea :type="model.type" class="col-sm-8" :name="model.name"
+                                                  :placeholder="model.default">{{model.default}}</textarea>
                                     </template>
                                     <!--<template v-else-if="model.type == 'path'">-->
-                                        <!---->
+                                    <!---->
                                     <!--</template>-->
                                     <template v-else>
-                                        <input :type="model.type" class="col-sm-8" :name="model.name" :placeholder="model.default" :value="model.default">
+                                        <input :type="model.type" class="col-sm-8" :name="model.name"
+                                               :placeholder="model.default" :value="model.default">
                                     </template>
                                 </div>
                             </template>
@@ -222,21 +198,29 @@
     var vm = new Vue({
         el: '#vm',
         data: {
+            nodes: {},
             node: {
                 id: -1,
                 type: "",
                 attrs: []
             },
-            selected:"aa",
-            lang: getCookieValue("lang")
+            selected: "aa",
+            lang: getCookieValue("lang"),
+            positionX: 0,
+            positionY: 0
         },
         mounted: function () {
             $(function () {
-                init();
+                // 初始化左侧组件栏
+                vm.nodes = nodes_category;
                 if (vm.lang == "") {
                     vm.lang = 'zh';
                 }
             })
+        },
+        updated: function () {
+            // 初始化node拖拽
+            init();
         },
         methods: {
             deploy: function () {
@@ -277,8 +261,8 @@
                 });
                 $('#nodeParamsModal').modal('hide');
 
-                console.log("更改后： " , workflow.nodes[currentTab][vm.node.id]);
-            }
+                console.log("更改后： ", workflow.nodes[currentTab][vm.node.id]);
+            },
         }
 
     });
@@ -304,17 +288,17 @@
         var attrInfo = params[nodeType]['attr'];
         var currentParams = workflow.nodes[currentTab][id];
 
-        console.log("更改前： " , currentParams);
+        console.log("更改前： ", currentParams);
 
         var keyList = {};
-        for(var key in currentParams){
+        for (var key in currentParams) {
             keyList[key] = 1;
         }
         console.log(keyList);
         for (var i = 0, len = attrInfo.length; i < len; i++) {
             if (attrInfo[i]['enable'] && attrInfo[i]['configurable']) {
-                for(var key in keyList){
-                    if(attrInfo[i]['name'] == key){
+                for (var key in keyList) {
+                    if (attrInfo[i]['name'] == key) {
                         console.log(key);
                         attrInfo[i]['default'] = currentParams[key];
                     }

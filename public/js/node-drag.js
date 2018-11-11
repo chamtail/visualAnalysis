@@ -42,9 +42,14 @@ function init() {
                 text: ui.helper.text()
             };
 
-            console.log(node.type);
             // 注入不同节点的属性
             node = nodeInject(node);
+
+            // 添加节点
+            var g = addNode(svg, node);
+            if(g == null){
+                return;
+            }
 
             // 记录节点
             if(!workflow.nodes[currentTab]){
@@ -58,9 +63,6 @@ function init() {
             } else {
                 workflow.used[node.type] = 1;
             }
-
-            // 添加节点
-            var g = addNode(svg, node);
 
             // 将该节点加至tab节点列表
             g.call(
@@ -88,6 +90,33 @@ function init() {
     });
 }
 
+function getTranslate(transform) {
+    var arr = transform.substring(transform.indexOf('(') + 1, transform.indexOf(')')).split(',');
+    return [+arr[0], +arr[1]];
+}
+
+var dx = 0;
+var dy = 0;
+var dragElem = null;
+function dragStarted() {
+    var transform = d3.select(this).attr('transform');
+    var translate = getTranslate(transform);
+    dx = d3.event.x - translate[0];
+    dy = d3.event.y - translate[1];
+    dragElem = d3.select(this);
+}
+
+function dragged() {
+    if(d3.event.x - dx < 0){
+        d3.event.x = dx;
+    }
+    if(d3.event.y - dy < 0){
+        d3.event.y = dy;
+    }
+    dragElem.attr('transform', 'translate(' + (d3.event.x - dx) + ', ' + (d3.event.y - dy) + ')');
+    updateCable(dragElem);
+}
+
 var activeLine = null;
 var points = [];
 var translate = null;
@@ -99,9 +128,6 @@ function lineStarted() {
     // 当前选中的节点
     var pNode = d3.select(this.parentNode);
     startNode = pNode.attr('id'); // 记录更新开始节点
-    console.log("tab: " + currentTab);
-    console.log("start: " + pNode.attr('id'));
-
     var rect = pNode.node().getBoundingClientRect();
     var dx = rect.width - 5;
     var dy = rect.height / (+anchor.attr('output') + 1);
@@ -135,7 +161,6 @@ function lineEnded(d) {
     } else {
         var pNode = d3.select(anchor.node().parentNode);
         endNode = pNode.attr('id');
-        console.log("end: " + pNode.attr('id'));
         var input = pNode.node().getBoundingClientRect().height / (+anchor.attr('input') + 1);
         anchor.classed('end', false);
         activeLine.attr('to', pNode.attr('id'));
@@ -151,27 +176,6 @@ function lineEnded(d) {
         workflow.links[startNode] = [];
     }
     workflow.links[startNode].push(endNode);
-}
-
-function getTranslate(transform) {
-    var arr = transform.substring(transform.indexOf('(') + 1, transform.indexOf(')')).split(',');
-    return [+arr[0], +arr[1]];
-}
-
-var dx = 0;
-var dy = 0;
-var dragElem = null;
-function dragStarted() {
-    var transform = d3.select(this).attr('transform');
-    var translate = getTranslate(transform);
-    dx = d3.event.x - translate[0];
-    dy = d3.event.y - translate[1];
-    dragElem = d3.select(this);
-}
-
-function dragged() {
-    dragElem.attr('transform', 'translate(' + (d3.event.x - dx) + ', ' + (d3.event.y - dy) + ')');
-    updateCable(dragElem);
 }
 
 function updateCable(elem) {
@@ -230,6 +234,10 @@ function dragEnded() {
 }
 
 function addNode(svg, node) {
+    console.log(node.x, node.y);
+    if (node.x<0 || node.y<0){
+        return null;
+    }
     var g = svg.append('g')
         .attr('class', 'node')
         .attr('data-template-name', node.type)

@@ -5,16 +5,68 @@
 // 节点分类
 var nodes_category = {
     "input": {
-        "data-upload": "上传数据集",
-        "data-load": "加载数据集"
+        "display": {
+            "zh": "输入模块",
+            "en": "input module"
+        },
+        "nodes": {
+            "data-upload": {
+                "zh": "上传数据集",
+                "en": "upload data"
+            },
+            "data-load": {
+                "zh": "加载数据集",
+                "en": "load data"
+            },
+        }
     },
     "process": {
-        "z-normalization": "z-标准化",
-        "outlier-detection": "异常检测"
+        "display": {
+            "zh": "处理模块",
+            "en": "process module"
+        },
+        "sub_modules":{
+            "pre-process":{
+                "display": {
+                    "zh": "预处理模块",
+                    "en": "pre-process module"
+                },
+                "nodes": {
+                    "normalization": {
+                        "zh": "标准化",
+                        "en": "normalization"
+                    },
+                },
+            },
+            "outlier":{
+                "display": {
+                    "zh": "异常处理模块",
+                    "en": "outlier module"
+                },
+                "nodes": {
+                    "outlier-detection": {
+                        "zh": "异常检测",
+                        "en": "outlier detection"
+                    },
+                },
+            },
+        },
     },
     "output": {
-        "data-save": "保存数据",
-        "model-save": "保存模型"
+        "display": {
+            "zh": "处理模块",
+            "en": "process module"
+        },
+        "nodes": {
+            "data-save": {
+                "zh": "保存数据",
+                "en": "save data"
+            },
+            "model-save": {
+                "zh": "保存模型",
+                "en": "save model"
+            },
+        }
     }
 };
 
@@ -29,8 +81,8 @@ var params = {
             {
                 "name": "path",
                 "label": {
-                    "zh":"数据集文件",
-                    "en":"data set file"
+                    "zh": "数据集文件",
+                    "en": "data set file"
                 },
                 "type": "path",
                 "default": "",
@@ -40,8 +92,8 @@ var params = {
             {
                 "name": "inputs",
                 "label": {
-                    "zh":"输入节点个数",
-                    "en":"input number"
+                    "zh": "输入节点个数",
+                    "en": "input number"
                 },
                 "type": "number",
                 "default": 0,
@@ -51,15 +103,15 @@ var params = {
             {
                 "name": "outputs",
                 "label": {
-                    "zh":"输出节点个数",
-                    "en":"output number"
+                    "zh": "输出节点个数",
+                    "en": "output number"
                 },
                 "type": "number",
                 "default": 1,
                 "enable": false,
                 "configurable": false
             }],
-        "description":""
+        "description": ""
     },
     "data-load": {
         "display": {
@@ -70,8 +122,8 @@ var params = {
             {
                 "name": "data_set",
                 "label": {
-                    "zh":"数据集",
-                    "en":"data set"
+                    "zh": "数据集",
+                    "en": "data set"
                 },
                 "type": "list",
                 "list": ["ECG", "TEK"],
@@ -82,8 +134,8 @@ var params = {
             {
                 "name": "read_number",
                 "label": {
-                    "zh":"读入数量",
-                    "en":"read number"
+                    "zh": "读入数量",
+                    "en": "read number"
                 },
                 "type": "number",
                 "default": 0,
@@ -93,8 +145,8 @@ var params = {
             {
                 "name": "inputs",
                 "label": {
-                    "zh":"输入节点个数",
-                    "en":"input number"
+                    "zh": "输入节点个数",
+                    "en": "input number"
                 },
                 "type": "number",
                 "default": 0,
@@ -104,15 +156,15 @@ var params = {
             {
                 "name": "outputs",
                 "label": {
-                    "zh":"输出节点个数",
-                    "en":"output number"
+                    "zh": "输出节点个数",
+                    "en": "output number"
                 },
                 "type": "number",
                 "default": 1,
                 "enable": false,
                 "configurable": false
             }],
-        "description":""
+        "description": ""
     },
     "normalization": {
         "display": {
@@ -123,11 +175,11 @@ var params = {
             {
                 "name": "strategy",
                 "label": {
-                    "zh":"类型",
-                    "en":"strategy"
+                    "zh": "类型",
+                    "en": "strategy"
                 },
                 "type": "list",
-                "list":['Z-score', 'Min-Max'],
+                "list": ['Z-score', 'Min-Max'],
                 "default": 0,
                 "enable": true,
                 "configurable": true
@@ -135,8 +187,8 @@ var params = {
             {
                 "name": "inputs",
                 "label": {
-                    "zh":"输入节点个数",
-                    "en":"input number"
+                    "zh": "输入节点个数",
+                    "en": "input number"
                 },
                 "type": "number",
                 "default": 1,
@@ -146,8 +198,8 @@ var params = {
             {
                 "name": "outputs",
                 "label": {
-                    "zh":"输出节点个数",
-                    "en":"output number"
+                    "zh": "输出节点个数",
+                    "en": "output number"
                 },
                 "type": "number",
                 "default": 1,
@@ -155,7 +207,7 @@ var params = {
                 "configurable": false
             },
         ],
-        "description":""
+        "description": ""
     },
     "outlier-detection": {
         "display": {
@@ -166,8 +218,8 @@ var params = {
             {
                 "name": "inputs",
                 "label": {
-                    "zh":"输入节点个数",
-                    "en":"input number"
+                    "zh": "输入节点个数",
+                    "en": "input number"
                 },
                 "type": "number",
                 "default": 1,
@@ -177,8 +229,8 @@ var params = {
             {
                 "name": "outputs",
                 "label": {
-                    "zh":"输出节点个数",
-                    "en":"output number"
+                    "zh": "输出节点个数",
+                    "en": "output number"
                 },
                 "type": "number",
                 "default": 1,
@@ -186,7 +238,7 @@ var params = {
                 "configurable": false
             },
         ],
-        "description":""
+        "description": ""
     },
     "data-save": {
         "display": {
@@ -197,8 +249,8 @@ var params = {
             {
                 "name": "data_path",
                 "label": {
-                    "zh":"文件名称",
-                    "en":"file name"
+                    "zh": "文件名称",
+                    "en": "file name"
                 },
                 "type": "text",
                 "default": "",
@@ -208,8 +260,8 @@ var params = {
             {
                 "name": "inputs",
                 "label": {
-                    "zh":"输入节点个数",
-                    "en":"input number"
+                    "zh": "输入节点个数",
+                    "en": "input number"
                 },
                 "type": "number",
                 "default": 1,
@@ -219,8 +271,8 @@ var params = {
             {
                 "name": "outputs",
                 "label": {
-                    "zh":"输出节点个数",
-                    "en":"output number"
+                    "zh": "输出节点个数",
+                    "en": "output number"
                 },
                 "type": "number",
                 "default": 0,
@@ -228,7 +280,7 @@ var params = {
                 "configurable": false
             },
         ],
-        "description":""
+        "description": ""
     },
     "model-save": {
         "display": {
@@ -239,8 +291,8 @@ var params = {
             {
                 "name": "model_path",
                 "label": {
-                    "zh":"模型名称",
-                    "en":"model name"
+                    "zh": "模型名称",
+                    "en": "model name"
                 },
                 "type": "text",
                 "default": "",
@@ -250,8 +302,8 @@ var params = {
             {
                 "name": "inputs",
                 "label": {
-                    "zh":"输入节点个数",
-                    "en":"input number"
+                    "zh": "输入节点个数",
+                    "en": "input number"
                 },
                 "type": "number",
                 "default": 1,
@@ -261,8 +313,8 @@ var params = {
             {
                 "name": "outputs",
                 "label": {
-                    "zh":"输出节点个数",
-                    "en":"output number"
+                    "zh": "输出节点个数",
+                    "en": "output number"
                 },
                 "type": "number",
                 "default": 0,
@@ -270,6 +322,6 @@ var params = {
                 "configurable": false
             },
         ],
-        "description":""
+        "description": ""
     }
 };
