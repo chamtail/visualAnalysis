@@ -17,7 +17,7 @@ var workflow = {
 };
 
 function init() {
-    var svg = d3.select('svg');
+    var svg = d3.select('#workflow svg');
     // 绑定拖拽
     $('#left-wrapper .node').draggable({
         helper: 'clone',
@@ -58,7 +58,6 @@ function init() {
                 workflow.used[node.type] = 1;
             }
 
-            // 将该节点加至tab节点列表
             g.call(
                 d3.drag()
                     .on('start', dragStarted)
@@ -157,9 +156,12 @@ function lineEnded(d) {
         endNode = pNode.attr('id');
         var input = pNode.node().getBoundingClientRect().height / (+anchor.attr('input') + 1);
         anchor.classed('end', false);
-        activeLine.attr('to', pNode.attr('id'));
-        activeLine.attr('input', anchor.attr('input'));
-        activeLine.attr('end', '0, ' + input);
+        var id = startNode + '_' + endNode;
+        activeLine.attr('to', pNode.attr('id'))
+            .attr('input', anchor.attr('input'))
+            .attr('end', '0, ' + input)
+            .attr('id', id)
+            .attr('onclick', 'onPathClick("' + id + '")');
     }
     activeLine = null;
     points.length = 0;
@@ -237,10 +239,8 @@ function addNode(svg, node) {
         .attr('data-template-name', node.type)
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
-        .attr('onclick', 'onNodeClick(' + node.id + ')')
-        .attr('data-toggle', 'modal')
-        .attr('data-target', '#nodeParamsModal')
-        .attr('data-whatever', 'modal');
+        .attr('onclick', 'onNodeDetail(' + node.id + ')')
+        .attr('ondblclick', 'onNodeConfig(' + node.id + ')');
 
     var rect = g.append('rect')
         .attr('rx', 5)

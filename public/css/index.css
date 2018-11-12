@@ -156,9 +156,16 @@ span.logo span {
 }
 .workflow .cable {
     stroke: #888;
-    stroke-width: 3;
+    stroke-width: 2;
     fill: none;
-    pointer-events: none;
+    cursor: move;
+}
+.workflow .cable.active {
+    stroke: #ff7f0e !important;
+    stroke-width: 2;
+    fill: none;
+    cursor: move;
+    background-color: #eee
 }
 .workflow .node.active rect,
 .workflow .node.active circle {
