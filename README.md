@@ -4,8 +4,7 @@
 数据流可视化分析平台
 
 #### Software Architecture
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1113/002101_f9eacdf1_2141312.jpeg "实验室时间序列可视化分析平台.jpg")
-
+![Software Architecture](http://note.youdao.com/noteshare?id=fd334262ce13a997d6084439f9d5e256)
 #### Installation
 
 1. [下载安装XAMPP服务器](http://note.youdao.com/noteshare?id=611a754774eb730c5f730cc3bcbadb32)
