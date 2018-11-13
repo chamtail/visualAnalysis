@@ -178,12 +178,8 @@
                     </div>
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
                         <div class="card-body">
-<<<<<<< HEAD
                             <span>graph here</span>
                             <div id="sample" style="height: 380px"></div>
-=======
-                            d3.js here.
->>>>>>> dc2d410ce09b2dfe640799a375a12ad58514a545
                         </div>
                     </div>
                 </div>
@@ -399,7 +395,6 @@
                             node.linkTo = workflow.links[node_id];
                         } else {
                             node.linkTo = [-1];
-<<<<<<< HEAD
                         }
                         var algoParamsList = algoParams[node_type];
                         node.params = [];
@@ -407,15 +402,6 @@
                             var param_name = algoParamsList[i];
                             node.params.push(node_origin[param_name]);
                         }
-=======
-                        }
-                        var algoParamsList = algoParams[node_type];
-                        node.params = [];
-                        for(var i=0, len=algoParamsList.length; i<len; i++){
-                            var param_name = algoParamsList[i];
-                            node.params.push(node_origin[param_name]);
-                        }
->>>>>>> dc2d410ce09b2dfe640799a375a12ad58514a545
                         routers[node_id] = node;
                     }
                 }
@@ -453,10 +439,6 @@
                     link[pId][id].params = routers[tab].params;
 
                     last = id;  // 记录当前id
-<<<<<<< HEAD
-=======
-                    console.log(last);
->>>>>>> dc2d410ce09b2dfe640799a375a12ad58514a545
                     while(next != -1 && !traveled[next]){
                         link[pId][next] = {};
                         link[pId][next].nid = next;
@@ -472,17 +454,12 @@
                     }
                 }
 
-<<<<<<< HEAD
                 // 将节点路由信息转换为节点列表
                 var nodeList = {};
-=======
-                var request = {};
->>>>>>> dc2d410ce09b2dfe640799a375a12ad58514a545
                 for(var tabId in head){
                     var nodeId = head[tabId];
                     var node = link[tabId][nodeId];
                     var nextId = node.after;
-<<<<<<< HEAD
                     nodeList[nodeId] = node;
                     while (nextId != -1){
                         node = link[tabId][nextId];
@@ -499,26 +476,6 @@
                 // 发送工作流
                 $.ajax({
                     url:"http://localhost:8889/workflow/init",
-=======
-                    request[nodeId] = node;
-                    while (nextId != -1){
-                        node = link[tabId][nextId];
-                        request[nextId] = node;
-                        nextId = node.after;
-                    }
-                }
-                console.log(request);
-//                // 模型建立请求
-//                var request = {
-//                    routers: {},
-//                    verCode: -1
-//                };
-//                request.routers = routers;
-                var data = JSON.stringify(request);
-                // 发送工作流
-                $.ajax({
-                    url:"http://localhost:8889/generateop",
->>>>>>> dc2d410ce09b2dfe640799a375a12ad58514a545
                     type:'POST',
                     data:data,
                     contentType:'application/json',
@@ -530,10 +487,6 @@
                         }
                     }
                 });
-<<<<<<< HEAD
-=======
-
->>>>>>> dc2d410ce09b2dfe640799a375a12ad58514a545
             },
             saveNodeConfig: function () {
                 $('#nodeParamsModal').modal('hide');
