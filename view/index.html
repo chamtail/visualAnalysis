@@ -213,7 +213,9 @@
         </div>
         <!-- 信息栏 -->
         <div class="right-wrapper">
-            <button class="btn btn-primary" onclick="debug()"></button>
+            <button type="button" class="btn btn-primary" onclick="debug()"></button>
+            <div id="message"></div>
+            <input id="text" type="text" /><button onclick="send()">Send</button>    <button onclick="closeWebSocket()">Close</button>
         </div>
         <div id="sidebar-separator" class="ui-draggable"></div>
     </div>
@@ -283,6 +285,7 @@
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
 <script src="../public/custom/charts/charts.js"></script>
+<script src="../public/custom/websocket/websocket.js"></script>
 <script>
     // 说明：获取鼠标位置
     // 整理：http://www.codebit.cn
@@ -397,10 +400,10 @@
                             node.linkTo = [-1];
                         }
                         var algoParamsList = algoParams[node_type];
-                        node.params = [];
+                        node.paramsList = [];
                         for(var i=0, len=algoParamsList.length; i<len; i++){
                             var param_name = algoParamsList[i];
-                            node.params.push(node_origin[param_name]);
+                            node.paramsList.push(node_origin[param_name]);
                         }
                         routers[node_id] = node;
                     }
@@ -432,20 +435,20 @@
                         link[pId][id] = {};
                     }
 
-                    link[pId][id].nid = id;
-                    link[pId][id].before = last;
-                    link[pId][id].after = routers[tab].linkTo[0];
+                    link[pId][id].id = id;
+                    link[pId][id].last = last;
+                    link[pId][id].next = routers[tab].linkTo[0];
                     link[pId][id].algorithm = routers[tab].type;
-                    link[pId][id].params = routers[tab].params;
+                    link[pId][id].paramsList = routers[tab].paramsList;
 
                     last = id;  // 记录当前id
                     while(next != -1 && !traveled[next]){
                         link[pId][next] = {};
-                        link[pId][next].nid = next;
-                        link[pId][next].before = last;
-                        link[pId][next].after = routers[next].linkTo[0];
+                        link[pId][next].id = next;
+                        link[pId][next].last = last;
+                        link[pId][next].next = routers[next].linkTo[0];
                         link[pId][next].algorithm = routers[next].type;
-                        link[pId][next].params = routers[next].params;
+                        link[pId][next].paramsList = routers[next].paramsList;
                         traveled[pId][next] = 1;
 
                         last = next;  // 更新last
@@ -459,12 +462,12 @@
                 for(var tabId in head){
                     var nodeId = head[tabId];
                     var node = link[tabId][nodeId];
-                    var nextId = node.after;
+                    var nextId = node.next;
                     nodeList[nodeId] = node;
                     while (nextId != -1){
                         node = link[tabId][nextId];
                         nodeList[nextId] = node;
-                        nextId = node.after;
+                        nextId = node.next;
                     }
                 }
                 // 模型建立请求
@@ -482,6 +485,22 @@
                     success:function(res){
                         if(res.code == 0){
                             workflow.verCode = res.data.verCode;
+                            var operators = res.data.operators;
+                            console.log(operators);
+                            var operator = JSON.stringify(operators[0]);
+                            $.ajax({
+                                url:"http://localhost:8889/workflow/runOne",
+                                type:'POST',
+                                data:operator,
+                                contentType:'application/json',
+                                success:function(res){
+                                    if(res.code == 0){
+                                        console.log(res);
+                                    } else{
+                                        alert(res.msg);
+                                    }
+                                }
+                            });
                         } else{
                             alert('error');
                         }
