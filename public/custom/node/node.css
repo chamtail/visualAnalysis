@@ -22,6 +22,7 @@
     border-radius: 5px;
     border: 1px solid #999;
     background-size: contain;
+    z-index: 9999;
 }
 
 .node:hover {

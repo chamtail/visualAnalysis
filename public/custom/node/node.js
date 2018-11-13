@@ -9,7 +9,7 @@ var currentTab = 1;  // 当前工作流tab
 var startNode = -1;  // 开始节点
 var endNode = -1;  // 结束节点
 var workflow = {
-    ver: -1,  //校验码
+    verCode: -1,  //校验码
     tab:[],  // 标签记录
     nodes:{},  // 所有节点记录
     used:{},  // 节点使用记录
@@ -31,7 +31,7 @@ function init() {
                 id: new Date().getTime(),
                 type: ui.helper.attr('data-template-name'),
                 x: ui.position.left - 180,
-                y: ui.position.top + 50,
+                y: ui.position.top - 50,
                 z: currentTab,
                 text: ui.helper.text()
             };
@@ -316,6 +316,5 @@ function nodeInject(node) {
         var paramKey = injectedNode[i].name;
         node[paramKey] = injectedNode[i].default;
     }
-    console.log(node);
     return node;
 }

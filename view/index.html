@@ -21,8 +21,6 @@
     <script src="../public/js/d3-transform.min.js"></script>
     <script src="../public/js/vue.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../public/custom/nav/nav.css">
-    <script src="../public/custom/nav/nav.js"></script>
     <link rel="stylesheet" type="text/css" href="../public/css/index.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/node/node.css">
 </head>
@@ -99,7 +97,7 @@
                                 <template v-else-if="key=='sub_modules'">
                                     <template v-for="module in info">
                                         <div :id="'node-header-' + key" class="node-header">
-                                            <i class="expanded fa fa-angle-down"></i>
+                                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                             <span>{{module['display'][lang]}}</span>
                                         </div>
                                         <div v-for="(node, key) in module['nodes']">
@@ -133,10 +131,79 @@
             </div>
             <div id="node-shade" class="hide"></div>
         </div>
-
+        <!-- 工作空间 -->
         <div class="middle-wrapper">
-            <div id="workflow" class="workflow" style="position: relative; width: 100%; height: 100%;">
-                <svg width="100%" height="100%"></svg>
+            <div id="accordion">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                工作流设计
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+                        <div class="card-body">
+                            <nav>
+                                <div class="row">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button id="new_wf" type="button" class="btn btn-secondary">New</button>
+                                        <button id="save_wf" type="button" class="btn btn-secondary">Save</button>
+                                        <button id="del_wf" type="button" class="btn btn-secondary">Del</button>
+                                    </div>
+                                    <span> &nbsp;</span>
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                        <a class="nav-item nav-link active" id="nav-wf-1" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-1" aria-selected="true">Workflow1</a>
+                                    </div>
+                                </div>
+                            </nav>
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-wf-1">1
+                                    <div id="workflow" class="workflow" style="position: relative; width: 100%; height: 100%;">
+                                        <svg width="100%" height="100%" style="z-index: 9998;"></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                可视化界面
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                        <div class="card-body">
+                            <span>graph here</span>
+                            <div id="sample" style="height: 380px"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingThree">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                命令行界面
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+                        <div class="card-body">
+                            <div class="input-group">
+                                <label class="input-group-addon">In[1]</label>
+                                <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button">Submit</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
             <!--<div style="height: 40px; border-top: solid 1px #e7e7e7; text-align: center; line-height: 40px; position: absolute;bottom: 2px; width: 100%">-->
             <!--<a class="btn btn-link" href="#"><i class="fa fa-play-circle-o" aria-hidden="true"></i>&nbsp;运行</a>-->
@@ -144,6 +211,7 @@
             <!--<a class="btn btn-link" href="#"><i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;分享</a>-->
             <!--</div>-->
         </div>
+        <!-- 信息栏 -->
         <div class="right-wrapper">
             <button class="btn btn-primary" onclick="debug()"></button>
         </div>
@@ -213,7 +281,8 @@
 <script src="../config/config.js"></script>
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
-<script src="../public/js/plupload/plupload.full.min.js"></script>
+<script src="../public/js/Echarts/echarts.js"></script>
+<script src="../public/custom/charts/charts.js"></script>
 <script>
     // 说明：获取鼠标位置
     // 整理：http://www.codebit.cn
@@ -257,6 +326,8 @@
         },
         mounted: function () {
             $(function () {
+                //工作流里的按钮
+                button_op();
                 // 默认有一个tabs
                 workflow.tab.push({
                     id: currentTab,
@@ -299,7 +370,7 @@
                 $('svg').click(function () {
                     //reset();
                 });
-            })
+            });
         },
         updated: function () {
             // 初始化node拖拽
@@ -310,35 +381,112 @@
         },
         methods: {
             deploy: function () {
-                var nodes = [];
+                var routers = {};
                 for (var tabIndex in workflow.nodes) {
                     for (var nodeId in workflow.nodes[tabIndex]) {
-                        var node = workflow.nodes[tabIndex][nodeId];
-                        node['next'] = workflow.links[node.id];
-                        if (workflow.links[node.id]) {
-                            node['next'] = workflow.links[node.id];
+                        var node_origin = workflow.nodes[tabIndex][nodeId];
+                        var node_type = node_origin['type'];
+                        var node_id = node_origin['id'];
+                        var node = {};
+                        node.pId = tabIndex;
+                        node.id = node_id;
+                        node.type = node_type;
+                        if (workflow.links[node_id] && workflow.links[node_id].length != 0) {
+                            node.linkTo = workflow.links[node_id];
                         } else {
-                            node['next'] = [];
+                            node.linkTo = [-1];
                         }
-                        console.log(node);
-                        nodes.push(node);
+                        var algoParamsList = algoParams[node_type];
+                        node.params = [];
+                        for(var i=0, len=algoParamsList.length; i<len; i++){
+                            var param_name = algoParamsList[i];
+                            node.params.push(node_origin[param_name]);
+                        }
+                        routers[node_id] = node;
                     }
                 }
 
-                var flows = []; // 工作流
-                for (var i = 0, len = workflow.tab.length; i < len; i++) {
-                    flows.push(workflow.tab[i]);
-                }
-                for (var i = 0, len = nodes.length; i < len; i++) {
-                    flows.push(nodes[i]);
+                // 解析工作流，生成链表
+                var head = {};  // 记录每个tab上的头节点id
+                var link = {};  // 记录每个tab上的链表
+                var traveled = {};  // 记录每个tab上已访问的节点id
+                var last = -1;
+                for(var tab in routers){
+                    console.log(routers[tab], routers[tab].linkTo);
+                    var pId = routers[tab].pId;  // 获取tab的id
+                    var id = routers[tab].id;  // 获取节点id
+                    if(!traveled[pId]){
+                        traveled[pId] = {};
+                    }
+                    if(traveled[pId][id]){ //如果遍历过，跳过
+                        continue;
+                    }
+                    traveled[pId][id] = 1;  // 记录更新当前tab已访问的节点id
+
+                    head[pId] = id;  // 记录更新当前tab的头节点id
+                    var next = routers[tab].linkTo[0];  // 获取下一个节点的id
+                    if(!link[pId]){  // 初始化tab下的链表
+                        link[pId] = {};
+                    }
+                    if(!link[pId][id]){  // 初始化当前tab的链表
+                        link[pId][id] = {};
+                    }
+
+                    link[pId][id].nid = id;
+                    link[pId][id].before = last;
+                    link[pId][id].after = routers[tab].linkTo[0];
+                    link[pId][id].algorithm = routers[tab].type;
+                    link[pId][id].params = routers[tab].params;
+
+                    last = id;  // 记录当前id
+                    while(next != -1 && !traveled[next]){
+                        link[pId][next] = {};
+                        link[pId][next].nid = next;
+                        link[pId][next].before = last;
+                        link[pId][next].after = routers[next].linkTo[0];
+                        link[pId][next].algorithm = routers[next].type;
+                        link[pId][next].params = routers[next].params;
+                        traveled[pId][next] = 1;
+
+                        last = next;  // 更新last
+                        next = routers[next].linkTo[0]; // 更新next变量
+                        traveled[pId][next] = 1;
+                    }
                 }
 
+                // 将节点路由信息转换为节点列表
+                var nodeList = {};
+                for(var tabId in head){
+                    var nodeId = head[tabId];
+                    var node = link[tabId][nodeId];
+                    var nextId = node.after;
+                    nodeList[nodeId] = node;
+                    while (nextId != -1){
+                        node = link[tabId][nextId];
+                        nodeList[nextId] = node;
+                        nextId = node.after;
+                    }
+                }
                 // 模型建立请求
-                var model = {};
-                model['flows'] = flows;
-                model['ver'] = -1;
-                console.log("flows: " + JSON.stringify(flows));
-
+                var request = {};
+                request.verCode = workflow.verCode;
+                request.routers = nodeList;
+                console.log(request);
+                var data = JSON.stringify(request);
+                // 发送工作流
+                $.ajax({
+                    url:"http://localhost:8889/workflow/init",
+                    type:'POST',
+                    data:data,
+                    contentType:'application/json',
+                    success:function(res){
+                        if(res.code == 0){
+                            workflow.verCode = res.data.verCode;
+                        } else{
+                            alert('error');
+                        }
+                    }
+                });
             },
             saveNodeConfig: function () {
                 $('#nodeParamsModal').modal('hide');
@@ -357,7 +505,8 @@
     function debug() {
         // 修改语言
         //changLang();
-        console.log(vm.node.id);
+        // 画图事件
+        showGraph();
     }
 
     // 显示节点细节
@@ -426,6 +575,26 @@
         d3.selectAll('path[from="' + id + '"]').remove();
         d3.selectAll('g[id="' + id + '"]').remove();
         d3.selectAll('path[to="' + id + '"]').remove();
+
+        // 删除workflow中的记录
+        var node = workflow.nodes[currentTab][id];
+        workflow.used[node.type] -= 1;
+        delete workflow.nodes[currentTab][id];
+        delete workflow.links[node.id];
+
+        for(var nodeId in workflow.nodes[currentTab]){
+            if(workflow.links[nodeId]){
+                console.log(nodeId, workflow.links[nodeId]);
+                var index = workflow.links[nodeId].indexOf(id.toString());
+                if (index > -1) {
+                    workflow.links[nodeId].splice(index, 1);
+                }
+            }
+        }
+        console.log(workflow);
+
+        // 重置
+        reset();
     }
     // 点击连线
     function onPathClick(id) {
@@ -440,6 +609,18 @@
     // 删除连线
     function onPathDelete(id) {
         d3.select('path[id="' + id + '"]').remove();
+        var nodeIds = id.split("_");
+        var sId = nodeIds[0];
+        var eId = nodeIds[1];
+        console.log(sId, eId);
+        var index = workflow.links[sId].indexOf(eId.toString());
+        if (index > -1) {
+            workflow.links[sId].splice(index, 1);
+        }
+        console.log(workflow);
+
+        // 重置
+        reset();
     }
     // 更改语言
     function changLang() {
@@ -450,29 +631,50 @@
         }
         setCookie('lang', vm.lang, 24, "/");
     }
-
-    function keyDownEvent(e) {
-        // key.Code === 46表示删除
-        console.log(e.keyCode);
-        if (e.keyCode === 46) {
-            //逻辑处理
-            onNodeDelete(vm.node.id);
-            console.log('key code == 46')
-        }
-    }
-    
+    // 重置参数
     function reset() {
         d3.selectAll('svg .node').attr('class', 'node');
         d3.selectAll('svg .cable').attr('class', 'cable');
-        vm.node =  {
-            id: -1,
+        vm.node = {
+            id: "-1",
             type: "",
             attrs: []
         };
         vm.path = {
-            id: "",
-            from: -1,
-            to: -1
+            id: "-1",
+            from: "-1",
+            to: "-1"
         };
+    }
+
+    function button_op() {
+        $('#new_wf').click(function() {
+            var wf_order = parseInt($('#nav-tab a:last').text().slice(8)) + 1;
+            var text1 = '<a class="nav-item nav-link" id="nav-wf-' + wf_order + '" data-toggle="tab" href="#nav-' + wf_order + '" role="tab" aria-controls="nav-' + wf_order + '" aria-selected="false">Workflow' + wf_order + '</a>';
+            var text2 = '<div class="tab-pane fade" id="nav-' + wf_order + '" role="tabpanel" aria-labelledby="nav-wf-' + wf_order + '">' + wf_order + '</div>';
+            $('#nav-tab').append(text1);
+            $('#nav-tabContent').append(text2);
+        });
+
+        $('#del_wf').click(function() {
+            var currentNode = $('div[id="nav-tab"]');
+
+            if(currentNode.children().length == 1)
+                return;
+
+            var active_wf = $('#nav-tab a[aria-expanded="true"]');
+            var active_order = parseInt(active_wf.text().slice(8));
+            active_wf.remove();
+            $('div[id="nav-' + active_order + '"]').remove();
+
+            var node1 = currentNode.children('a:first-child');
+            node1.attr('aria-expanded', 'true');
+            node1.addClass('active');
+            var node2 = $('#nav-tabContent div:first');
+            node2.attr('aria-expanded', 'true');
+            node2.addClass('active');
+            node2.addClass('show');
+            //currentNode.children('a:first-child').attr('aria-expanded', 'true');
+        });
     }
 </script>

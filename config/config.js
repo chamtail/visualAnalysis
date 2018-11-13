@@ -337,3 +337,13 @@ var params = {
         "description": ""
     }
 };
+
+// 算法参数列表
+var algoParams = {
+    "data-load":['data_set', 'read_number'],
+    'data-upload':['path'],
+    'normalization':['strategy'],
+    'outlier-detection':[],
+    'data-save':['data_path'],
+    'model-save':['model_path'],
+};
