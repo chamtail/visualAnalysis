@@ -470,6 +470,10 @@
                         nextId = node.next;
                     }
                 }
+
+                // to do
+                // 参数检查
+
                 // 模型建立请求
                 var request = {};
                 request.verCode = workflow.verCode;
@@ -524,8 +528,26 @@
     function debug() {
         // 修改语言
         //changLang();
+        var request = {
+            type: 'data-load',
+            path: "/Users/Jeremy/Desktop/grammarviz3_jar/data/TEK14.txt",  // 改成本地的一个文件
+            limit: 100
+        };
+        $.ajax({
+            url:"http://localhost:8889/workflow/getData",
+            type:'POST',
+            data:request,
+            contentType:'application/x-www-form-urlencoded',
+            success:function(res){
+                if(res.code == 0){
+                    console.log(res);
+                } else{
+                    alert(res.msg);
+                }
+            }
+        });
         // 画图事件
-        showGraph();
+        //showGraph();
     }
 
     // 显示节点细节
