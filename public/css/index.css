@@ -68,6 +68,20 @@ li {
     background: #8C101C;
     color: #eee !important;
 }
+#btn-deploy.disabled .deploy-button-content>img {
+    opacity: 0.3;
+}
+#btn-deploy .deploy-button-content>img {
+    margin-right: 8px;
+}
+img {
+    width: auto\9;
+    height: auto;
+    max-width: 100%;
+    vertical-align: middle;
+    border: 0;
+    -ms-interpolation-mode: bicubic;
+}
 a {
     color: #0088cc;
     text-decoration: none;
@@ -138,7 +152,7 @@ span.logo span {
     height:30px;
     cursor: move;
     stroke: #333;
-    stroke-width:2;
+    stroke-width:1;
     fill: #fff;
 }
 .workflow .node text{
@@ -147,7 +161,7 @@ span.logo span {
 }
 .workflow .node circle {
     stroke: #333;
-    stroke-width: 2px;
+    stroke-width: 1px;
     fill: #fff;
     cursor: crosshair;
 }
@@ -165,22 +179,28 @@ span.logo span {
     stroke-width: 2;
     fill: none;
     cursor: move;
-    background-color: #eee
+    background-color: #eee;
 }
 .workflow .node.active rect,
 .workflow .node.active circle {
     stroke: #ff7f0e !important;
-    background-color: #eee
+    fill: #fff;
 }
-.workflow .node.success rect,
-.workflow .node.success circle {
-    stroke: #1aad19 !important;
-    background-color: #1aad19
+.workflow .node.deactivate rect,
+.workflow .node.deactivate circle {
+    fill: #eee;
 }
-.workflow .node.error rect,
-.workflow .node.error circle {
-    stroke: #ff3020 !important;
-    background-color: #eee
+.workflow .node.init_success rect{
+    fill: #fff;
+}
+.workflow .node.init_error rect{
+    fill: #f3f3f3;
+}
+.workflow .node.run_success rect{
+    fill: springgreen;
+}
+.workflow .node.run_error rect{
+    fill: #ffff00;
 }
 .workflow .node .run{
     cursor: pointer;
@@ -189,7 +209,6 @@ span.logo span {
 .workflow .node .run:hover{
     font-size: 15px;
 }
-
 #sidebar-separator {
     position: absolute;
     top: 0;

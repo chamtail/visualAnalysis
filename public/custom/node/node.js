@@ -13,7 +13,7 @@ var workflow = {
     tab:[],  // 标签记录
     nodes:{},  // 所有节点记录
     used:{},  // 节点使用记录
-    links:{}  // 节点连接记录
+    links:{},  // 节点连接记录
 };
 
 function init() {
@@ -229,13 +229,13 @@ function dragEnded() {
     dragElem = null;
 }
 
+// 添加节点
 function addNode(svg, node) {
-    console.log(node.x, node.y);
     if (node.x<0 || node.y<0){
         return null;
     }
     var g = svg.append('g')
-        .attr('class', 'node')
+        .attr('class', 'node deactivate')
         .attr('data-template-name', node.type)
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
@@ -311,10 +311,26 @@ function addNode(svg, node) {
 
 // 给节点注入属性
 function nodeInject(node) {
-    var injectedNode = params[node.type]['attr'];
+    var injectedNode = node_config[node.type]['attr'];
     for (var i=0, len=injectedNode.length; i<len; i++){
         var paramKey = injectedNode[i].name;
         node[paramKey] = injectedNode[i].default;
     }
     return node;
+}
+
+// 更新节点状态
+function updateNodeStatus(status) {
+    var statusMap = {
+        1: 'init_success',
+        2: 'init_error',
+        3: 'run_success',
+        4: 'run_error',
+        5: 'active',
+        6: 'deactivate'
+    };
+    for(var nodeId in status){
+        d3.selectAll('g[id="' + nodeId + '"]')
+            .attr('class', 'node ' + statusMap[status[nodeId]]);
+    }
 }

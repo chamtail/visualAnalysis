@@ -82,8 +82,8 @@ var nodes_category = {
     }
 };
 
-// 配置参数
-var params = {
+// 节点配置
+var node_config = {
     "data-upload": {
         "display": {
             "zh": "上传数据",
@@ -339,7 +339,7 @@ var params = {
 };
 
 // 算法参数列表
-var algoParams = {
+var node_params = {
     "data-load":['data_set', 'read_number'],
     'data-upload':['path'],
     'normalization':['strategy'],
@@ -347,3 +347,14 @@ var algoParams = {
     'data-save':['data_path'],
     'model-save':['model_path'],
 };
+
+// API列表
+var host_url = 'http://localhost:8889';
+var api_map={
+    'workflow_init': host_url + '/workflow/init',
+    'workflow_run': host_url + '/workflow/runAll',
+    'workflow_stop': host_url + '/workflow/stopAll',
+    'node_run': host_url + '/workflow/runOne',
+    'node_stop': host_url + '/workflow/stopOne'
+};
+

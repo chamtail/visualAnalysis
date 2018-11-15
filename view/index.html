@@ -137,7 +137,8 @@
                 <div class="card">
                     <div class="card-header" id="headingOne">
                         <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">
                                 工作流设计
                             </button>
                         </h5>
@@ -154,13 +155,17 @@
                                     </div>
                                     <span> &nbsp;</span>
                                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                        <a class="nav-item nav-link active" id="nav-wf-1" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-1" aria-selected="true">Workflow1</a>
+                                        <a class="nav-item nav-link active" id="nav-wf-1" data-toggle="tab"
+                                           href="#nav-1" role="tab" aria-controls="nav-1"
+                                           aria-selected="true">Workflow1</a>
                                     </div>
                                 </div>
                             </nav>
                             <div class="tab-content" id="nav-tabContent">
-                                <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-wf-1">1
-                                    <div id="workflow" class="workflow" style="position: relative; width: 100%; height: 100%;">
+                                <div class="tab-pane fade show active" id="nav-1" role="tabpanel"
+                                     aria-labelledby="nav-wf-1">1
+                                    <div id="workflow" class="workflow"
+                                         style="position: relative; width: 100%; height: 100%;">
                                         <svg width="100%" height="100%" style="z-index: 9998;"></svg>
                                     </div>
                                 </div>
@@ -171,7 +176,8 @@
                 <div class="card">
                     <div class="card-header" id="headingTwo">
                         <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
+                                    aria-expanded="false" aria-controls="collapseTwo">
                                 可视化界面
                             </button>
                         </h5>
@@ -179,14 +185,16 @@
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
                         <div class="card-body">
                             <span>graph here</span>
-                            <div id="abnormalChart" style="height: 380px"></div>
+                            <div id="sample" style="height: 380px"></div>
+                            <div id="sample2" style="height: 380px"></div>
                         </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header" id="headingThree">
                         <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree"
+                                    aria-expanded="false" aria-controls="collapseThree">
                                 命令行界面
                             </button>
                         </h5>
@@ -195,7 +203,8 @@
                         <div class="card-body">
                             <div class="input-group">
                                 <label class="input-group-addon">In[1]</label>
-                                <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input type="text" class="form-control" aria-label="Recipient's username"
+                                       aria-describedby="basic-addon2">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button">Submit</button>
                                 </div>
@@ -215,7 +224,9 @@
         <div class="right-wrapper">
             <button type="button" class="btn btn-primary" onclick="debug()"></button>
             <div id="message"></div>
-            <input id="text" type="text" /><button onclick="send()">Send</button>    <button onclick="closeWebSocket()">Close</button>
+            <input id="text" type="text"/>
+            <button onclick="send()">Send</button>
+            <button onclick="closeWebSocket()">Close</button>
         </div>
         <div id="sidebar-separator" class="ui-draggable"></div>
     </div>
@@ -317,33 +328,38 @@
                 type: "",
                 attrs: []
             },
-            path:{
+            path: {
                 id: "",
                 from: "-1",
                 to: "-1"
             },
             selected: "aa",
             lang: getCookieValue("lang"),
-            positionX: 0,
-            positionY: 0
+            request: {
+                verCode: workflow.verCode,
+                routers: {}
+            },
         },
         mounted: function () {
+            // 工作流初始化
             $(function () {
-                //工作流里的按钮
-                button_op();
                 // 默认有一个tabs
                 workflow.tab.push({
                     id: currentTab,
                     type: "tab",
                     label: "Flow " + currentTab,
                     disabled: false,
-                    info: "",
+                    info: ""
                 });
                 // 初始化左侧组件栏
                 vm.nodes = nodes_category;
                 if (vm.lang == "") {
                     vm.lang = 'zh';
                 }
+            });
+            //工作流里的按钮
+            $(function () {
+                button_op();
             });
             // 键盘事件
             $(function () {
@@ -354,10 +370,10 @@
                                 if (oEvent.keyCode === 46) {
                                     console.log(vm.path);
                                     //逻辑处理
-                                    if(vm.node.id != "-1"){
+                                    if (vm.node.id != "-1") {
                                         onNodeDelete(vm.node.id);
                                     }
-                                    if(vm.path.id != "-1"){
+                                    if (vm.path.id != "-1") {
                                         onPathDelete(vm.path.id);
                                     }
 
@@ -367,7 +383,6 @@
                             }
                         });
             });
-
             // svg事件
             $(function () {
                 $('svg').click(function () {
@@ -384,6 +399,7 @@
         },
         methods: {
             deploy: function () {
+                // 生成节点路由表
                 var routers = {};
                 for (var tabIndex in workflow.nodes) {
                     for (var nodeId in workflow.nodes[tabIndex]) {
@@ -399,9 +415,9 @@
                         } else {
                             node.linkTo = [-1];
                         }
-                        var algoParamsList = algoParams[node_type];
+                        var algoParamsList = node_params[node_type];
                         node.paramsList = [];
-                        for(var i=0, len=algoParamsList.length; i<len; i++){
+                        for (var i = 0, len = algoParamsList.length; i < len; i++) {
                             var param_name = algoParamsList[i];
                             node.paramsList.push(node_origin[param_name]);
                         }
@@ -409,29 +425,39 @@
                     }
                 }
 
+                // Check 1: 检测当前节点路由表是否为空
+                var routersIsEmpty = (JSON.stringify(routers) == "{}");
+                if (routersIsEmpty) {
+                    console.log("无节点");
+                    return;
+                }
+                // Check 2: 检测节点参数是否有误
+
+                // Check 3: 检测链表中是否存在异常
+
                 // 解析工作流，生成链表
                 var head = {};  // 记录每个tab上的头节点id
                 var link = {};  // 记录每个tab上的链表
                 var traveled = {};  // 记录每个tab上已访问的节点id
                 var last = -1;
-                for(var tab in routers){
+                for (var tab in routers) {
                     console.log(routers[tab], routers[tab].linkTo);
                     var pId = routers[tab].pId;  // 获取tab的id
                     var id = routers[tab].id;  // 获取节点id
-                    if(!traveled[pId]){
+                    if (!traveled[pId]) {
                         traveled[pId] = {};
                     }
-                    if(traveled[pId][id]){ //如果遍历过，跳过
+                    if (traveled[pId][id]) { //如果遍历过，跳过
                         continue;
                     }
                     traveled[pId][id] = 1;  // 记录更新当前tab已访问的节点id
 
                     head[pId] = id;  // 记录更新当前tab的头节点id
                     var next = routers[tab].linkTo[0];  // 获取下一个节点的id
-                    if(!link[pId]){  // 初始化tab下的链表
+                    if (!link[pId]) {  // 初始化tab下的链表
                         link[pId] = {};
                     }
-                    if(!link[pId][id]){  // 初始化当前tab的链表
+                    if (!link[pId][id]) {  // 初始化当前tab的链表
                         link[pId][id] = {};
                     }
 
@@ -442,7 +468,7 @@
                     link[pId][id].paramsList = routers[tab].paramsList;
 
                     last = id;  // 记录当前id
-                    while(next != -1 && !traveled[next]){
+                    while (next != -1 && !traveled[next]) {
                         link[pId][next] = {};
                         link[pId][next].id = next;
                         link[pId][next].last = last;
@@ -459,57 +485,66 @@
 
                 // 将节点路由信息转换为节点列表
                 var nodeList = {};
-                for(var tabId in head){
+                for (var tabId in head) {
                     var nodeId = head[tabId];
                     var node = link[tabId][nodeId];
                     var nextId = node.next;
                     nodeList[nodeId] = node;
-                    while (nextId != -1){
+                    while (nextId != -1) {
                         node = link[tabId][nextId];
                         nodeList[nextId] = node;
                         nextId = node.next;
                     }
                 }
 
-                // to do
-                // 参数检查
-
                 // 模型建立请求
                 var request = {};
                 request.verCode = workflow.verCode;
                 request.routers = nodeList;
-                console.log(request);
                 var data = JSON.stringify(request);
+                this.request = request;
+                console.log(this.request);
+
                 // 发送工作流
                 $.ajax({
-                    url:"http://localhost:8889/workflow/init",
-                    type:'POST',
-                    data:data,
-                    contentType:'application/json',
-                    success:function(res){
-                        if(res.code == 0){
+                    url: api_map.workflow_init,
+                    type: 'POST',
+                    data: data,
+                    contentType: 'application/json',
+                    success: function (res) {
+                        if (res.code == 0) {
                             workflow.verCode = res.data.verCode;
-                            var operators = res.data.operators;
-                            console.log(operators);
-                            var operator = JSON.stringify(operators[0]);
-                            $.ajax({
-                                url:"http://localhost:8889/workflow/runOne",
-                                type:'POST',
-                                data:operator,
-                                contentType:'application/json',
-                                success:function(res){
-                                    if(res.code == 0){
-                                        console.log(res);
-                                    } else{
-                                        alert(res.msg);
-                                    }
-                                }
-                            });
-                        } else{
-                            alert('error');
+                            var initResult = res.data.initResult;
+                            updateNodeStatus(initResult);
+                        } else {
+                            alert(res.msg);
                         }
                     }
                 });
+            },
+            runNode: function (nodeId) {
+                var nodeRequest = {};
+                nodeRequest.verCode = workflow.verCode;
+                nodeRequest.routers = {};
+                nodeRequest.routers[nodeId] = this.request.routers[nodeId];
+                var data = JSON.stringify(nodeRequest);
+                console.log(data);
+                $.ajax({
+                    url: api_map.node_run,
+                    type: 'POST',
+                    data: data,
+                    contentType: 'application/json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            console.log(res);
+                        } else {
+                            alert(res.msg);
+                        }
+                    }
+                });
+            },
+            runWorkflow: function () {
+
             },
             saveNodeConfig: function () {
                 $('#nodeParamsModal').modal('hide');
@@ -525,36 +560,38 @@
         }
     });
 
+    var id = 1;
     function debug() {
+        vm.runNode(vm.node.id);
         // 修改语言
         //changLang();
-        var request = {
-            type: 'data-load',
-            path: "/Users/Jeremy/Desktop/grammarviz3_jar/data/TEK14.txt",  // 改成本地的一个文件
-            limit: 100
-        };
-        $.ajax({
-            url:"http://localhost:8889/workflow/getData",
-            type:'POST',
-            data:request,
-            contentType:'application/x-www-form-urlencoded',
-            success:function(res){
-                if(res.code == 0){
-                    console.log(res);
-                } else{
-                    alert(res.msg);
-                }
-            }
-        });
+//        var request = {
+//            type: 'data-load',
+//            path: "/Users/Jeremy/Desktop/grammarviz3_jar/data/TEK14.txt",  // 改成本地的一个文件
+//            limit: 100
+//        };
+//        $.ajax({
+//            url: "http://localhost:8889/workflow/getData",
+//            type: 'POST',
+//            data: request,
+//            contentType: 'application/x-www-form-urlencoded',
+//            success: function (res) {
+//                if (res.code == 0) {
+//                    console.log(res);
+//                } else {
+//                    alert(res.msg);
+//                }
+//            }
+//        });
         // 画图事件
-        //showGraph();
+        showGraph();
     }
 
     // 显示节点细节
     function onNodeDetail(id) {
         // 重制
         reset();
-        $('#'+id).attr('class', 'node active');
+        $('#' + id).attr('class', 'node active');
         vm.node.id = id;
         console.log('显示节点细节');
     }
@@ -565,12 +602,12 @@
         reset();
         // 显示配置窗口
         $('#nodeParamsModal').modal('show');
-        var node = $('#'+id);
+        var node = $('#' + id);
         node.attr('class', 'node active');
         var nodeType = node.attr("data-template-name");
         var attrs = [];
 
-        var attrInfo = params[nodeType]['attr'];
+        var attrInfo = node_config[nodeType]['attr'];
         var currentParams = workflow.nodes[currentTab][id];
 
         var keyList = {};
@@ -589,7 +626,7 @@
             }
         }
         vm.node.id = id;
-        vm.node.type = params[nodeType]['display'][vm.lang];
+        vm.node.type = node_config[nodeType]['display'][vm.lang];
         vm.node.attrs = attrs;
     }
 
@@ -623,8 +660,8 @@
         delete workflow.nodes[currentTab][id];
         delete workflow.links[node.id];
 
-        for(var nodeId in workflow.nodes[currentTab]){
-            if(workflow.links[nodeId]){
+        for (var nodeId in workflow.nodes[currentTab]) {
+            if (workflow.links[nodeId]) {
                 console.log(nodeId, workflow.links[nodeId]);
                 var index = workflow.links[nodeId].indexOf(id.toString());
                 if (index > -1) {
@@ -689,7 +726,7 @@
     }
 
     function button_op() {
-        $('#new_wf').click(function() {
+        $('#new_wf').click(function () {
             var wf_order = parseInt($('#nav-tab a:last').text().slice(8)) + 1;
             var text1 = '<a class="nav-item nav-link" id="nav-wf-' + wf_order + '" data-toggle="tab" href="#nav-' + wf_order + '" role="tab" aria-controls="nav-' + wf_order + '" aria-selected="false">Workflow' + wf_order + '</a>';
             var text2 = '<div class="tab-pane fade" id="nav-' + wf_order + '" role="tabpanel" aria-labelledby="nav-wf-' + wf_order + '">' + wf_order + '</div>';
@@ -697,10 +734,10 @@
             $('#nav-tabContent').append(text2);
         });
 
-        $('#del_wf').click(function() {
+        $('#del_wf').click(function () {
             var currentNode = $('div[id="nav-tab"]');
 
-            if(currentNode.children().length == 1)
+            if (currentNode.children().length == 1)
                 return;
 
             var active_wf = $('#nav-tab a[aria-expanded="true"]');
