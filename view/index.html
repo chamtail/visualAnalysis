@@ -335,10 +335,7 @@
             },
             selected: "aa",
             lang: getCookieValue("lang"),
-            request: {
-                verCode: workflow.verCode,
-                routers: {}
-            },
+            routers: {}
         },
         mounted: function () {
             // 工作流初始化
@@ -501,9 +498,8 @@
                 var request = {};
                 request.verCode = workflow.verCode;
                 request.routers = nodeList;
+                this.routers = nodeList;  // 保存路由信息
                 var data = JSON.stringify(request);
-                this.request = request;
-                console.log(this.request);
 
                 // 发送工作流
                 $.ajax({
@@ -514,8 +510,7 @@
                     success: function (res) {
                         if (res.code == 0) {
                             workflow.verCode = res.data.verCode;
-                            var initResult = res.data.initResult;
-                            updateNodeStatus(initResult);
+                            updateNodeStatus(res.data.initResult);
                         } else {
                             alert(res.msg);
                         }
@@ -526,9 +521,8 @@
                 var nodeRequest = {};
                 nodeRequest.verCode = workflow.verCode;
                 nodeRequest.routers = {};
-                nodeRequest.routers[nodeId] = this.request.routers[nodeId];
+                nodeRequest.routers[nodeId] = this.routers[nodeId];
                 var data = JSON.stringify(nodeRequest);
-                console.log(data);
                 $.ajax({
                     url: api_map.node_run,
                     type: 'POST',
@@ -593,7 +587,32 @@
         reset();
         $('#' + id).attr('class', 'node active');
         vm.node.id = id;
-        console.log('显示节点细节');
+        console.log('显示节点细节&显示节点可视化');
+        // 如果该节点状态为已运行
+        var status = $('#' + id).attr('status');
+        if(status == 1){
+            var flow = {};
+            flow.verCode = workflow.verCode;
+            flow.routers = {};
+            flow.routers[id] = vm.routers[id];
+            var nodeRequest = {};
+            nodeRequest.workflow = flow;
+            var data = JSON.stringify(flow);
+            console.log("可视化");
+            $.ajax({
+                url: api_map.get_data + "?limit=100",
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                success: function (res) {
+                    if (res.code == 0) {
+                        console.log(res);
+                    } else {
+                        alert(res.msg);
+                    }
+                }
+            });
+        }
     }
 
     // 配置节点
@@ -674,6 +693,7 @@
         // 重置
         reset();
     }
+
     // 点击连线
     function onPathClick(id) {
         // 重置
@@ -684,6 +704,7 @@
         vm.path.id = id;
         console.log(vm.path);
     }
+
     // 删除连线
     function onPathDelete(id) {
         d3.select('path[id="' + id + '"]').remove();
@@ -700,6 +721,7 @@
         // 重置
         reset();
     }
+
     // 更改语言
     function changLang() {
         if (vm.lang == 'en') {
@@ -709,6 +731,7 @@
         }
         setCookie('lang', vm.lang, 24, "/");
     }
+
     // 重置参数
     function reset() {
         d3.selectAll('svg .node').attr('class', 'node');

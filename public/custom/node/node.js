@@ -29,6 +29,7 @@ function init() {
         stop: function (e, ui) {
             var node = {
                 id: new Date().getTime(),
+                status: 6,
                 type: ui.helper.attr('data-template-name'),
                 x: ui.position.left - 180,
                 y: ui.position.top - 50,
@@ -237,6 +238,7 @@ function addNode(svg, node) {
     var g = svg.append('g')
         .attr('class', 'node deactivate')
         .attr('data-template-name', node.type)
+        .attr('status', 6)
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
         .attr('onclick', 'onNodeDetail(' + node.id + ')')
@@ -321,16 +323,10 @@ function nodeInject(node) {
 
 // 更新节点状态
 function updateNodeStatus(status) {
-    var statusMap = {
-        1: 'init_success',
-        2: 'init_error',
-        3: 'run_success',
-        4: 'run_error',
-        5: 'active',
-        6: 'deactivate'
-    };
     for(var nodeId in status){
         d3.selectAll('g[id="' + nodeId + '"]')
-            .attr('class', 'node ' + statusMap[status[nodeId]]);
+            .attr('class', 'node ' + nodeStatusMap[status[nodeId]])
+            .attr('status', status[nodeId]);
+        workflow.nodes[currentTab][nodeId].status = status[nodeId];
     }
 }

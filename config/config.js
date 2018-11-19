@@ -36,7 +36,7 @@ var nodes_category = {
                     "en": "pre-process module"
                 },
                 "nodes": {
-                    "normalization": {
+                    "prehandle": {  // normalization
                         "zh": "标准化",
                         "en": "normalization",
                         "in": 1,
@@ -50,7 +50,7 @@ var nodes_category = {
                     "en": "outlier module"
                 },
                 "nodes": {
-                    "outlier-detection": {
+                    "stl": {  //outlier-detection
                         "zh": "异常检测",
                         "en": "outlier detection",
                         "in": 1,
@@ -178,7 +178,7 @@ var node_config = {
             }],
         "description": ""
     },
-    "normalization": {
+    "prehandle": {
         "display": {
             "zh": "标准化",
             "en": "normalization",
@@ -221,7 +221,7 @@ var node_config = {
         ],
         "description": ""
     },
-    "outlier-detection": {
+    "stl": {
         "display": {
             "zh": "异常检测",
             "en": "outlier detection",
@@ -342,8 +342,8 @@ var node_config = {
 var node_params = {
     "data-load":['data_set', 'read_number'],
     'data-upload':['path'],
-    'normalization':['strategy'],
-    'outlier-detection':[],
+    'prehandle':['strategy'],
+    'stl':[],
     'data-save':['data_path'],
     'model-save':['model_path'],
 };
@@ -355,6 +355,16 @@ var api_map={
     'workflow_run': host_url + '/workflow/runAll',
     'workflow_stop': host_url + '/workflow/stopAll',
     'node_run': host_url + '/workflow/runOne',
-    'node_stop': host_url + '/workflow/stopOne'
+    'node_stop': host_url + '/workflow/stopOne',
+    'get_data': host_url + '/workflow/getData'
 };
 
+// 节点状态映射
+var nodeStatusMap = {
+    1: 'init_success',
+    2: 'init_error',
+    3: 'run_success',
+    4: 'run_error',
+    5: 'active',
+    6: 'deactivate'
+};
