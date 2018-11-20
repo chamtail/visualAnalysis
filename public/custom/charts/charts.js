@@ -40,7 +40,7 @@ function abnormalVisual(abnomalData) {
     // abnomalData.pointlabel = [0,4];
     // abnomalData.arealabel =[[0,3],[5,6]];
 
-    var myChart = echarts.init(document.getElementById('bnormalChart'));
+    var myChart = echarts.init(document.getElementById('abnormalChart'));
 
 
     xdata = abnomalData.timestamp;

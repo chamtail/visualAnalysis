@@ -653,6 +653,7 @@
                 success: function (res) {
                     if (res.code == 0) {
                         console.log(res);
+                        abnormalVisual(res.data);
                     } else {
                         alert(res.msg);
                     }
