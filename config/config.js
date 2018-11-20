@@ -202,8 +202,8 @@ var node_config = {
                     "en": "strategy"
                 },
                 "type": "list",
-                "list": ['Z-score', 'Min-Max'],
-                "default": 0,
+                "list": ['zscore', 'minmaxscale'],
+                "default": 'zscore',
                 "enable": true,
                 "configurable": true
             },
@@ -238,6 +238,28 @@ var node_config = {
             "en": "outlier detection",
         },
         "attr": [
+            {
+                "name": "maxanoms",
+                "label": {
+                    "zh": "最大异常",
+                    "en": "max anoms"
+                },
+                "type": "number",
+                "default": 0.02,
+                "enable": true,
+                "configurable": true
+            },
+            {
+                "name": "day",
+                "label": {
+                    "zh": "日期",
+                    "en": "day"
+                },
+                "type": "text",
+                "default": "day",
+                "enable": true,
+                "configurable": true
+            },
             {
                 "name": "inputs",
                 "label": {
@@ -354,13 +376,13 @@ var node_params = {
     "data-load":['data_set', 'read_number'],
     'data-upload':['path'],
     'prehandle':['strategy'],
-    'stl':[],
+    'stl':['maxanoms', 'day'],
     'data-save':['data_path'],
     'model-save':['model_path'],
 };
 
 // API列表
-var host_url = 'http://localhost:8889';
+var host_url = 'http://10.131.247.51:8889';
 var api_map={
     'workflow_init': host_url + '/workflow/init',
     'workflow_run': host_url + '/workflow/runAll',
@@ -380,3 +402,5 @@ var nodeStatusMap = {
     5: 'active',
     6: 'deactivate'
 };
+
+var webSocket = "ws://10.131.247.51:8889/webSocket";

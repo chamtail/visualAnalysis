@@ -324,6 +324,7 @@ function nodeInject(node) {
 // 更新节点状态
 function updateNodeStatus(status) {
     for(var nodeId in status){
+        console.log(nodeId, status[nodeId]);
         d3.selectAll('g[id="' + nodeId + '"]')
             .attr('class', 'node ' + nodeStatusMap[status[nodeId]])
             .attr('status', status[nodeId]);
