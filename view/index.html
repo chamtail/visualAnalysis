@@ -570,8 +570,7 @@
                     formData.append('verCode', workflow.verCode);
                     formData.append('nodeId', vm.node.id);
                     formData.append('nodeType', vm.node.type);
-
-                    /*
+                    formData.append('dataSetName', 'test');
                     $.ajax({
                         url: api_map.upload,
                         type: 'POST',
@@ -587,7 +586,7 @@
                             }
                         }
                     });
-                    */
+
                 }
             },
             deleteNode: function () {
