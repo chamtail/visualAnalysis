@@ -235,7 +235,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="nodeParamsModalLabel">{{node.type}}</h5>
+                    <h5 class="modal-title" id="nodeParamsModalLabel">{{node.name}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -261,9 +261,10 @@
                                         <textarea :type="model.type" class="col-sm-8" :name="model.name"
                                                   :placeholder="model.default">{{model.default}}</textarea>
                                     </template>
-                                    <!--<template v-else-if="model.type == 'path'">-->
-                                    <!---->
-                                    <!--</template>-->
+                                    <template v-else-if="model.type == 'file'">
+                                        <input :id="'file_'+node.id" :type="model.type" class="col-sm-8" :name="model.name"
+                                               :placeholder="model.default" :value="model.default">
+                                    </template>
                                     <template v-else>
                                         <input :type="model.type" class="col-sm-8" :name="model.name"
                                                :placeholder="model.default" :value="model.default">
@@ -325,6 +326,7 @@
             nodes: {},
             node: {
                 id: "-1",
+                name: "",
                 type: "",
                 attrs: []
             },
@@ -335,7 +337,8 @@
             },
             selected: "aa",
             lang: getCookieValue("lang"),
-            routers: {}
+            routers: {},
+            uploadFile: false,
         },
         mounted: function () {
             // 工作流初始化
@@ -542,10 +545,50 @@
             },
             saveNodeConfig: function () {
                 $('#nodeParamsModal').modal('hide');
-                var data = $('#main-form').serializeArray();
-                $.each(data, function () {
-                    workflow.nodes[currentTab][vm.node.id][this.name] = this.value;
-                });
+                if(!this.uploadFile){
+                    var data = $('#main-form').serializeArray();
+                    $.each(data, function () {
+                        workflow.nodes[currentTab][vm.node.id][this.name] = this.value;
+                    });
+                }
+                else{
+                    var nodeId = this.node.id;
+                    var uploadFile = $('#file_' + nodeId)[0].files[0];
+                    console.log(uploadFile);
+                    if(uploadFile == undefined){
+                        console.log("error");
+                        return;
+                    }
+
+                    var flow = {};
+                    flow.verCode = workflow.verCode;
+                    flow.routers = {};
+                    flow.routers[nodeId] = this.routers[nodeId];
+
+                    var formData = new FormData();
+                    formData.append('file', uploadFile);
+                    formData.append('verCode', workflow.verCode);
+                    formData.append('nodeId', vm.node.id);
+                    formData.append('nodeType', vm.node.type);
+
+                    /*
+                    $.ajax({
+                        url: api_map.upload,
+                        type: 'POST',
+                        data: formData,
+                        cache: false,    //上传文件不需缓存
+                        processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
+                        contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
+                        success: function (res) {
+                            if (res.code == 0) {
+                                console.log(res);
+                            } else {
+                                alert(res.msg);
+                            }
+                        }
+                    });
+                    */
+                }
             },
             deleteNode: function () {
                 onNodeDelete(vm.node.id);
@@ -585,11 +628,15 @@
     function onNodeDetail(id) {
         // 重制
         reset();
-        $('#' + id).attr('class', 'node active');
+        var node = $('#' + id);
+        node.attr('class', 'node active');
+        var nodeType = node.attr("data-template-name");
         vm.node.id = id;
+        vm.node.name = node_config[nodeType]['display'][vm.lang];
+        vm.node.type = nodeType;
         console.log('显示节点细节&显示节点可视化');
         // 如果该节点状态为已运行
-        var status = $('#' + id).attr('status');
+        var status = node.attr('status');
         if(status == 1){
             var flow = {};
             flow.verCode = workflow.verCode;
@@ -633,19 +680,23 @@
         for (var key in currentParams) {
             keyList[key] = 1;
         }
+
         for (var i = 0, len = attrInfo.length; i < len; i++) {
             if (attrInfo[i]['enable'] && attrInfo[i]['configurable']) {
                 for (var key in keyList) {
                     if (attrInfo[i]['name'] == key) {
-                        console.log(key);
                         attrInfo[i]['default'] = currentParams[key];
+                    }
+                    if(attrInfo[i]['type'] == 'file'){
+                        vm.uploadFile = true;
                     }
                 }
                 attrs.push(attrInfo[i]);
             }
         }
         vm.node.id = id;
-        vm.node.type = node_config[nodeType]['display'][vm.lang];
+        vm.node.name = node_config[nodeType]['display'][vm.lang];
+        vm.node.type = nodeType;
         vm.node.attrs = attrs;
     }
 
@@ -738,6 +789,7 @@
         d3.selectAll('svg .cable').attr('class', 'cable');
         vm.node = {
             id: "-1",
+            name: "",
             type: "",
             attrs: []
         };
@@ -746,6 +798,7 @@
             from: "-1",
             to: "-1"
         };
+        vm.uploadFile = false;
     }
 
     function button_op() {

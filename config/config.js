@@ -96,7 +96,18 @@ var node_config = {
                     "zh": "数据集文件",
                     "en": "data set file"
                 },
-                "type": "path",
+                "type": "file",
+                "default": "",
+                "enable": true,
+                "configurable": true
+            },
+            {
+                "name": "name",
+                "label": {
+                    "zh": "数据集名称",
+                    "en": "data set name"
+                },
+                "type": "text",
                 "default": "",
                 "enable": true,
                 "configurable": true
@@ -356,7 +367,8 @@ var api_map={
     'workflow_stop': host_url + '/workflow/stopAll',
     'node_run': host_url + '/workflow/runOne',
     'node_stop': host_url + '/workflow/stopOne',
-    'get_data': host_url + '/workflow/getData'
+    'get_data': host_url + '/workflow/getData',
+    'upload': host_url + '/file/upload',
 };
 
 // 节点状态映射
