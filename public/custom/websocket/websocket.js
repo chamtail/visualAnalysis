@@ -6,7 +6,7 @@ var websocket = null;
 
 //判断当前浏览器是否支持WebSocket
 if('WebSocket' in window){
-    websocket = new WebSocket(webSocket);
+    websocket = new WebSocket(webSocketHost);
 }
 else{
     alert('Not support websocket')

@@ -382,7 +382,8 @@ var node_params = {
 };
 
 // API列表
-var host_url = 'http://10.131.247.51:8889';
+var IP = 'localhost'//'10.131.247.51';
+var host_url = 'http://'+IP+':8889';
 var api_map={
     'workflow_init': host_url + '/workflow/init',
     'workflow_run': host_url + '/workflow/runAll',
@@ -403,4 +404,4 @@ var nodeStatusMap = {
     6: 'deactivate'
 };
 
-var webSocket = "ws://10.131.247.51:8889/webSocket";
+var webSocketHost = 'ws://'+IP+':8889/webSocket';

@@ -18,8 +18,10 @@ var workflow = {
 
 function init() {
     var svg = d3.select('#workflow svg');
+    // 画网格
+    drawGrid(svg, 5000, 5000, 20);
     // 绑定拖拽
-    $('#left-wrapper .node').draggable({
+    $('#palette .node').draggable({
         helper: 'clone',
         addClass: false,
         connectToSortable: '#workflow',
@@ -330,4 +332,34 @@ function updateNodeStatus(status) {
             .attr('status', status[nodeId]);
         workflow.nodes[currentTab][nodeId].status = status[nodeId];
     }
+}
+// 画网格
+function drawGrid(svg, width, height, gap) {
+    svg.append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('fill', "#fff");
+    for(var i= 0;i < width; i+=gap){
+        svg.append('line')
+            .attr('class', 'horizontal')
+            .attr('x1', 0)
+            .attr('x2', width)
+            .attr('y1', i)
+            .attr('y2', i)
+            .attr('fill', 'none')
+            .attr('shape-rendering', 'crispEdges')
+            .attr('stroke', '#eee')
+            .attr('stroke-width', '1px');
+        svg.append('line')
+            .attr('class', 'vertical')
+            .attr('x1', i)
+            .attr('x2', i)
+            .attr('y1', 0)
+            .attr('y2', height)
+            .attr('fill', 'none')
+            .attr('shape-rendering', 'crispEdges')
+            .attr('stroke', '#eee')
+            .attr('stroke-width', '1px');
+    }
+
 }
