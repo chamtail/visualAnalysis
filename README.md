@@ -4,7 +4,7 @@
 数据流可视化分析平台
 
 #### Software Architecture
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1113/095621_ebe072a9_2141312.jpeg "实验室时间序列可视化分析平台.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1121/224151_e476a838_2141312.png "屏幕快照 2018-11-21 22.40.31.png")
 
 #### Installation
 
