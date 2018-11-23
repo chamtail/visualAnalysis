@@ -1,0 +1,8 @@
+{
+  "data-upload": "enable",
+  "data-load": "enable",
+  "prehandle": "enable",
+  "stl": "enable",
+  "data-save": "enable",
+  "model-save": "enable"
+}

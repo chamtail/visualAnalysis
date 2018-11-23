@@ -82,6 +82,7 @@ var nodes_category = {
     }
 };
 
+
 // 节点配置
 var node_config = {
     "data-upload": {
@@ -89,7 +90,7 @@ var node_config = {
             "zh": "上传数据",
             "en": "upload data",
         },
-        "attr": [
+        "params": [
             {
                 "name": "path",
                 "label": {
@@ -141,7 +142,7 @@ var node_config = {
             "zh": "导入数据",
             "en": "import data",
         },
-        "attr": [
+        "params": [
             {
                 "name": "data_set",
                 "label": {
@@ -194,7 +195,7 @@ var node_config = {
             "zh": "标准化",
             "en": "normalization",
         },
-        "attr": [
+        "params": [
             {
                 "name": "strategy",
                 "label": {
@@ -237,7 +238,7 @@ var node_config = {
             "zh": "异常检测",
             "en": "outlier detection",
         },
-        "attr": [
+        "params": [
             {
                 "name": "maxanoms",
                 "label": {
@@ -290,7 +291,7 @@ var node_config = {
             "zh": "导出数据",
             "en": "export data",
         },
-        "attr": [
+        "params": [
             {
                 "name": "data_path",
                 "label": {
@@ -332,7 +333,7 @@ var node_config = {
             "zh": "导出模型",
             "en": "export model",
         },
-        "attr": [
+        "params": [
             {
                 "name": "model_path",
                 "label": {
@@ -374,7 +375,7 @@ var node_config = {
 // 算法参数列表
 var node_params = {
     "data-load":['data_set', 'read_number'],
-    'data-upload':['path'],
+    'data-upload':['path', 'name'],
     'prehandle':['strategy'],
     'stl':['maxanoms', 'day'],
     'data-save':['data_path'],
@@ -382,8 +383,9 @@ var node_params = {
 };
 
 // API列表
-var IP = 'localhost'//'10.131.247.51';
-var host_url = 'http://'+IP+':8889';
+var IP = 'localhost'; //'10.131.247.51';
+var port = 8889;
+var host_url = 'http://' + IP + ':' + port;
 var api_map={
     'workflow_init': host_url + '/workflow/init',
     'workflow_run': host_url + '/workflow/runAll',
@@ -392,6 +394,7 @@ var api_map={
     'node_stop': host_url + '/workflow/stopOne',
     'get_data': host_url + '/workflow/getData',
     'upload': host_url + '/file/upload',
+    'webSocket': 'ws://'+IP+':8889/webSocket',
 };
 
 // 节点状态映射
@@ -403,5 +406,3 @@ var nodeStatusMap = {
     5: 'active',
     6: 'deactivate'
 };
-
-var webSocketHost = 'ws://'+IP+':8889/webSocket';

@@ -1,0 +1,60 @@
+{
+  "display": {
+    "zh": "导入数据",
+    "en": "import data"
+  },
+  "in": 0,
+  "out": 1,
+  "params": [
+    {
+      "name": "data_set",
+      "label": {
+        "zh": "数据集",
+        "en": "data set"
+      },
+      "type": "list",
+      "list": [
+        "ECG",
+        "TEK"
+      ],
+      "default": 0,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "read_number",
+      "label": {
+        "zh": "读入数量",
+        "en": "read number"
+      },
+      "type": "number",
+      "default": 0,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 0,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "",
+  "category": "input"
+}
