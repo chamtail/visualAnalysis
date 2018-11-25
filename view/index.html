@@ -198,9 +198,10 @@
                     </div>
                 </div>
                 <div id="chart">
-                     <div id="abnormalChart" style="height: 100%"></div>
+                     <!--<div id="abnormalChart" style="height: 100%"></div>-->
+                     <div id="cluster" style="height: 200px;"></div>
                 </div>
-
+                </div>
             </div>
             <div id="command" class="command" style="position: absolute; width: 100%; height: 10%; top:90%;">
                 <div class="btn-toolbar justify-content-between" role="toolbar" style="float: right; margin: 5px">
@@ -324,6 +325,8 @@
 <script src="../public/custom/index/index.js"></script>
 <script src="../public/custom/charts/charts.js"></script>
 <script src="../public/custom/websocket/websocket.js"></script>
+<script src="../public/custom/charts/cluster.js"></script>
+
 <script>
     // 说明：获取鼠标位置
     // 整理：http://www.codebit.cn
@@ -623,6 +626,7 @@
 
     var id = 1;
     function debug() {
+        showCluster();
         vm.runNode(vm.node.id);
         // 修改语言
         //changLang();
@@ -645,7 +649,7 @@
 //            }
 //        });
         // 画图事件
-        //showGraph();
+        // showGraph();
     }
 
     // 显示节点细节
