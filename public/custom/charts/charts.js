@@ -28,8 +28,8 @@ function generateData(count) {
     }
 
     return {
-        categoryData: categoryData,
-        valueData: valueData
+        label0: categoryData,
+        label1: valueData
     };
 }
 
@@ -181,18 +181,13 @@ function abnormalVisual(abnomalData) {
 }
 
 
-function showGraph() {
-    var chartDom = document.getElementById('sample');
+function showGraph(data) {
+    var chartDom = document.getElementById('data-load');
     var myChart = echarts.getInstanceByDom(chartDom) || echarts.init(chartDom);
     myChart.showLoading();
-    var dataCount = 100;
-    var data = generateData(dataCount);
-
+    data = data || generateData(100);
+    console.log(data);
     var option = {
-        title: {
-            text: echarts.format.addCommas(dataCount) + ' Data',
-            left: 10
-        },
         toolbox: {
             feature: {
                 dataZoom: {
@@ -218,7 +213,7 @@ function showGraph() {
             type: 'slider'
         }],
         xAxis: {
-            data: data.categoryData,
+            data: data.label0,
             silent: false,
             splitLine: {
                 show: false
@@ -234,7 +229,7 @@ function showGraph() {
         },
         series: [{
             type: 'bar',
-            data: data.valueData,
+            data: data.label1,
             // Set `large` for large data amount
             large: true
         }]

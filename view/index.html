@@ -200,8 +200,9 @@
                     </div>
                 </div>
                 <div id="chart">
-                    <div id="abnormalChart" style="height: 100%;"></div>
-                    <div id="cluster" style="height: 200px;"></div>
+                    <div class="visual-chart" id="data-load"></div>
+                    <div class="visual-chart" id="abnormalChart"></div>
+                    <div class="visual-chart" id="cluster"></div>
                 </div>
             </div>
 
@@ -562,9 +563,10 @@
                     contentType: 'application/json',
                     success: function (res) {
                         if (res.code == 0) {
-                            console.log(res);
+                            return true;
                         } else {
                             alert(res.msg);
+                            return false;
                         }
                     }
                 });
@@ -628,9 +630,7 @@
 
     var id = 1;
     function debug() {
-        showCluster();
-        abnormalVisual(null);
-        // vm.runNode(vm.node.id);
+//         vm.runNode(vm.node.id);
         // 修改语言
         //changLang();
 //        var request = {
@@ -660,7 +660,7 @@
         // 重制
         reset();
         var node = $('#' + id);
-        node.attr('class', 'node active');
+        node.addClass('active');
         var nodeType = node.attr("data-template-name");
         vm.node.id = id;
         vm.node.name = node_config[nodeType]['display'][vm.lang];
@@ -688,7 +688,7 @@
                 success: function (res) {
                     if (res.code == 0) {
                         console.log(res);
-                        abnormalVisual(res.data.result);
+                        visualize(res.data);
                     } else {
                         alert(res.msg);
                     }
@@ -737,6 +737,18 @@
 
     // 运行节点
     function onNodeRun(id) {
+        var node = $('#' + id);
+        var status = node.attr('status');
+        if(status == 2 || status == 4 || status == 6 ){
+            alert('状态不正确');
+            return;
+        }
+        if(status == 3){
+
+        }
+        if(vm.runNode(id)){
+
+        }
         $('#' + id + ' .run')
                 .attr('onclick', 'onNodePause(' + id + ')')
                 .attr('fill', '#ff7f0e !important')
@@ -834,5 +846,28 @@
             to: "-1"
         };
         vm.uploadFile = false;
+    }
+
+    // 可视化
+    function visualize(data) {
+        var op = data.op;
+        switch (op){
+            case "data-upload":
+                console.log("data-upload");
+                showGraph(data.result);
+                break;
+            case "data-load":
+                console.log("data-load");
+                showGraph(data.result);
+                break;
+            case "prehandle":
+                console.log("prehandle");
+                showGraph(data.result);
+                break;
+            case "stl":
+                console.log("stl");
+                abnormalVisual(data.result);
+                break;
+        }
     }
 </script>

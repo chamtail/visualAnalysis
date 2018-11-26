@@ -1115,3 +1115,7 @@ i.red-ui-tab-icon {
     width: auto;
     padding: 0 5px
 }
+
+.visual-chart{
+    height: 100%;
+}
