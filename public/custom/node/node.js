@@ -315,7 +315,7 @@ function addNode(svg, node) {
 
 // 给节点注入属性
 function nodeInject(node) {
-    var injectedNode = node_config[node.type]['attr'];
+    var injectedNode = node_config[node.type]['params'];
     for (var i=0, len=injectedNode.length; i<len; i++){
         var paramKey = injectedNode[i].name;
         node[paramKey] = injectedNode[i].default;

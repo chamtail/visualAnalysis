@@ -1,0 +1,32 @@
+{
+  "input": {
+    "display": {
+      "zh": "输入模块",
+      "en": "input module"
+    }
+  },
+  "process": {
+    "display": {
+      "zh": "处理模块",
+      "en": "process module"
+    }
+  },
+  "output": {
+    "display": {
+      "zh": "输出模块",
+      "en": "process module"
+    }
+  },
+  "pre-process":{
+    "display": {
+      "zh": "预处理模块",
+      "en": "pre-process module"
+    }
+  },
+  "outlier":{
+    "display": {
+      "zh": "异常处理模块",
+      "en": "outlier module"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "display": {
+    "zh": "上传数据",
+    "en": "upload data"
+  },
+  "in": 0,
+  "out": 1,
+  "params": [
+    {
+      "name": "path",
+      "label": {
+        "zh": "数据集文件",
+        "en": "data set file"
+      },
+      "type": "file",
+      "default": "",
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "name",
+      "label": {
+        "zh": "数据集名称",
+        "en": "data set name"
+      },
+      "type": "text",
+      "default": "",
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 0,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "",
+  "category": "input"
+}

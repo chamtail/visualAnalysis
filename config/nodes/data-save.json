@@ -1,0 +1,45 @@
+{
+  "display": {
+    "zh": "导出数据",
+    "en": "export data"
+  },
+  "in": 1,
+  "out": 0,
+  "params": [
+    {
+      "name": "data_path",
+      "label": {
+        "zh": "文件名称",
+        "en": "file name"
+      },
+      "type": "text",
+      "default": "",
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 0,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "",
+  "category": "output"
+}

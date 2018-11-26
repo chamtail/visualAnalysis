@@ -1,0 +1,46 @@
+{
+  "display": {
+    "zh": "标准化",
+    "en": "normalization"
+  },
+  "in": 1,
+  "out": 1,
+  "params": [
+    {
+      "name": "strategy",
+      "label": {
+        "zh": "类型",
+        "en": "strategy"
+      },
+      "type": "list",
+      "list": ["zscore", "minmaxscale"],
+      "default": "zscore",
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "",
+  "category": "process/pre-process"
+}

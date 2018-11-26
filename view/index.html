@@ -133,6 +133,7 @@
         </div>
         <!-- 工作空间 -->
         <div class="middle-wrapper" id="workspace">
+            <!-- 工作流 -->
             <div id="workflow" class="workflow" style="position: absolute; width: 100%; height: 45%; top:0;">
                 <div class="red-ui-tabs red-ui-tabs-add red-ui-tabs-scrollable" style="display: block;z-index: 0;">
                     <div class="red-ui-tabs-scroll-container">
@@ -186,6 +187,7 @@
                     </a>
                 </div>
             </div>
+            <!-- 可视化部分 -->
             <div id="visual" class="visual" style="position: absolute; width: 100%; height: 45%; top:45%;">
                 <div class="btn-toolbar justify-content-between" role="toolbar" style="float: right; margin: 5px">
                     <div class="btn-group btn-group-sm" role="group" aria-label="First group">
@@ -203,6 +205,8 @@
                 </div>
                 </div>
             </div>
+
+            <!-- 命令行部分 -->
             <div id="command" class="command" style="position: absolute; width: 100%; height: 10%; top:90%;">
                 <div class="btn-toolbar justify-content-between" role="toolbar" style="float: right; margin: 5px">
                     <div class="btn-group btn-group-sm" role="group" aria-label="First group">
@@ -318,7 +322,7 @@
 </body>
 </html>
 
-<script src="../config/config.js"></script>
+<script src="../config/config.min.js"></script>
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
@@ -665,6 +669,9 @@
         console.log('显示节点细节&显示节点可视化');
         // 如果该节点状态为已运行
         var status = node.attr('status');
+        if (status == 1){
+            //vm.runNode(vm.node.id);
+        }
         if (status == 3) {
             var flow = {};
             flow.verCode = workflow.verCode;
@@ -702,7 +709,7 @@
         var nodeType = node.attr("data-template-name");
         var attrs = [];
 
-        var attrInfo = node_config[nodeType]['attr'];
+        var attrInfo = node_config[nodeType]['params'];
         var currentParams = workflow.nodes[currentTab][id];
 
         var keyList = {};

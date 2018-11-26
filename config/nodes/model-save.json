@@ -1,0 +1,45 @@
+{
+  "display": {
+    "zh": "导出模型",
+    "en": "export model"
+  },
+  "in": 1,
+  "out": 0,
+  "params": [
+    {
+      "name": "model_path",
+      "label": {
+        "zh": "模型名称",
+        "en": "model name"
+      },
+      "type": "text",
+      "default": "",
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 0,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "",
+  "category": "output"
+}

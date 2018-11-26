@@ -1,0 +1,8 @@
+{
+  "1": "init_success",
+  "2": "init_error",
+  "3": "run_success",
+  "4": "run_error",
+  "5": "active",
+  "6": "deactivate"
+}

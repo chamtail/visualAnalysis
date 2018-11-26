@@ -4,7 +4,7 @@
 数据流可视化分析平台
 
 #### Software Architecture
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1121/224151_e476a838_2141312.png "屏幕快照 2018-11-21 22.40.31.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1123/100828_73209334_2141312.jpeg "实验室时间序列可视化分析平台.jpg")
 
 #### Installation
 
@@ -14,7 +14,7 @@
 
 #### 可视化部分开发指南
 1. 在如图代码区域加入一个div元素，并赋予其一个唯一的id。
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1113/164003_60a5b07a_2141312.png "屏幕快照 2018-11-13 16.37.54.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1121/224151_e476a838_2141312.png "屏幕快照 2018-11-21 22.40.31.png")
 2.可参照/public/custom/charts/charts.js内showGraph()函数自定义自己的函数。
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1113/164407_c7855f2e_2141312.png "屏幕快照 2018-11-13 16.42.22.png")
 
@@ -29,5 +29,8 @@
 3. 将分支代码与主代码合并：$git merge fql(分支名)
 4. 将代码push到主分支上：$git push origin master
 5. 合并完之后记得切换回自己到分支工作区再继续写哟～
+
+#### 节点配置说明
+详见[wiki](https://gitee.com/DSM_fudan/visualAnalysis/wikis/%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E?sort_id=1037802)。
 
 未完待续。。。
