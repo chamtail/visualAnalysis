@@ -20,14 +20,14 @@ function showCluster() {
     while (dom.firstChild) {
         dom.removeChild(dom.firstChild);
     }
-    $.get('../data/csvToJson.json', function (data) {
+    $.getJSON('../data/csvToJson.json', function (data) {
         var clusterNum = data.clusterNum;
         var seriesInfo = data.clusteredSeries;
         for (var i = 0; i < clusterNum; i++) {
             let container1 = document.createElement("div");
             container1.setAttribute('style', "height: 300px; width: 50%; display: inline-block");
             dom.appendChild(container1);
-            var myChart = echarts.init(container1);
+            var myChart = echarts.getInstanceByDom(container1) || echarts.init(container1);
             let option = null;
             var series = seriesInfo[i].map(function (items, j) {
                 var lineColor = j === 0 ? '#000000' : colors[i];
