@@ -322,7 +322,8 @@
 </body>
 </html>
 
-<script src="../config/config.min.js"></script>
+<!--<script src="../config/config.min.js"></script>-->
+<script src="../config/config.js"></script>
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
@@ -653,6 +654,7 @@
 //        });
         // 画图事件
         //showGraph();
+        visualize({'op':'cluster'});
     }
 
     // 显示节点细节
@@ -681,7 +683,7 @@
             var data = JSON.stringify(flow);
             console.log("可视化");
             $.ajax({
-                url: api_map.get_data + "?limit=100",
+                url: api_map.get_data + "?limit=0",
                 type: 'POST',
                 data: data,
                 contentType: 'application/json',
@@ -850,23 +852,25 @@
 
     // 可视化
     function visualize(data) {
+        $('.visual-chart').attr('style', 'display:none');
         var op = data.op;
         switch (op){
             case "data-upload":
-                console.log("data-upload");
-                showGraph(data.result);
-                break;
             case "data-load":
-                console.log("data-load");
-                showGraph(data.result);
-                break;
             case "prehandle":
-                console.log("prehandle");
+                console.log("data-load");
+                $('#data-load').attr('style', 'display:block');
                 showGraph(data.result);
                 break;
             case "stl":
                 console.log("stl");
+                $('#abnormalChart').attr('style', 'display:block');
                 abnormalVisual(data.result);
+                break;
+            default:
+                console.log('default');
+                $('#cluster').attr('style', 'display:block');
+                showCluster();
                 break;
         }
     }

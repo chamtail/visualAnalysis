@@ -1,49 +1,49 @@
 {
   "workflow_init": {
     "protocol": "http",
-    "host": "localhost",
+    "host": "10.131.247.51",
     "port": 8889,
     "api": "/workflow/init"
   },
   "workflow_run": {
     "protocol": "http",
-    "host": "localhost",
+    "host": "10.131.247.51",
     "port": 8889,
     "api": "/workflow/runAll"
   },
   "workflow_stop": {
     "protocol": "http",
-    "host": "localhost",
+    "host": "10.131.247.51",
     "port": 8889,
     "api": "/workflow/stopAll"
   },
   "node_run": {
     "protocol": "http",
-    "host": "localhost",
+    "host": "10.131.247.51",
     "port": 8889,
     "api": "/workflow/runOne"
   },
   "node_stop": {
     "protocol": "http",
-    "host": "localhost",
+    "host": "10.131.247.51",
     "port": 8889,
     "api": "/workflow/stopOne"
   },
   "get_data": {
     "protocol": "http",
-    "host": "localhost",
+    "host": "10.131.247.51",
     "port": 8889,
     "api": "/workflow/getData"
   },
   "upload": {
     "protocol": "http",
-    "host": "localhost",
+    "host": "10.131.247.51",
     "port": 8889,
     "api": "/file/upload"
   },
   "webSocket": {
     "protocol": "ws",
-    "host": "localhost",
+    "host": "10.131.247.51",
     "port": 8889,
     "api": "/webSocket"
   }
