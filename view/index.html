@@ -138,7 +138,8 @@
                 <div class="red-ui-tabs red-ui-tabs-add red-ui-tabs-scrollable" style="display: block;z-index: 0;">
                     <div class="red-ui-tabs-scroll-container">
                         <ul id="workspace-tabs" style="width: 100%;" class="">
-                            <li class="red-ui-tab ui-draggable active" id="red-ui-tab-fd9028d1-470fa8" style="width: 100%;">
+                            <li class="red-ui-tab ui-draggable active" id="red-ui-tab-fd9028d1-470fa8"
+                                style="width: 100%;">
                                 <a href="#" class="red-ui-tab-label" title="Flow 2">
                                     <span class="workspace-disabled-icon">
                                         <i class="fa fa-ban"></i>
@@ -182,7 +183,8 @@
                     </a>
                     <a class="workspace-footer-button" id="btn-zoom-in" href="#" style="display: inline-block;">
                         <i class="fa fa-plus"></i></a>
-                    <a class="workspace-footer-button-toggle single" id="btn-navigate" href="#" style="display: inline-block;">
+                    <a class="workspace-footer-button-toggle single" id="btn-navigate" href="#"
+                       style="display: inline-block;">
                         <i class="fa fa-map-o"></i>
                     </a>
                 </div>
@@ -233,6 +235,7 @@
         </div>
         <!-- 信息栏 -->
         <div class="right-wrapper" id="sidebar">
+            <div></div>
             <button type="button" class="btn btn-primary" onclick="debug()"></button>
             <div id="message"></div>
             <input id="text" type="text"/>
@@ -250,7 +253,8 @@
                 <div style="display: block;"></div>
                 <div style="display: none;">
                     <span class="button-group">
-                        <a id="debug-tab-open" class="sidebar-footer-button" href="#" data-i18n="[title]node-red:debug.sidebar.openWindow" title="open in new window">
+                        <a id="debug-tab-open" class="sidebar-footer-button" href="#"
+                           data-i18n="[title]node-red:debug.sidebar.openWindow" title="open in new window">
                             <i class="fa fa-desktop"></i>
                         </a>
                     </span>
@@ -432,109 +436,59 @@
             deploy: function () {
                 // 生成节点路由表
                 var routers = {};
-                for (var tabIndex in workflow.nodes) {
-                    for (var nodeId in workflow.nodes[tabIndex]) {
+                for (let tabIndex in workflow.nodes) {
+                    routers[tabIndex] = {};
+                    for (let nodeId in workflow.nodes[tabIndex]) {
                         var node_origin = workflow.nodes[tabIndex][nodeId];
                         var node_type = node_origin['type'];
                         var node_id = node_origin['id'];
-                        var node = {};
-                        node.pId = tabIndex;
-                        node.id = node_id;
-                        node.type = node_type;
+                        if(!routers[tabIndex][node_id]){
+                            routers[tabIndex][node_id] = {
+                                id: node_id,
+                                last: [],
+                                next: [],
+                                algorithm: node_type,
+                                paramsList: []
+                            }
+                        }
                         if (workflow.links[node_id] && workflow.links[node_id].length != 0) {
-                            node.linkTo = workflow.links[node_id];
-                        } else {
-                            node.linkTo = [-1];
+                            routers[tabIndex][node_id].next = workflow.links[node_id];
+                            for(let i=0; i<workflow.links[node_id].length; i++){
+                                let nId = workflow.links[node_id][i];
+                                if (!routers[tabIndex][nId]){
+                                    routers[tabIndex][nId] = {
+                                        id: nId,
+                                        last: [],
+                                        next: [],
+                                        algorithm: workflow.nodes[tabIndex][nId]['type'],
+                                        paramsList: []
+                                    };
+                                }
+                                if (routers[tabIndex][nId].last.indexOf(node_id) < 0){
+                                    routers[tabIndex][nId].last.push(node_id);
+                                }
+                            }
                         }
                         var algoParamsList = node_params[node_type];
-                        node.paramsList = [];
+                        routers[tabIndex][node_id].paramsList = [];
                         for (var i = 0, len = algoParamsList.length; i < len; i++) {
                             var param_name = algoParamsList[i];
-                            node.paramsList.push(node_origin[param_name]);
+                            routers[tabIndex][node_id].paramsList.push(node_origin[param_name]);
                         }
-                        routers[node_id] = node;
                     }
                 }
-
-                // Check 1: 检测当前节点路由表是否为空
-                var routersIsEmpty = (JSON.stringify(routers) == "{}");
-                if (routersIsEmpty) {
-                    console.log("无节点");
-                    return;
+                // 检查路由正确性
+                if(!this.checkRouters(routers[currentTab])){
+                    alert('error');
+                    return false;
                 }
-                // Check 2: 检测节点参数是否有误
-
-                // Check 3: 检测链表中是否存在异常
-
-                // 解析工作流，生成链表
-                var head = {};  // 记录每个tab上的头节点id
-                var link = {};  // 记录每个tab上的链表
-                var traveled = {};  // 记录每个tab上已访问的节点id
-                var last = -1;
-                for (var tab in routers) {
-                    console.log(routers[tab], routers[tab].linkTo);
-                    var pId = routers[tab].pId;  // 获取tab的id
-                    var id = routers[tab].id;  // 获取节点id
-                    if (!traveled[pId]) {
-                        traveled[pId] = {};
-                    }
-                    if (traveled[pId][id]) { //如果遍历过，跳过
-                        continue;
-                    }
-                    traveled[pId][id] = 1;  // 记录更新当前tab已访问的节点id
-
-                    head[pId] = id;  // 记录更新当前tab的头节点id
-                    var next = routers[tab].linkTo[0];  // 获取下一个节点的id
-                    if (!link[pId]) {  // 初始化tab下的链表
-                        link[pId] = {};
-                    }
-                    if (!link[pId][id]) {  // 初始化当前tab的链表
-                        link[pId][id] = {};
-                    }
-
-                    link[pId][id].id = id;
-                    link[pId][id].last = last;
-                    link[pId][id].next = routers[tab].linkTo[0];
-                    link[pId][id].algorithm = routers[tab].type;
-                    link[pId][id].paramsList = routers[tab].paramsList;
-
-                    last = id;  // 记录当前id
-                    while (next != -1 && !traveled[next]) {
-                        link[pId][next] = {};
-                        link[pId][next].id = next;
-                        link[pId][next].last = last;
-                        link[pId][next].next = routers[next].linkTo[0];
-                        link[pId][next].algorithm = routers[next].type;
-                        link[pId][next].paramsList = routers[next].paramsList;
-                        traveled[pId][next] = 1;
-
-                        last = next;  // 更新last
-                        next = routers[next].linkTo[0]; // 更新next变量
-                        traveled[pId][next] = 1;
-                    }
-                }
-
-                // 将节点路由信息转换为节点列表
-                var nodeList = {};
-                for (var tabId in head) {
-                    var nodeId = head[tabId];
-                    var node = link[tabId][nodeId];
-                    var nextId = node.next;
-                    nodeList[nodeId] = node;
-                    while (nextId != -1) {
-                        node = link[tabId][nextId];
-                        nodeList[nextId] = node;
-                        nextId = node.next;
-                    }
-                }
-
                 // 模型建立请求
                 var request = {};
                 request.verCode = workflow.verCode;
-                request.routers = nodeList;
-                this.routers = nodeList;  // 保存路由信息
+                request.routers = routers[currentTab];
+                this.routers = routers[currentTab];  // 保存路由信息
                 var data = JSON.stringify(request);
-
+                console.log(request);
                 // 发送工作流
                 $.ajax({
                     url: api_map.workflow_init,
@@ -552,6 +506,12 @@
                 });
             },
             runNode: function (nodeId) {
+                var router = {};
+                router[nodeId] = this.routers[nodeId];
+                if(!this.checkRouters(router) || !this.checkNodeStatus(router)){
+                    alert('error');
+                    return false;
+                }
                 var nodeRequest = {};
                 nodeRequest.verCode = workflow.verCode;
                 nodeRequest.routers = {};
@@ -567,13 +527,65 @@
                             return true;
                         } else {
                             alert(res.msg);
+                            //return false;
+                        }
+                    }
+                });
+                return true;
+            },
+            runWorkflow: function () {
+                if(!this.checkRouters(this.routers) || !this.checkNodeStatus(this.routers)){
+                    alert('error');
+                    return false;
+                }
+                var nodeRequest = {};
+                nodeRequest.verCode = workflow.verCode;
+                nodeRequest.routers = this.routers;
+                var data = JSON.stringify(nodeRequest);
+                $.ajax({
+                    url: api_map.workflow_run,
+                    type: 'POST',
+                    data: data,
+                    contentType: 'application/json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            return true;
+                        } else {
+                            alert(res.msg);
                             return false;
                         }
                     }
                 });
             },
-            runWorkflow: function () {
+            checkRouters: function (routers) {
+                console.log(JSON.stringify(routers));
+                // Check 1: 检测当前节点路由表是否为空
+                var routersIsEmpty = (JSON.stringify(routers) == "{}" || JSON.stringify(routers) == undefined);
+                if (routersIsEmpty) {
+                    console.log("无节点");
+                    return false;
+                }
 
+                // Check 2: 检测节点参数是否有误
+
+                // Check 3: 检测链表中是否存在异常
+
+                return true;
+            },
+            checkNodeStatus: function (routers) {
+                // Check 4: 检测节点状态是否满足要求
+                for(let nodeId in routers){
+                    var node = $('#' + nodeId);
+                    var status = node.attr('status');
+                    if (status == 2 || status == 4 || status == 6) {
+                        alert('状态不正确');
+                        return false;
+                    }
+                    if (status == 3) {
+                        console.log('run again');
+                    }
+                }
+                return true;
             },
             saveNodeConfig: function () {
                 $('#nodeParamsModal').modal('hide');
@@ -629,32 +641,10 @@
         }
     });
 
-    var id = 1;
     function debug() {
-//         vm.runNode(vm.node.id);
         // 修改语言
         //changLang();
-//        var request = {
-//            type: 'data-load',
-//            path: "/Users/Jeremy/Desktop/grammarviz3_jar/data/TEK14.txt",  // 改成本地的一个文件
-//            limit: 100
-//        };
-//        $.ajax({
-//            url: "http://localhost:8889/workflow/getData",
-//            type: 'POST',
-//            data: request,
-//            contentType: 'application/x-www-form-urlencoded',
-//            success: function (res) {
-//                if (res.code == 0) {
-//                    console.log(res);
-//                } else {
-//                    alert(res.msg);
-//                }
-//            }
-//        });
-        // 画图事件
-        //showGraph();
-        visualize({'op':'cluster'});
+        visualize({'op': 'cluster'});
     }
 
     // 显示节点细节
@@ -670,9 +660,7 @@
         console.log('显示节点细节&显示节点可视化');
         // 如果该节点状态为已运行
         var status = node.attr('status');
-        if (status == 1){
-            //vm.runNode(vm.node.id);
-        }
+
         if (status == 3) {
             var flow = {};
             flow.verCode = workflow.verCode;
@@ -739,22 +727,7 @@
 
     // 运行节点
     function onNodeRun(id) {
-        var node = $('#' + id);
-        var status = node.attr('status');
-        if(status == 2 || status == 4 || status == 6 ){
-            alert('状态不正确');
-            return;
-        }
-        if(status == 3){
-
-        }
-        if(vm.runNode(id)){
-
-        }
-        $('#' + id + ' .run')
-                .attr('onclick', 'onNodePause(' + id + ')')
-                .attr('fill', '#ff7f0e !important')
-                .text('\uf04c');
+        vm.runNode(id);
     }
 
     // 暂停节点
@@ -848,13 +821,19 @@
             to: "-1"
         };
         vm.uploadFile = false;
+
+        // 重设各节点状态
+        for(let nodeId in workflow.nodes[currentTab]){
+            d3.selectAll('g[id="' + nodeId + '"]')
+                    .attr('class', 'node ' + nodeStatusMap[workflow.nodes[currentTab][nodeId].status]);
+        }
     }
 
     // 可视化
     function visualize(data) {
         $('.visual-chart').attr('style', 'display:none');
         var op = data.op;
-        switch (op){
+        switch (op) {
             case "data-upload":
             case "data-load":
             case "prehandle":

@@ -3,6 +3,7 @@
  */
 let lockReconnect = false;  //避免ws重复连接
 let wsUrl = api_map['webSocket'];
+console.log(wsUrl);
 let ws = null;  // 判断当前浏览器是否支持WebSocket
 createWebSocket(wsUrl); //连接ws
 
