@@ -577,12 +577,53 @@ i.red-ui-tab-icon {
 .workflow .node.run_error rect{
     fill: #ffff00;
 }
+.workflow .node.running rect{
+    fill: #fff;
+}
+
+.workflow .node.running rect:before,.workflow .node.running rect:after{
+    content: " ";
+    display: block;
+    position: absolute;
+    width:220px;
+    height:220px;
+    top: -10px;
+    left: -10px;
+    border:2px solid #00FF00;
+    z-index:1000;
+    box-sizing: border-box;
+    -webkit-animation: clipAni 4s infinite linear;
+}
+.workflow .node.running rect:before{
+    -webkit-animation-delay: -2s;
+}
+@keyframes  clipAni{
+    0%,100%{
+        clip:rect(0px,220px,220px,217px);
+    }
+    25%{
+        clip:rect(0px,220px,3px,0px);
+    }
+    50%{
+        clip:rect(0px,3px,220px,0px);
+    }
+    75%{
+        clip:rect(217px,220px,220px,0px);
+    }
+}
 .workflow .node .run{
     cursor: pointer;
     fill: #1aad19 !important;
 }
 .workflow .node .run:hover{
     font-size: 15px;
+}
+.workflow .node.init_error .run,
+.workflow .node.deactivate .run{
+    fill: #999 !important;
+}
+.workflow .node.running .run{
+    fill: #f00 !important;
 }
 .separator{
     position: absolute;

@@ -399,10 +399,11 @@ var api_map={
 
 // 节点状态映射
 var nodeStatusMap = {
-    1: 'init_success',
-    2: 'init_error',
-    3: 'run_success',
-    4: 'run_error',
-    5: 'active',
-    6: 'deactivate'
+    "1": "init_success",
+    "2": "init_error",
+    "3": "running",
+    "4": "run_success",
+    "5": "run_error",
+    "6": "active",
+    "7": "deactivate"
 };

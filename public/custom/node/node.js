@@ -154,7 +154,7 @@ function addNode(svg, node) {
         .attr('text-anchor', 'middle')
         .attr('font-family', 'FontAwesome')
         .attr('fill', '#1aad19 !important')
-        .attr('onclick', 'onNodeRun(' + node.id + ')')
+        .attr('onclick', 'runNode(' + node.id + ')')
         .text('\uf04b');
 
     // input circle
@@ -257,11 +257,17 @@ function nodeInject(node) {
 function updateNodeStatus(status) {
     for (let nodeId in status) {
         let s = $('#' + nodeId).attr('status');
-        if (s != 3) {
+        if (s != 4) {
+            if(!nodeStatusMap[status[nodeId]]){
+                status[nodeId] = 5;
+            }
             d3.selectAll('g[id="' + nodeId + '"]')
                 .attr('class', 'node ' + nodeStatusMap[status[nodeId]])
                 .attr('status', status[nodeId]);
             workflow.nodes[currentTab][nodeId].status = status[nodeId];
+        }
+        if (s == 3){
+            vm.onNodeRun(nodeId);
         }
     }
 }

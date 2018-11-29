@@ -502,6 +502,9 @@
                         } else {
                             alert(res.msg);
                         }
+                    },
+                    error: function (res) {
+                        alert('用户信息已失效，请重新登录！');
                     }
                 });
             },
@@ -512,6 +515,9 @@
                     alert('error');
                     return false;
                 }
+
+                this.onNodeRun(nodeId);
+
                 var nodeRequest = {};
                 nodeRequest.verCode = workflow.verCode;
                 nodeRequest.routers = {};
@@ -524,14 +530,15 @@
                     contentType: 'application/json',
                     success: function (res) {
                         if (res.code == 0) {
-                            return true;
                         } else {
                             alert(res.msg);
-                            //return false;
+                            let nodeStatus = {};
+                            nodeStatus[nodeId] = res.code;
+                            updateNodeStatus(nodeStatus);
+                            vm.onNodeReRun(nodeId);
                         }
                     }
                 });
-                return true;
             },
             runWorkflow: function () {
                 if(!this.checkRouters(this.routers) || !this.checkNodeStatus(this.routers)){
@@ -577,11 +584,11 @@
                 for(let nodeId in routers){
                     var node = $('#' + nodeId);
                     var status = node.attr('status');
-                    if (status == 2 || status == 4 || status == 6) {
+                    if (status == 3 || status == 5 || status == 7) {
                         alert('状态不正确');
                         return false;
                     }
-                    if (status == 3) {
+                    if (status == 4) {
                         console.log('run again');
                     }
                 }
@@ -603,6 +610,8 @@
                         console.log("error");
                         return;
                     }
+
+                    vm.onNodeRun(nodeId);
 
                     var flow = {};
                     flow.verCode = workflow.verCode;
@@ -637,6 +646,24 @@
             deleteNode: function () {
                 onNodeDelete(vm.node.id);
                 $('#nodeParamsModal').modal('hide');
+            },
+            onNodeRun: function (id) {
+                $('#' + id + ' .run')
+                        .attr('onclick', 'stopNode(' + id + ')')
+                        .attr('fill', '#1aad19 !important')
+                        .text('\uf04d');
+            },
+            onNodeStop: function (id) {
+                $('#' + id + ' .run')
+                        .attr('onclick', 'runNode(' + id + ')')
+                        .attr('fill', '#1aad19 !important')
+                        .text('\uf04b');
+            },
+            onNodeReRun: function (id) {
+                $('#' + id + ' .run')
+                        .attr('onclick', 'runNode(' + id + ')')
+                        .attr('fill', '#1aad19 !important')
+                        .text('\uf021');
             }
         }
     });
@@ -644,7 +671,11 @@
     function debug() {
         // 修改语言
         //changLang();
-        visualize({'op': 'cluster'});
+
+        // 加载默认工作流
+        loadWorkflow();
+
+        //visualize({'op': 'cluster'});
     }
 
     // 显示节点细节
@@ -661,7 +692,7 @@
         // 如果该节点状态为已运行
         var status = node.attr('status');
 
-        if (status == 3) {
+        if (status == 4) {
             var flow = {};
             flow.verCode = workflow.verCode;
             flow.routers = {};
@@ -726,16 +757,13 @@
     }
 
     // 运行节点
-    function onNodeRun(id) {
+    function runNode(id) {
         vm.runNode(id);
     }
 
     // 暂停节点
-    function onNodePause(id) {
-        $('#' + id + ' .run')
-                .attr('onclick', 'onNodeRun(' + id + ')')
-                .attr('fill', '#1aad19 !important')
-                .text('\uf04b');
+    function stopNode(id) {
+        vm.stopNode(id);
     }
 
     // 删除节点
