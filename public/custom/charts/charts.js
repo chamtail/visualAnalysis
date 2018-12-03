@@ -180,6 +180,149 @@ function abnormalVisual(abnomalData) {
     myChart.setOption(option);
 }
 
+function motifVisual(motifData)
+{
+
+    var myChart = echarts.init(document.getElementById('motifChart'));
+    xdata = motifData.timestamp;
+    ydata = motifData.value;
+    motifLabel = motifData.motifLabel;
+
+    var motifArea = new Array();
+    var piecesData = new Array();
+
+    /*--------处理异常区域显示数据，区域标记红色--------*/
+    for(var i in motifLabel)
+    {
+        var area = new Array();
+
+        for(var j in motifLabel[i])
+        {
+            var point = new Object();
+            point.xAxis = xdata[motifLabel[i][j]];
+            area.push(point);
+        }
+        motifArea.push(area);
+    }
+    //console.log("abnormalArea:",abnormalArea);
+
+
+    /*--------处理异常区域显示数据，线段标记红色--------*/
+    var st=0;
+    for(var i in motifLabel)
+    {
+
+        var normalPiece = new Object();
+        var abnormalPiece = new Object();
+
+        normalPiece.gt = st;
+        normalPiece.lte = motifLabel[i][0];
+        normalPiece.color = 'green';
+
+        abnormalPiece.gt = motifLabel[i][0];
+        abnormalPiece.lte = motifLabel[i][1];
+        abnormalPiece.color = 'red';
+
+        piecesData.push(normalPiece);
+        piecesData.push(abnormalPiece);
+
+        st = motifLabel[i][1];
+    }
+    var endPiece = new Object();
+    endPiece.gt = st;
+    endPiece.lte = xdata.length;
+    endPiece.color = 'green';
+    piecesData.push(endPiece);
+
+
+    /*---------设置图标显示的牌配置项------------*/
+    option = {
+        title: {
+            text: '异常检测结果显示'
+            // subtext: '纯属虚构'
+        },
+        animation: false,
+        tooltip: {
+            trigger: 'axis',  //坐标轴触发提示
+            // formatter: function (params) {
+            //     // return 'X: ' + params.data[0].toFixed(2) + '<br>Y: ' + params.data[1].toFixed(2);
+            //     console.log('tooltip:',params);
+            // }
+
+        },
+        toolbox: {
+            right:0,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: false
+                },
+                brush: {
+                    type: ['lineX', 'clear']
+                },
+                saveAsImage: {}
+            }
+        },
+        brush: {
+            xAxisIndex: 'all',
+            brushLink: 'all',
+            outOfBrush: {
+                colorAlpha: 0.1
+            }
+        },
+
+        dataZoom : [
+            {
+                type:'slider',
+                start:0,
+                end:100
+            },{
+                type:'inside',  //鼠标缩放
+                start:0,
+                end:100
+            }
+        ],
+        xAxis:  {
+            type: 'category',
+            boundaryGap: false,  //坐标轴两端是否留白
+            data: xdata
+        },
+        yAxis: {
+            type: 'value',
+        },
+        visualMap: {
+            show: false,
+            dimension: 0,
+            pieces:piecesData
+        },
+        series: [
+            {
+                large:true, //测试开启后显示大数据时间上有没有优化
+                type: 'line',
+                smooth: true,
+                symbol: 'none',
+                itemStyle: {
+                    normal: {
+                        color: "green"
+                    }
+                },
+                data: ydata,
+                markArea: {
+                    itemStyle: {
+                        normal: {
+                            color: "pink"
+                        }
+                    },
+                    data: motifArea
+
+                }
+            }
+        ]
+    };
+
+
+    myChart.setOption(option);
+}
+
 
 function showGraph(data) {
     var chartDom = document.getElementById('data-load');
