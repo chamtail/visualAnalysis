@@ -182,7 +182,6 @@ function abnormalVisual(abnomalData) {
 
 function motifVisual(motifData)
 {
-
     var myChart = echarts.init(document.getElementById('motifChart'));
     xdata = motifData.timestamp;
     ydata = motifData.value;
