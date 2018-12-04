@@ -35,7 +35,7 @@ function init() {
         stop: function (e, ui) {
             let node = {
                 id: new Date().getTime(),
-                status: 6,
+                status: 7,
                 type: ui.helper.attr('data-template-name'),
                 x: ui.position.left - 180,
                 y: ui.position.top - 50,
@@ -111,7 +111,7 @@ function addNode(svg, node) {
     let g = svg.append('g')
         .attr('class', 'node deactivate')
         .attr('data-template-name', node.type)
-        .attr('status', 6)
+        .attr('status', 7)
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
         .attr('onclick', 'onNodeDetail(' + node.id + ')')
