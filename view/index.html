@@ -235,12 +235,96 @@
         </div>
         <!-- 信息栏 -->
         <div class="right-wrapper" id="sidebar">
-            <div></div>
-            <button type="button" class="btn btn-primary" onclick="debug()"></button>
-            <div id="message"></div>
-            <input id="text" type="text"/>
-            <button onclick="send()">Send</button>
-            <button onclick="closeWebSocket()">Close</button>
+            <!--<button type="button" class="btn btn-primary" onclick="debug()"></button>-->
+            <!--<input id="text" type="text"/>-->
+            <!--<button onclick="send()">Send</button>-->
+            <!--<button onclick="closeWebSocket()">Close</button>-->
+            <div class="red-ui-tabs red-ui-tabs-collapsible">
+                <div>
+                    <ul id="sidebar-tabs">
+                        <li class="red-ui-tab red-ui-tab-pinned active" id="red-ui-tab-info" style="width: 100px;">
+                            <a href="#info" class="red-ui-tab-label" title="info">
+                                <i class="red-ui-tab-icon fa fa-info"></i>
+                                <span class="bidiAware" dir="">info</span>
+                            </a>
+                        </li>
+                        <li class="red-ui-tab red-ui-tab-pinned" id="red-ui-tab-status" style="width: 100px;">
+                            <a href="#status" class="red-ui-tab-label" title="status">
+                                <i class="red-ui-tab-icon fa fa-cog"></i>
+                                <span class="bidiAware" dir="">status</span>
+                            </a>
+                        </li>
+                        <li class="red-ui-tab red-ui-tab-pinned" id="red-ui-tab-variable-space" style="width: 100px;">
+                            <a href="#variable-space" class="red-ui-tab-label" title="variable-space">
+                                <i class="red-ui-tab-icon fa fa-database"></i>
+                                <span class="bidiAware" dir="">variable-space</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="red-ui-tab-link-buttons">
+                    <a href="javascript:void(0);"
+                       class="red-ui-tab-link-button red-ui-tab-link-button-pinned active selected"
+                       id="red-ui-tab-info-link-button" @click="changeTab('info')">
+                        <i class="fa fa-info"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="red-ui-tab-link-button" id="red-ui-tab-status-link-button"
+                       style="display: inline-block;" @click="changeTab('status')">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="red-ui-tab-link-button red-ui-tab-link-button-pinned"
+                       id="red-ui-tab-variable-space-link-button" @click="changeTab('variable-space')">
+                        <i class="fa fa-database"></i>
+                    </a>
+                </div>
+            </div>
+            <div id="sidebar-content">
+                <div id="message"></div>
+                <div style="height: 100%; display: block;">
+
+                </div>
+                <div style="height: 100%; display: none;">
+
+                </div>
+                <div style="height: 100%; display: none;">
+                    <div class="sidebar-node-variable-space">
+                        <div id="accordion">
+                            <template v-for="(flow, index) in variableSpace">
+                                <div class="card">
+                                    <div class="node-header" :id="'node-header-'+flow.id" data-toggle="collapse" :data-target="'#variable-space-flow-'+flow.id"
+                                         aria-expanded="true" :aria-controls="'variable-space-flow-'+flow.id">
+                                        <i class="fa fa-angle-down"></i>
+                                        <span :class="'flow-'+flow.id">{{flow.label}}</span>
+                                    </div>
+
+                                    <div :id="'variable-space-flow-'+flow.id" class="collapse show" :aria-labelledby="'node-header-'+flow.id" data-parent="#accordion">
+                                        <div style="position: relative; display: block;">
+                                            <table class="node-info">
+                                                <thead>
+                                                    <tr>
+                                                        <td>id</td>
+                                                        <td>name</td>
+                                                        <td>size</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                <template v-for="(node, index) in flow.nodes">
+                                                    <tr class="node-info-node-row">
+                                                        <td>{{node.id}}</td>
+                                                        <td>{{node.name}}</td>
+                                                        <td>{{node.size}}</td>
+                                                    </tr>
+                                                </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="sidebar-footer">
                 <div style="display: none;">
                     <a class="sidebar-footer-button" id="workspace-config-node-collapse-all" href="#">
@@ -260,6 +344,7 @@
                     </span>
                 </div>
             </div>
+            <div id="sidebar-shade" class="hide"></div>
         </div>
         <div id="sidebar-separator" class="ui-draggable"></div>
     </div>
@@ -275,8 +360,8 @@
                 </div>
                 <div class="modal-body">
                     <form method="post" id="main-form">
-                        <template v-if="node.attrs.length != 0">
-                            <template v-for="(model, index) in node.attrs">
+                        <template v-if="node.params.length != 0">
+                            <template v-for="(model, index) in node.params">
                                 <div class="form-group">
                                     <label :for="model.name" class="col-sm-3">{{model.label[lang]}}</label>
                                     <template v-if="model.type == 'list'">
@@ -361,11 +446,12 @@
         data: {
             init_finish: false,
             nodes: {},
+            variableSpace: {},
             node: {
                 id: "-1",
                 name: "",
                 type: "",
-                attrs: []
+                params: []
             },
             path: {
                 id: "",
@@ -424,6 +510,37 @@
             $(function () {
                 separator();
             });
+
+            // 配置事件
+            $(function () {
+                var modal = $('#nodeParamsModal');
+                modal.on('show.bs.modal', function (e) {
+                    // do something...
+                    reset();
+                });
+                modal.on('hidden.bs.modal', function (e) {
+                    // do something...
+                    reset();
+                });
+                var collapse = $("#node-header-fd9028d1-470fa8");
+                collapse.on('show.bs.collapse', function () {
+                    // do something…
+                    $('#sidebar-content .node-header > i').addClass("expanded");
+                });
+                collapse.on('hide.bs.collapse', function () {
+                    // do something…
+                    $('#sidebar-content .node-header > i').removeClass("expanded");
+                });
+            });
+            $(function () {
+                uiTab({
+                    id: "sidebar-tabs", onchange: function (e) {
+                        $("#sidebar-content").children().hide(), $("#sidebar-footer").children().hide(), e.onchange && e.onchange.call(e), $(e.wrapper).show(), e.toolbar && $(e.toolbar).show()
+                    }, onremove: function (e) {
+                        $(e.wrapper).hide(), e.onremove && e.onremove.call(e)
+                    }, collapsible: !0
+                });
+            });
         },
         updated: function () {
             // 初始化node拖拽
@@ -442,7 +559,7 @@
                         var node_origin = workflow.nodes[tabIndex][nodeId];
                         var node_type = node_origin['type'];
                         var node_id = node_origin['id'];
-                        if(!routers[tabIndex][node_id]){
+                        if (!routers[tabIndex][node_id]) {
                             routers[tabIndex][node_id] = {
                                 id: node_id,
                                 last: [],
@@ -453,9 +570,9 @@
                         }
                         if (workflow.links[node_id] && workflow.links[node_id].length != 0) {
                             routers[tabIndex][node_id].next = workflow.links[node_id];
-                            for(let i=0; i<workflow.links[node_id].length; i++){
+                            for (let i = 0; i < workflow.links[node_id].length; i++) {
                                 let nId = workflow.links[node_id][i];
-                                if (!routers[tabIndex][nId]){
+                                if (!routers[tabIndex][nId]) {
                                     routers[tabIndex][nId] = {
                                         id: nId,
                                         last: [],
@@ -464,7 +581,7 @@
                                         paramsList: []
                                     };
                                 }
-                                if (routers[tabIndex][nId].last.indexOf(node_id) < 0){
+                                if (routers[tabIndex][nId].last.indexOf(node_id) < 0) {
                                     routers[tabIndex][nId].last.push(node_id);
                                 }
                             }
@@ -478,7 +595,7 @@
                     }
                 }
                 // 检查路由正确性
-                if(!this.checkRouters(routers[currentTab])){
+                if (!this.checkRouters(routers[currentTab])) {
                     alert('error');
                     return false;
                 }
@@ -511,7 +628,7 @@
             runNode: function (nodeId) {
                 var router = {};
                 router[nodeId] = this.routers[nodeId];
-                if(!this.checkRouters(router) || !this.checkNodeStatus(router)){
+                if (!this.checkRouters(router) || !this.checkNodeStatus(router)) {
                     alert('error');
                     return false;
                 }
@@ -541,7 +658,7 @@
                 });
             },
             runWorkflow: function () {
-                if(!this.checkRouters(this.routers) || !this.checkNodeStatus(this.routers)){
+                if (!this.checkRouters(this.routers) || !this.checkNodeStatus(this.routers)) {
                     alert('error');
                     return false;
                 }
@@ -581,7 +698,7 @@
             },
             checkNodeStatus: function (routers) {
                 // Check 4: 检测节点状态是否满足要求
-                for(let nodeId in routers){
+                for (let nodeId in routers) {
                     var node = $('#' + nodeId);
                     var status = node.attr('status');
                     if (status == 3 || status == 5 || status == 7) {
@@ -640,7 +757,6 @@
                             }
                         }
                     });
-
                 }
             },
             deleteNode: function () {
@@ -664,6 +780,31 @@
                         .attr('onclick', 'runNode(' + id + ')')
                         .attr('fill', '#1aad19 !important')
                         .text('\uf021');
+            },
+            changeTab: function (tab) {
+                console.log(tab);
+
+                $('.red-ui-tab-link-buttons a').removeClass('active selected');
+                $('#sidebar-content > div').css({display: 'none'});
+                $('#sidebar-tabs li').removeClass('active');
+                var div = $('.sidebar-node-' + tab);
+                var divs = $('')
+                div.parent().css({display: 'block'});
+
+                $('#red-ui-tab-' + tab + '-link-button').addClass('active selected');
+                $('#sidebar-tabs #red-ui-tab-' + tab).addClass('active');
+            },
+            debug: function () {
+                $.ajaxSettings.async = false;  // 同步执行
+                var vs = {};
+                $.getJSON("../config/variableSpace.json", function (data) {
+                    $.each(data, function (flow, variable) {
+                        vs[flow] = variable;
+                    });
+                });
+                vm.variableSpace = vs;
+                console.log(JSON.stringify(vm.variableSpace));
+                $.ajaxSettings.async = true;  // 异步执行
             }
         }
     });
@@ -720,14 +861,11 @@
 
     // 配置节点
     function onNodeConfig(id) {
-        // 重置
-        reset();
         // 显示配置窗口
         $('#nodeParamsModal').modal('show');
         var node = $('#' + id);
-        node.attr('class', 'node active');
         var nodeType = node.attr("data-template-name");
-        var attrs = [];
+        var params = [];
 
         var attrInfo = node_config[nodeType]['params'];
         var currentParams = workflow.nodes[currentTab][id];
@@ -747,13 +885,13 @@
                         vm.uploadFile = true;
                     }
                 }
-                attrs.push(attrInfo[i]);
+                params.push(attrInfo[i]);
             }
         }
         vm.node.id = id;
         vm.node.name = node_config[nodeType]['display'][vm.lang];
         vm.node.type = nodeType;
-        vm.node.attrs = attrs;
+        vm.node.params = params;
     }
 
     // 运行节点
@@ -841,7 +979,7 @@
             id: "-1",
             name: "",
             type: "",
-            attrs: []
+            params: []
         };
         vm.path = {
             id: "-1",
@@ -851,7 +989,7 @@
         vm.uploadFile = false;
 
         // 重设各节点状态
-        for(let nodeId in workflow.nodes[currentTab]){
+        for (let nodeId in workflow.nodes[currentTab]) {
             d3.selectAll('g[id="' + nodeId + '"]')
                     .attr('class', 'node ' + nodeStatusMap[workflow.nodes[currentTab][nodeId].status]);
         }
@@ -879,6 +1017,219 @@
                 $('#cluster').attr('style', 'display:block');
                 showCluster();
                 break;
+        }
+    }
+
+    function uiTab(l) {
+        var E = "fa fa-lemon-o";
+        var s, c, o, i, p = {}, u = 0, r = 0, f = l.element || $("#" + l.id), d = f.wrap("<div>").parent(), h = f.wrap("<div>").parent();
+        if (d.addClass("red-ui-tabs"), l.vertical && d.addClass("red-ui-tabs-vertical"), l.addButton && "function" == typeof l.addButton && (d.addClass("red-ui-tabs-add"), $('<div class="red-ui-tab-button"><a href="#"><i class="fa fa-plus"></i></a></div>').appendTo(d).find("a").click(function (e) {
+                    e.preventDefault(), l.addButton()
+                })), l.scrollable && (d.addClass("red-ui-tabs-scrollable"), h.addClass("red-ui-tabs-scroll-container"), h.scroll(b), (o = $('<div class="red-ui-tab-button red-ui-tab-scroll red-ui-tab-scroll-left"><a href="#" style="display:none;"><i class="fa fa-caret-left"></i></a></div>').appendTo(d).find("a")).on("mousedown", function (e) {
+                    t(e, "-=150")
+                }).on("click", function (e) {
+                    e.preventDefault()
+                }), (i = $('<div class="red-ui-tab-button red-ui-tab-scroll red-ui-tab-scroll-right"><a href="#" style="display:none;"><i class="fa fa-caret-right"></i></a></div>').appendTo(d).find("a")).on("mousedown", function (e) {
+                    t(e, "+=150")
+                }).on("click", function (e) {
+                    e.preventDefault()
+                })), l.collapsible) {
+            d.addClass("red-ui-tabs-collapsible");
+            var g = $('<div class="red-ui-tab-link-buttons"></div>').appendTo(d), n = $('<a href="#"><i class="fa fa-caret-down"></i></a>').appendTo(g);
+            n.addClass("red-ui-tab-link-button-menu"), n.click(function (e) {
+                if (e.preventDefault(), !c) {
+                    var i = [], a = [];
+                    f.children().each(function (e, t) {
+                        var n = $(t).data("tabId"), o = {
+                            id: "red-ui-tabs-menu-option-" + n,
+                            icon: p[n].iconClass || E,
+                            label: p[n].name,
+                            onselect: function () {
+                                y(n)
+                            }
+                        };
+                        p[n].pinned ? i.push(o) : a.push(o)
+                    }), a = i.concat(a), (c = RED.menu.init({
+                        id: "debug-message-option-menu",
+                        options: a
+                    })).css({position: "absolute"}), c.on("mouseleave", function () {
+                        $(this).hide()
+                    }), c.on("mouseup", function () {
+                        $(this).hide()
+                    }), c.appendTo("body")
+                }
+                var t = n.offset();
+                c.css({
+                    top: t.top + n.height() - 20 + "px",
+                    left: t.left - c.width() + n.width() + "px"
+                }), c.toggle()
+            })
+        }
+        function t(e, t) {
+            if (e.preventDefault(), !$(this).hasClass("disabled")) {
+                var n = h.scrollLeft();
+                h.animate({scrollLeft: t}, 100);
+                var o = setInterval(function () {
+                    var e = h.scrollLeft();
+                    e !== n ? (n = e, h.animate({scrollLeft: t}, 100)) : clearInterval(o)
+                }, 100);
+                $(this).one("mouseup", function () {
+                    clearInterval(o)
+                })
+            }
+        }
+
+        function v() {
+            return l.onclick && l.onclick(p[$(this).attr("href").slice(1)]), y($(this)), !1
+        }
+
+        function b() {
+            if (0 !== f.children().length) {
+                var e = h.scrollLeft(), t = h.width(), n = f.width();
+                0 === e ? o.hide() : o.show(), e === n - t ? i.hide() : i.show()
+            }
+        }
+
+        function m() {
+            return l.ondblclick && l.ondblclick(p[$(this).attr("href").slice(1)]), !1
+        }
+
+        function y(e) {
+            if ("string" == typeof e && (e = f.find("a[href='#" + e + "']")), 0 !== e.length && !e.parent().hasClass("active")) {
+                f.children().removeClass("active"), f.children().css({transition: "width 100ms"}), e.parent().addClass("active");
+                var t = e.parent().attr("id");
+                if (d.find(".red-ui-tab-link-button").removeClass("active selected"), $("#" + t + "-link-button").addClass("active selected"), l.scrollable) {
+                    var n = e.parent().position().left;
+                    n - 21 < 0 ? h.animate({scrollLeft: "+=" + (n - 50)}, 300) : n + 120 > h.width() && h.animate({scrollLeft: "+=" + (n + 140 - h.width())}, 300)
+                }
+                l.onchange && l.onchange(p[e.attr("href").slice(1)]), w(), setTimeout(function () {
+                    f.children().css({transition: ""})
+                }, 100)
+            }
+        }
+
+        function w() {
+            if (!l.vertical) {
+                var e = f.find("li.red-ui-tab"), t = d.width(), n = e.length;
+                if (l.collapsible) {
+                    if ((i = t - g.width() - 10) < 198) {
+                        for (var o = g.find("a:last").prev(); o.is(":not(:visible)");)o = o.prev();
+                        o.hasClass("red-ui-tab-link-button-pinned") || o.hide(), i = t - g.width() - 10
+                    } else 40 < t - 198 - g.width() && (g.find("a:not(:visible):first").show(), i = t - g.width() - 10);
+                    e.css({width: i})
+                } else {
+                    var i;
+                    if (r = (s = 100 * (i = (t - 12 - 6 * n) / n) / t + "%") + "%", l.scrollable) {
+                        i = Math.max(i, 140), s = i + "px", r = 0;
+                        var a = Math.max(d.width(), 12 + (i + 6) * n);
+                        f.width(a), b()
+                    } else l.hasOwnProperty("minimumActiveTabWidth") && (r = i < l.minimumActiveTabWidth ? (n -= 1, i = (t - 12 - l.minimumActiveTabWidth - 6 * n) / n, s = 100 * i / t + "%", l.minimumActiveTabWidth + "px") : 0);
+                    l.collapsible && console.log(s), e.css({width: s}), i < 50 ? (f.find(".red-ui-tab-close").hide(), f.find(".red-ui-tab-icon").hide(), f.find(".red-ui-tab-label").css({paddingLeft: Math.min(12, Math.max(0, i - 38)) + "px"})) : (f.find(".red-ui-tab-close").show(), f.find(".red-ui-tab-icon").show(), f.find(".red-ui-tab-label").css({paddingLeft: ""})), 0 !== r && (f.find("li.red-ui-tab.active").css({width: l.minimumActiveTabWidth}), f.find("li.red-ui-tab.active .red-ui-tab-close").show(), f.find("li.red-ui-tab.active .red-ui-tab-icon").show(), f.find("li.red-ui-tab.active .red-ui-tab-label").css({paddingLeft: ""}))
+                }
+            }
+        }
+
+        function D(e) {
+            var t = f.find("a[href='#" + e + "']").parent();
+            if (t.hasClass("active")) {
+                var n = t.prev();
+                0 === n.size() && (n = t.next()), y(n.find("a"))
+            }
+            t.remove(), p[e].pinned && u--, l.onremove && l.onremove(p[e]), delete p[e], w(), c = null
+        }
+
+        return f.children().first().addClass("active"), f.children().addClass("red-ui-tab"), f.find("li.red-ui-tab a").on("click", v).on("dblclick", m), setTimeout(function () {
+            w()
+        }, 0), {
+            addTab: function (t) {
+                p[t.id] = t;
+                var n = $("<li/>", {class: "red-ui-tab"}).appendTo(f);
+                n.attr("id", "red-ui-tab-" + t.id.replace(".", "-")), n.data("tabId", t.id), l.maximumTabWidth && n.css("maxWidth", l.maximumTabWidth + "px");
+                var e = $("<a/>", {href: "#" + t.id, class: "red-ui-tab-label"}).appendTo(n);
+                if (t.icon ? $('<img src="' + t.icon + '" class="red-ui-tab-icon"/>').appendTo(e) : t.iconClass && $("<i>", {class: "red-ui-tab-icon " + t.iconClass}).appendTo(e), $("<span/>", {class: "bidiAware"}).text(t.label).appendTo(e).attr("dir", RED.text.bidi.resolveBaseTextDir(t.label)), l.collapsible) {
+                    n.addClass("red-ui-tab-pinned");
+                    var o = $('<a href="#' + t.id + '" class="red-ui-tab-link-button"></a>');
+                    t.pinned ? 0 === u ? o.prependTo(g) : o.insertAfter(g.find("a.red-ui-tab-link-button-pinned:last")) : o.insertBefore(g.find("a:last")), o.attr("id", n.attr("id") + "-link-button"), t.iconClass ? $("<i>", {class: t.iconClass}).appendTo(o) : $("<i>", {class: E}).appendTo(o), o.click(function (e) {
+                        e.preventDefault(), y(t.id)
+                    }), t.pinned && (o.addClass("red-ui-tab-link-button-pinned"), u++), RED.popover.tooltip($(o), t.name)
+                }
+                if (e.on("click", v), e.on("dblclick", m), t.closeable) {
+                    var i = $("<a/>", {href: "#", class: "red-ui-tab-close"}).appendTo(n);
+                    i.append('<i class="fa fa-times" />'), i.on("click", function (e) {
+                        e.preventDefault(), D(t.id)
+                    })
+                }
+                if (l.onadd && l.onadd(t), e.attr("title", t.label), 1 == f.find("li.red-ui-tab").size() && y(e), l.onreorder) {
+                    var a, s, r, d = [];
+                    n.draggable({
+                        axis: "x", distance: 20, start: function (e, t) {
+                            a = [], d = [], f.children().each(function (e) {
+                                d[e] = {
+                                    el: $(this),
+                                    text: $(this).text(),
+                                    left: $(this).position().left,
+                                    width: $(this).width()
+                                }, $(this).is(n) && (r = s = e), a.push($(this).data("tabId"))
+                            }), f.children().each(function (e) {
+                                e !== s && $(this).css({
+                                    position: "absolute",
+                                    left: d[e].left + "px",
+                                    width: d[e].width + 2,
+                                    transition: "left 0.3s"
+                                })
+                            }), n.hasClass("active") || n.css({zIndex: 1})
+                        }, drag: function (e, t) {
+                            t.position.left += d[s].left + h.scrollLeft();
+                            for (var n = t.position.left + d[s].width / 2 - h.scrollLeft(), o = 0; o < d.length; o++)if (o !== s && n > d[o].left && n < d[o].left + d[o].width) {
+                                o < s ? (d[o].left += d[s].width + 8, d[s].el.detach().insertBefore(d[o].el)) : (d[o].left -= d[s].width + 8, d[s].el.detach().insertAfter(d[o].el)), d[o].el.css({left: d[o].left + "px"}), d.splice(o, 0, d.splice(s, 1)[0]), s = o;
+                                break
+                            }
+                        }, stop: function (e, t) {
+                            f.children().css({
+                                position: "relative",
+                                left: "",
+                                transition: ""
+                            }), n.hasClass("active") || n.css({zIndex: ""}), w(), r !== s && l.onreorder(a, $.makeArray(f.children().map(function () {
+                                return $(this).data("tabId")
+                            }))), y(d[s].el.data("tabId"))
+                        }
+                    })
+                }
+                setTimeout(function () {
+                    w()
+                }, 10), c = null
+            }, removeTab: D, activateTab: y, nextTab: function () {
+                var e = f.find("li.active").next();
+                0 < e.length && y(e.find("a"))
+            }, previousTab: function () {
+                var e = f.find("li.active").prev();
+                0 < e.length && y(e.find("a"))
+            }, resize: w, count: function () {
+                return f.find("li.red-ui-tab").size()
+            }, contains: function (e) {
+                return 0 < f.find("a[href='#" + e + "']").length
+            }, renameTab: function (e, t) {
+                p[e].label = t;
+                var n = f.find("a[href='#" + e + "']");
+                n.attr("title", t), n.find("span.bidiAware").text(t).attr("dir", RED.text.bidi.resolveBaseTextDir(t)), w()
+            }, order: function (e) {
+                var t = $.makeArray(f.children().map(function () {
+                    return $(this).data("tabId")
+                }));
+                if (t.length === e.length) {
+                    var n, o = !0;
+                    for (n = 0; n < e.length; n++)if (e[n] !== t[n]) {
+                        o = !1;
+                        break
+                    }
+                    if (!o) {
+                        var i = {};
+                        for (f.children().detach().each(function () {
+                            i[$(this).data("tabId")] = $(this)
+                        }), n = 0; n < e.length; n++)i[e[n]].appendTo(f)
+                    }
+                }
+            }
         }
     }
 </script>

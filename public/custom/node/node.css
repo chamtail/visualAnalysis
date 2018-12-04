@@ -1,5 +1,45 @@
+.node-category {
+    border-bottom: 1px solid #ccc
+}
+
+.node-content {
+    background: #fff;
+    padding: 3px
+}
+
+.node-header {
+    position: relative;
+    background: #f3f3f3;
+    cursor: pointer;
+    text-align: left;
+    padding: 9px 25px;
+    font-weight: bold;
+    overflow: hidden;
+    user-select: none
+}
+
+.node-header > i {
+    position: absolute;
+    left: 11px;
+    top: 12px;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg)
+}
+
+.node-header i.expanded {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg)
+}
+
+.node-header span {
+    clear: both
+}
 .node_label {
-    font-size: 13px;
     margin: 5px 0 5px 20px;
     overflow: hidden;
     text-align: center;
@@ -146,16 +186,6 @@
     font-size: 9px;
     border-radius: 4px;
 }
-.node-header {
-    position: relative;
-    background: #f3f3f3;
-    cursor: pointer;
-    text-align: left;
-    padding: 10px;
-    font-weight: bold;
-    overflow: hidden;
-    user-select: none;
-}
 
 .node-category {
     border-bottom: 1px solid #ccc
@@ -196,6 +226,9 @@
     right: 0;
     background: rgba(160,160,160,0.5);
     z-index: -1;
+}
+#node-footer .button-group:not(:last-child) {
+    margin-right: 5px
 }
 .node-button {
     -webkit-user-select: none;
