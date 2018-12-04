@@ -111,7 +111,7 @@ function addNode(svg, node) {
     let g = svg.append('g')
         .attr('class', 'node deactivate')
         .attr('data-template-name', node.type)
-        .attr('status', 7)
+        .attr('status', node.status)
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
         .attr('onclick', 'onNodeDetail(' + node.id + ')')
@@ -257,17 +257,19 @@ function nodeInject(node) {
 function updateNodeStatus(status) {
     for (let nodeId in status) {
         let s = $('#' + nodeId).attr('status');
-        if (s != 4) {
-            if(!nodeStatusMap[status[nodeId]]){
-                status[nodeId] = 5;
-            }
-            d3.selectAll('g[id="' + nodeId + '"]')
-                .attr('class', 'node ' + nodeStatusMap[status[nodeId]])
-                .attr('status', status[nodeId]);
-            workflow.nodes[currentTab][nodeId].status = status[nodeId];
+        let statusNow = status[nodeId];
+        if(!nodeStatusMap[statusNow]){
+            statusNow = 5;
         }
-        if (s == 3){
-            vm.onNodeRun(nodeId);
+        d3.selectAll('g[id="' + nodeId + '"]')
+            .attr('class', 'node ' + nodeStatusMap[statusNow])
+            .attr('status', statusNow);
+        workflow.nodes[currentTab][nodeId].status = statusNow;
+        if (statusNow == 4){
+            vm.onNodeStop(nodeId);
+        }
+        if (statusNow == 5){
+            vm.onNodeReRun(nodeId);
         }
     }
 }
@@ -419,12 +421,15 @@ function loadWorkflow() {
         // to do
         // ...
         // 前端添加tab
+        // 读取各节点的状态信息
+        let status = {};
         for (let i = 0; i < tabs.length; i++) {
             // 读取node信息
             let tabId = tabs[i].id;
             let nodes = data.nodes[tabId];
             for (let nodeId in nodes) {
                 addNode(svg, nodes[nodeId]);
+                status[nodeId] = nodes[nodeId].status;
             }
         }
 
@@ -466,5 +471,7 @@ function loadWorkflow() {
                 translate = null;
             }
         }
+
+        updateNodeStatus(status);
     });
 }

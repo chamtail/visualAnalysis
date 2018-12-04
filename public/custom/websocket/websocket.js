@@ -53,6 +53,7 @@ function initEventHandle() {
         var nodeStatus = info[3];
         var status = {};
         status[nodeId] = nodeStatus;
+        vm.onNodeReRun(nodeId);
         updateNodeStatus(status);
     }
 }

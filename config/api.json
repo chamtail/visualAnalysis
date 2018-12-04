@@ -5,6 +5,12 @@
     "port": 8889,
     "api": "/workflow/init"
   },
+  "workflow_deploy": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflow/deploy"
+  },
   "workflow_run": {
     "protocol": "http",
     "host": "10.131.247.51",

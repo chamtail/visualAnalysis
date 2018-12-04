@@ -753,7 +753,7 @@ i.red-ui-tab-icon {
     fill: #999 !important;
 }
 .workflow .node.running .run{
-    fill: #f00 !important;
+    /*fill: #f00 !important;*/
 }
 .separator{
     position: absolute;
@@ -1629,6 +1629,35 @@ div.node-info {
     margin: 5px
 }
 
+.file-upload {
+    position: relative;
+    background: #D0EEFF;
+    border: 1px solid #99D3F5;
+    border-radius: 4px;
+    padding: 5px 20px;
+    overflow: hidden;
+    color: #1E88C7;
+    text-decoration: none;
+    text-indent: 0;
+    line-height: 20px;
+}
+.file-upload input {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+}
+.file-upload:hover {
+    background: #AADFFD;
+    border-color: #78C3F3;
+    color: #004974;
+    text-decoration: none;
+}
+.file-upload-path{
+    padding-left: 5px;
+    color: #1E88C7;
+}
 .visual-chart{
     height: 100%;
     display: none;
