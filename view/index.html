@@ -65,7 +65,7 @@
                 </div>
             </div>
             <div id="node-container" class="node-scroll">
-                <template v-for="(module, key) in nodes">
+                <template v-for="(module, key) in nodes_category">
                     <div :id="'node-container-' + key" class="node-category"
                          style="display: block;">
                         <div :id="'node-header-' + key" class="node-header">
@@ -140,7 +140,7 @@
                         <ul id="workspace-tabs" style="width: 100%;" class="">
                             <template v-for="(flow, index) in flows">
                                 <li :class="['red-ui-tab ui-draggable', flow.id==activateFlow ? 'active' : '']" :id="'red-ui-tab-'+flow.id" style="width: 100%;">
-                                    <a href="#" class="red-ui-tab-label" title="flow.label">
+                                    <a href="#" class="red-ui-tab-label" :title="flow.label" @click="changeWorkflow(flow.id)" @dblclick="configWorkflow(flow.id)">
                                         <template v-if="flow.disabled">
                                             <span class="workspace-disabled-icon">
                                                 <i class="fa fa-ban"></i>
@@ -423,47 +423,54 @@
                 </div>
                 <div class="modal-body">
                     <form method="post" id="main-form">
-                        <template v-if="node.params.length != 0">
-                            <template v-for="(model, index) in node.params">
-                                <div class="form-group">
-                                    <label :for="model.name" class="col-sm-3">{{model.label[lang]}}</label>
-                                    <template v-if="model.type == 'list'">
-                                        <select :name="model.name" class="col-sm-8">
-                                            <option value="">全部</option>
-                                            <template v-for="(option, id) in model.list">
-                                                <option :value="option"
-                                                        :selected="model.default == id || model.default == option">
-                                                    {{option}}
-                                                </option>
-                                            </template>
-                                        </select>
-                                    </template>
-                                    <template v-else-if="model.type == 'richtext'">
+                        <template v-if="node.id != -1">
+                            <template v-if="node.params.length != 0">
+                                <template v-for="(model, index) in node.params">
+                                    <div class="form-group">
+                                        <label :for="model.name" class="col-sm-3">{{model.label[lang]}}</label>
+                                        <template v-if="model.type == 'list'">
+                                            <select :name="model.name" class="col-sm-8">
+                                                <option value="">全部</option>
+                                                <template v-for="(option, id) in model.list">
+                                                    <option :value="option"
+                                                            :selected="model.default == id || model.default == option">
+                                                        {{option}}
+                                                    </option>
+                                                </template>
+                                            </select>
+                                        </template>
+                                        <template v-else-if="model.type == 'richtext'">
                                         <textarea :type="model.type" class="col-sm-8" :name="model.name"
                                                   :placeholder="model.default">{{model.default}}</textarea>
-                                    </template>
-                                    <template v-else-if="model.type == 'file'">
-                                        <a href="javascript:;" class="file-upload">
-                                            <span v-if="model.default==''">选择文件</span>
-                                            <span v-else>更改文件</span>
-                                            <input :id="'file_'+node.id" :type="model.type" class="col-sm-8"
-                                                   :name="model.name"
-                                                   :placeholder="model.default" accept="text/csv">
-                                        </a>
-                                        <span class="file-upload-path">{{model.default}}</span>
-                                    </template>
-                                    <template v-else>
-                                        <input :type="model.type" class="col-sm-8" :name="model.name"
-                                               :placeholder="model.default" :value="model.default">
-                                    </template>
+                                        </template>
+                                        <template v-else-if="model.type == 'file'">
+                                            <a href="javascript:;" class="file-upload">
+                                                <span v-if="model.default==''">选择文件</span>
+                                                <span v-else>更改文件</span>
+                                                <input :id="'file_'+node.id" :type="model.type" class="col-sm-8"
+                                                       :name="model.name"
+                                                       :placeholder="model.default" accept="text/csv">
+                                            </a>
+                                            <span class="file-upload-path">{{model.default}}</span>
+                                        </template>
+                                        <template v-else>
+                                            <input :type="model.type" class="col-sm-8" :name="model.name"
+                                                   :placeholder="model.default" :value="model.default">
+                                        </template>
+                                    </div>
+                                </template>
+
+                            </template>
+                            <template v-else>
+                                <div class="form-group">
+                                    抱歉，暂时不可配置～
                                 </div>
                             </template>
-
                         </template>
                         <template v-else>
-                            <div class="form-group">
-                                抱歉，暂时不可配置～
-                            </div>
+                            <template v-for="(value, key) in flow">
+                                {{key}}, {{value}}
+                            </template>
                         </template>
                     </form>
                 </div>
@@ -494,9 +501,10 @@
         el: '#vm',
         data: {
             init_finish: false,
-            nodes: {},
+            nodes_category: {},
             flows: {},
-            variableSpace: {},
+            nodes: {},
+            nodeFlowMap:{},
             node: {
                 id: "-1",
                 name: "",
@@ -510,6 +518,7 @@
                 disabled: false,
                 info: "这是一个flow"
             },
+            variableSpace: {},
             path: {
                 id: "-1",
                 from: "-1",
@@ -523,19 +532,18 @@
         mounted: function () {
             // 工作流初始化
             $(function () {
-                // 默认有一个tabs
+                // 默认有一个flow
                 vm.addWorkflow();
 
                 // 初始化左侧组件栏
-                vm.nodes = nodes_category;
+                vm.nodes_category = nodes_category;
+
+                // 初始化系统语言
                 if (vm.lang == "") {
                     vm.lang = 'zh';
                 }
             });
-            //工作流里的按钮
-            $(function () {
-                button_op();
-            });
+
             // 键盘事件
             $(function () {
                 $(document).ready(
@@ -543,7 +551,6 @@
                             document.onkeydown = function () {
                                 var oEvent = window.event;
                                 if (oEvent.keyCode === 46) {
-                                    console.log(vm.path.id);
                                     //逻辑处理
                                     if (vm.node.id != "-1") {
                                         onNodeDelete(vm.node.id);
@@ -558,7 +565,8 @@
                             }
                         });
             });
-            // svg事件
+
+            // separator事件
             $(function () {
                 separator();
             });
@@ -575,7 +583,6 @@
                 init();
                 vm.init_finish = true;
             }
-            console.log('here');
         },
         methods: {
             init: function () {
@@ -650,7 +657,6 @@
                 request.routers = routers[currentTab];
                 this.routers = routers[currentTab];  // 保存路由信息
                 var data = JSON.stringify(request);
-                console.log(request);
                 // 发送工作流
                 $.ajax({
                     url: api_map.workflow_deploy,
@@ -832,13 +838,10 @@
                         .text('\uf021');
             },
             changeTab: function (tab) {
-                console.log(tab);
-
                 $('.red-ui-tab-link-buttons a').removeClass('active selected');
                 $('#sidebar-content > div').css({display: 'none'});
                 $('#sidebar-tabs li').removeClass('active');
                 var div = $('.sidebar-node-' + tab);
-                var divs = $('')
                 div.parent().css({display: 'block'});
 
                 $('#red-ui-tab-' + tab + '-link-button').addClass('active selected');
@@ -850,72 +853,15 @@
                 }
                 // 更新workflow
                 workflow = data;
-
-                // 渲染视图
-                let svg = d3.select('#workflow svg');
-
-                // 读取tab信息
-                vm.flows = data.tabs;
-                // 前端添加tab
-                // 读取各节点的状态信息
-                let status = {};
-                for (let tabId in vm.flows) {
-                    // 读取node信息
-                    let nodes = data.nodes[tabId];
-                    for (let nodeId in nodes) {
-                        addNode(svg, nodes[nodeId]);
-                        status[nodeId] = nodes[nodeId].status;
-                    }
+                vm.flows = data.flows;
+                for(let flowId in workflow.flows){
+                    showNodesByFlow(flowId);
+                    break;
                 }
-                // 更新节点状态
-                updateNodeStatus(status);
-
-                // 读取link信息
-                let links = data.links;
-                for (let nodeId in links) {
-                    let sNode = d3.select('g[id="' + nodeId + '"]');
-                    for (let i = 0; i < links[nodeId].length; i++) {
-                        let delta = getPathOffset(sNode);
-                        let sdx = delta[0];
-                        let sdy = delta[1];
-                        translate = getTranslate(sNode);
-                        points.push([sdx + translate[0], sdy + translate[1]]);
-
-                        let eNode = d3.select('g[id="' + links[nodeId][i] + '"]');
-                        let pathId = sNode.attr('id') + "_" + eNode.attr('id');
-
-                        let eRect = eNode.node().getBoundingClientRect();
-                        let edy = eRect.height / (+eNode.attr('inputs') + 1);
-                        translate = getTranslate(eNode);
-
-                        points[1] = [translate[0] - cableR, translate[1] + edy];
-
-                        let input = eRect.height / (+eNode.attr('inputs') + 1);
-                        activeLine = d3.select('#workflow svg')
-                                .append('path')
-                                .attr('class', 'cable')
-                                .attr('from', sNode.attr('id'))
-                                .attr('start', sdx + ', ' + sdy)
-                                .attr('output', sNode.attr('output'))
-                                .attr('d', getBezier(points))
-                                .attr('to', eNode.attr('id'))
-                                .attr('input', eNode.attr('input'))
-                                .attr('end', '0, ' + input)
-                                .attr('id', pathId)
-                                .on('click', function () {
-                                    onPathClick(pathId);
-                                    d3.event.stopPropagation();
-                                });
-                        activeLine = null;
-                        points.length = 0;
-                        translate = null;
-                    }
-                }
-
             },
             addWorkflow: function () {
                 currentTab = currentTab + 1;  // 暂时使用自增
-                workflow.tabs[currentTab] = {
+                workflow.flows[currentTab] = {
                     id: currentTab,
                     type: "tab",
                     label: "Flow " + currentTab,
@@ -929,14 +875,26 @@
                     disabled: false,
                     info: "这是一个新flow"
                 };
-                vm.flow = {
-                    id: currentTab,
-                    type: "tab",
-                    label: "Flow " + currentTab,
-                    disabled: false,
-                    info: "这是一个新flow"
-                };
-                vm.activateFlow = currentTab;
+                vm.changeWorkflow(currentTab);
+            },
+            changeWorkflow: function (flowId) {
+                // 如果点击同一个flow，忽略该事件
+                if(vm.activateFlow == flowId){
+                    console.log("重复点击，该操作无效");
+                    return;
+                }
+                reset();
+                // 清除当前flow的节点
+                hideNodesByFlow(vm.activateFlow);
+                // 添加当前flow的节点
+                showNodesByFlow(flowId);
+                // 更新中间变量
+                currentTab = flowId;
+                vm.activateFlow = flowId;
+                vm.flow = workflow.flows[flowId];
+            },
+            configWorkflow: function (flowId) {
+                onWorkflowConfig(flowId);
             },
             debug: function () {
                 $.ajaxSettings.async = false;  // 同步执行
@@ -947,24 +905,19 @@
                     });
                 });
                 vm.variableSpace = vs;
-                console.log(JSON.stringify(vm.variableSpace));
+                //console.log(JSON.stringify(vm.variableSpace));
                 $.ajaxSettings.async = true;  // 异步执行
             }
         }
     });
 
-    function debug() {
-        // 修改语言
-        //changLang();
-
-        // 加载默认工作流
-        loadWorkflow();
-
-        visualize({'op': 'motif'});
-    }
-
     // 显示节点细节
     function onNodeDetail(id) {
+        // 事件过滤, 配置一样便过滤。不止比较id
+//        if(id == vm.node.id){
+//            console.log('重复点击节点，事件无效！');
+//            return;
+//        }
         // 重制
         reset();
         var node = $('#' + id);
@@ -1009,14 +962,25 @@
         // 显示配置窗口
         $('#nodeParamsModal').modal('show');
     }
+
     // 显示工作流细节
     function onWorkflowDetail(id){
+        // 事件过滤
+        if(id == vm.flow.id){
+            console.log('重复点击工作流，事件无效！');
+            return;
+        }
+
+        // 重置
         reset();
-        vm.flow = workflow.tabs[id];
+        vm.flow = workflow.flows[id];
     }
+
+    // 配置工作流
     function onWorkflowConfig(id) {
-        
+        $('#nodeParamsModal').modal('show');
     }
+
     // 获取节点配置
     function getNodeParams(id, nodeType) {
         var currentParams = workflow.nodes[currentTab][id];
@@ -1070,17 +1034,15 @@
         }
         delete workflow.nodes[currentTab][id];
         delete workflow.links[node.id];
-
+        delete workflow.nodeFlowMap[node.id];
         for (var nodeId in workflow.nodes[currentTab]) {
             if (workflow.links[nodeId]) {
-                console.log(nodeId, workflow.links[nodeId]);
                 var index = workflow.links[nodeId].indexOf(id.toString());
                 if (index > -1) {
                     workflow.links[nodeId].splice(index, 1);
                 }
             }
         }
-        console.log(workflow);
 
         // 重置
         reset();
@@ -1088,10 +1050,14 @@
 
     // 点击连线
     function onPathClick(id) {
+        // 事件过滤
+        if(id == vm.path.id){
+            console.log('重复点击连线，事件无效！');
+            return;
+        }
         // 重置
         reset();
-        //d3.selectAll('path[id="' + id + '"]').attr('class', 'cable active');
-        $('#'+id).addClass('active');
+        d3.selectAll('path[id="' + id + '"]').attr('class', 'cable active');
         vm.path.from = d3.select('path[id="' + id + '"]').attr('from');
         vm.path.to = d3.select('path[id="' + id + '"]').attr('to');
         vm.path.id = id;
@@ -1104,12 +1070,10 @@
         var nodeIds = id.split("_");
         var sId = nodeIds[0];
         var eId = nodeIds[1];
-        console.log(sId, eId);
         var index = workflow.links[sId].indexOf(eId.toString());
         if (index > -1) {
             workflow.links[sId].splice(index, 1);
         }
-        console.log(workflow);
 
         // 重置
         reset();
@@ -1192,216 +1156,15 @@
         })
     }
 
-    function uiTab(l) {
-        var E = "fa fa-lemon-o";
-        var s, c, o, i, p = {}, u = 0, r = 0, f = l.element || $("#" + l.id), d = f.wrap("<div>").parent(), h = f.wrap("<div>").parent();
-        if (d.addClass("red-ui-tabs"), l.vertical && d.addClass("red-ui-tabs-vertical"), l.addButton && "function" == typeof l.addButton && (d.addClass("red-ui-tabs-add"), $('<div class="red-ui-tab-button"><a href="#"><i class="fa fa-plus"></i></a></div>').appendTo(d).find("a").click(function (e) {
-                    e.preventDefault(), l.addButton()
-                })), l.scrollable && (d.addClass("red-ui-tabs-scrollable"), h.addClass("red-ui-tabs-scroll-container"), h.scroll(b), (o = $('<div class="red-ui-tab-button red-ui-tab-scroll red-ui-tab-scroll-left"><a href="#" style="display:none;"><i class="fa fa-caret-left"></i></a></div>').appendTo(d).find("a")).on("mousedown", function (e) {
-                    t(e, "-=150")
-                }).on("click", function (e) {
-                    e.preventDefault()
-                }), (i = $('<div class="red-ui-tab-button red-ui-tab-scroll red-ui-tab-scroll-right"><a href="#" style="display:none;"><i class="fa fa-caret-right"></i></a></div>').appendTo(d).find("a")).on("mousedown", function (e) {
-                    t(e, "+=150")
-                }).on("click", function (e) {
-                    e.preventDefault()
-                })), l.collapsible) {
-            d.addClass("red-ui-tabs-collapsible");
-            var g = $('<div class="red-ui-tab-link-buttons"></div>').appendTo(d), n = $('<a href="#"><i class="fa fa-caret-down"></i></a>').appendTo(g);
-            n.addClass("red-ui-tab-link-button-menu"), n.click(function (e) {
-                if (e.preventDefault(), !c) {
-                    var i = [], a = [];
-                    f.children().each(function (e, t) {
-                        var n = $(t).data("tabId"), o = {
-                            id: "red-ui-tabs-menu-option-" + n,
-                            icon: p[n].iconClass || E,
-                            label: p[n].name,
-                            onselect: function () {
-                                y(n)
-                            }
-                        };
-                        p[n].pinned ? i.push(o) : a.push(o)
-                    }), a = i.concat(a), (c = RED.menu.init({
-                        id: "debug-message-option-menu",
-                        options: a
-                    })).css({position: "absolute"}), c.on("mouseleave", function () {
-                        $(this).hide()
-                    }), c.on("mouseup", function () {
-                        $(this).hide()
-                    }), c.appendTo("body")
-                }
-                var t = n.offset();
-                c.css({
-                    top: t.top + n.height() - 20 + "px",
-                    left: t.left - c.width() + n.width() + "px"
-                }), c.toggle()
-            })
-        }
-        function t(e, t) {
-            if (e.preventDefault(), !$(this).hasClass("disabled")) {
-                var n = h.scrollLeft();
-                h.animate({scrollLeft: t}, 100);
-                var o = setInterval(function () {
-                    var e = h.scrollLeft();
-                    e !== n ? (n = e, h.animate({scrollLeft: t}, 100)) : clearInterval(o)
-                }, 100);
-                $(this).one("mouseup", function () {
-                    clearInterval(o)
-                })
-            }
-        }
+    // 调试
+    function debug() {
+        // 修改语言
+        //changLang();
 
-        function v() {
-            return l.onclick && l.onclick(p[$(this).attr("href").slice(1)]), y($(this)), !1
-        }
+        // 加载默认工作流
+        loadWorkflow();
 
-        function b() {
-            if (0 !== f.children().length) {
-                var e = h.scrollLeft(), t = h.width(), n = f.width();
-                0 === e ? o.hide() : o.show(), e === n - t ? i.hide() : i.show()
-            }
-        }
-
-        function m() {
-            return l.ondblclick && l.ondblclick(p[$(this).attr("href").slice(1)]), !1
-        }
-
-        function y(e) {
-            if ("string" == typeof e && (e = f.find("a[href='#" + e + "']")), 0 !== e.length && !e.parent().hasClass("active")) {
-                f.children().removeClass("active"), f.children().css({transition: "width 100ms"}), e.parent().addClass("active");
-                var t = e.parent().attr("id");
-                if (d.find(".red-ui-tab-link-button").removeClass("active selected"), $("#" + t + "-link-button").addClass("active selected"), l.scrollable) {
-                    var n = e.parent().position().left;
-                    n - 21 < 0 ? h.animate({scrollLeft: "+=" + (n - 50)}, 300) : n + 120 > h.width() && h.animate({scrollLeft: "+=" + (n + 140 - h.width())}, 300)
-                }
-                l.onchange && l.onchange(p[e.attr("href").slice(1)]), w(), setTimeout(function () {
-                    f.children().css({transition: ""})
-                }, 100)
-            }
-        }
-
-        function w() {
-            if (!l.vertical) {
-                var e = f.find("li.red-ui-tab"), t = d.width(), n = e.length;
-                if (l.collapsible) {
-                    if ((i = t - g.width() - 10) < 198) {
-                        for (var o = g.find("a:last").prev(); o.is(":not(:visible)");)o = o.prev();
-                        o.hasClass("red-ui-tab-link-button-pinned") || o.hide(), i = t - g.width() - 10
-                    } else 40 < t - 198 - g.width() && (g.find("a:not(:visible):first").show(), i = t - g.width() - 10);
-                    e.css({width: i})
-                } else {
-                    var i;
-                    if (r = (s = 100 * (i = (t - 12 - 6 * n) / n) / t + "%") + "%", l.scrollable) {
-                        i = Math.max(i, 140), s = i + "px", r = 0;
-                        var a = Math.max(d.width(), 12 + (i + 6) * n);
-                        f.width(a), b()
-                    } else l.hasOwnProperty("minimumActiveTabWidth") && (r = i < l.minimumActiveTabWidth ? (n -= 1, i = (t - 12 - l.minimumActiveTabWidth - 6 * n) / n, s = 100 * i / t + "%", l.minimumActiveTabWidth + "px") : 0);
-                    l.collapsible && console.log(s), e.css({width: s}), i < 50 ? (f.find(".red-ui-tab-close").hide(), f.find(".red-ui-tab-icon").hide(), f.find(".red-ui-tab-label").css({paddingLeft: Math.min(12, Math.max(0, i - 38)) + "px"})) : (f.find(".red-ui-tab-close").show(), f.find(".red-ui-tab-icon").show(), f.find(".red-ui-tab-label").css({paddingLeft: ""})), 0 !== r && (f.find("li.red-ui-tab.active").css({width: l.minimumActiveTabWidth}), f.find("li.red-ui-tab.active .red-ui-tab-close").show(), f.find("li.red-ui-tab.active .red-ui-tab-icon").show(), f.find("li.red-ui-tab.active .red-ui-tab-label").css({paddingLeft: ""}))
-                }
-            }
-        }
-
-        function D(e) {
-            var t = f.find("a[href='#" + e + "']").parent();
-            if (t.hasClass("active")) {
-                var n = t.prev();
-                0 === n.size() && (n = t.next()), y(n.find("a"))
-            }
-            t.remove(), p[e].pinned && u--, l.onremove && l.onremove(p[e]), delete p[e], w(), c = null
-        }
-
-        return f.children().first().addClass("active"), f.children().addClass("red-ui-tab"), f.find("li.red-ui-tab a").on("click", v).on("dblclick", m), setTimeout(function () {
-            w()
-        }, 0), {
-            addTab: function (t) {
-                p[t.id] = t;
-                var n = $("<li/>", {class: "red-ui-tab"}).appendTo(f);
-                n.attr("id", "red-ui-tab-" + t.id.replace(".", "-")), n.data("tabId", t.id), l.maximumTabWidth && n.css("maxWidth", l.maximumTabWidth + "px");
-                var e = $("<a/>", {href: "#" + t.id, class: "red-ui-tab-label"}).appendTo(n);
-                if (t.icon ? $('<img src="' + t.icon + '" class="red-ui-tab-icon"/>').appendTo(e) : t.iconClass && $("<i>", {class: "red-ui-tab-icon " + t.iconClass}).appendTo(e), $("<span/>", {class: "bidiAware"}).text(t.label).appendTo(e).attr("dir", RED.text.bidi.resolveBaseTextDir(t.label)), l.collapsible) {
-                    n.addClass("red-ui-tab-pinned");
-                    var o = $('<a href="#' + t.id + '" class="red-ui-tab-link-button"></a>');
-                    t.pinned ? 0 === u ? o.prependTo(g) : o.insertAfter(g.find("a.red-ui-tab-link-button-pinned:last")) : o.insertBefore(g.find("a:last")), o.attr("id", n.attr("id") + "-link-button"), t.iconClass ? $("<i>", {class: t.iconClass}).appendTo(o) : $("<i>", {class: E}).appendTo(o), o.click(function (e) {
-                        e.preventDefault(), y(t.id)
-                    }), t.pinned && (o.addClass("red-ui-tab-link-button-pinned"), u++), RED.popover.tooltip($(o), t.name)
-                }
-                if (e.on("click", v), e.on("dblclick", m), t.closeable) {
-                    var i = $("<a/>", {href: "#", class: "red-ui-tab-close"}).appendTo(n);
-                    i.append('<i class="fa fa-times" />'), i.on("click", function (e) {
-                        e.preventDefault(), D(t.id)
-                    })
-                }
-                if (l.onadd && l.onadd(t), e.attr("title", t.label), 1 == f.find("li.red-ui-tab").size() && y(e), l.onreorder) {
-                    var a, s, r, d = [];
-                    n.draggable({
-                        axis: "x", distance: 20, start: function (e, t) {
-                            a = [], d = [], f.children().each(function (e) {
-                                d[e] = {
-                                    el: $(this),
-                                    text: $(this).text(),
-                                    left: $(this).position().left,
-                                    width: $(this).width()
-                                }, $(this).is(n) && (r = s = e), a.push($(this).data("tabId"))
-                            }), f.children().each(function (e) {
-                                e !== s && $(this).css({
-                                    position: "absolute",
-                                    left: d[e].left + "px",
-                                    width: d[e].width + 2,
-                                    transition: "left 0.3s"
-                                })
-                            }), n.hasClass("active") || n.css({zIndex: 1})
-                        }, drag: function (e, t) {
-                            t.position.left += d[s].left + h.scrollLeft();
-                            for (var n = t.position.left + d[s].width / 2 - h.scrollLeft(), o = 0; o < d.length; o++)if (o !== s && n > d[o].left && n < d[o].left + d[o].width) {
-                                o < s ? (d[o].left += d[s].width + 8, d[s].el.detach().insertBefore(d[o].el)) : (d[o].left -= d[s].width + 8, d[s].el.detach().insertAfter(d[o].el)), d[o].el.css({left: d[o].left + "px"}), d.splice(o, 0, d.splice(s, 1)[0]), s = o;
-                                break
-                            }
-                        }, stop: function (e, t) {
-                            f.children().css({
-                                position: "relative",
-                                left: "",
-                                transition: ""
-                            }), n.hasClass("active") || n.css({zIndex: ""}), w(), r !== s && l.onreorder(a, $.makeArray(f.children().map(function () {
-                                return $(this).data("tabId")
-                            }))), y(d[s].el.data("tabId"))
-                        }
-                    })
-                }
-                setTimeout(function () {
-                    w()
-                }, 10), c = null
-            }, removeTab: D, activateTab: y, nextTab: function () {
-                var e = f.find("li.active").next();
-                0 < e.length && y(e.find("a"))
-            }, previousTab: function () {
-                var e = f.find("li.active").prev();
-                0 < e.length && y(e.find("a"))
-            }, resize: w, count: function () {
-                return f.find("li.red-ui-tab").size()
-            }, contains: function (e) {
-                return 0 < f.find("a[href='#" + e + "']").length
-            }, renameTab: function (e, t) {
-                p[e].label = t;
-                var n = f.find("a[href='#" + e + "']");
-                n.attr("title", t), n.find("span.bidiAware").text(t).attr("dir", RED.text.bidi.resolveBaseTextDir(t)), w()
-            }, order: function (e) {
-                var t = $.makeArray(f.children().map(function () {
-                    return $(this).data("tabId")
-                }));
-                if (t.length === e.length) {
-                    var n, o = !0;
-                    for (n = 0; n < e.length; n++)if (e[n] !== t[n]) {
-                        o = !1;
-                        break
-                    }
-                    if (!o) {
-                        var i = {};
-                        for (f.children().detach().each(function () {
-                            i[$(this).data("tabId")] = $(this)
-                        }), n = 0; n < e.length; n++)i[e[n]].appendTo(f)
-                    }
-                }
-            }
-        }
+        visualize({'op': 'motif'});
     }
+
 </script>

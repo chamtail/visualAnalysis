@@ -5,7 +5,7 @@ let lockReconnect = false;  //避免ws重复连接
 let wsUrl = api_map['webSocket'];
 console.log(wsUrl);
 let ws = null;  // 判断当前浏览器是否支持WebSocket
-createWebSocket(wsUrl); //连接ws
+//createWebSocket(wsUrl); //连接ws
 
 // 创建连接
 function createWebSocket(url) {
@@ -88,7 +88,7 @@ var heartCheck = {
             //这里发送一个心跳，后端收到后，返回一个心跳消息，
             //onmessage拿到返回的心跳就说明连接正常
             ws.send("ping");
-            console.log("ping!")
+            console.log("ping!");
             self.serverTimeoutObj = setTimeout(function(){//如果超过一定时间还没重置，说明后端主动断开了
                 ws.close();     //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
             }, self.timeout)

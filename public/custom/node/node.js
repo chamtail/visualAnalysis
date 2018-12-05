@@ -11,10 +11,11 @@ let startNode = -1;  // 开始节点
 let endNode = -1;  // 结束节点
 let workflow = {
     verCode: -1,  //校验码
-    tabs: {},  // 标签记录，对应了分析任务
+    flows: {},  // 流
     nodes: {},  // 所有节点记录
     used: {},  // 节点使用记录
     links: {},  // 节点连接记录
+    nodeFlowMap: {}
 };
 
 // 初始化，初始化各种事件
@@ -61,7 +62,7 @@ function init() {
                 workflow.nodes[currentTab] = {};
             }
             workflow.nodes[currentTab][node.id] = node;
-
+            workflow.nodeFlowMap[node.id] = currentTab;
             // 计算节点编号
             if (workflow.used[node.type]) {
                 workflow.used[node.type] += 1;
@@ -79,24 +80,17 @@ function init() {
         var el_i = $('#' + id + ' >i');
         el_i.toggleClass('expanded');
         var nextEl = $('#' + nextId);
-        console.log(nextId);
         nextEl.slideToggle(500);
     });
 
     $('#node-collapse-all').click(function (e) {
         var container = $('#node-container');
-        console.log(container.find('.node-content'));
         container.find('.node-content').slideUp(500);
     });
 
     $('#node-expand-all').click(function (e) {
         var container = $('#node-container');
-        console.log(container.find('.node-content'));
         container.find('.node-content').slideDown(500);
-    });
-
-    $('#workflow-add').click(function (e) {
-        
     });
 }
 
@@ -146,13 +140,11 @@ function addNode(svg, node) {
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
         .on('click', function () {
-            console.log('click node');
             onNodeDetail(node.id);
             //    阻止事件向后传递
             d3.event.stopPropagation();
         })
         .on('dblclick', function () {
-            console.log('dbclick node');
             onNodeConfig(node.id);
             d3.event.stopPropagation();
         });
@@ -305,6 +297,7 @@ function updateNode(id, translate) {
     workflow.nodes[currentTab][dragElem.attr('id')].x = translate[0];
     workflow.nodes[currentTab][dragElem.attr('id')].y = translate[1];
 }
+
 // 更新节点状态
 function updateNodeStatus(status) {
     for (let nodeId in status) {
@@ -316,7 +309,7 @@ function updateNodeStatus(status) {
         d3.selectAll('g[id="' + nodeId + '"]')
             .attr('class', 'node ' + nodeStatusMap[statusNow])
             .attr('status', statusNow);
-        workflow.nodes[currentTab][nodeId].status = statusNow;
+        workflow.nodes[workflow.nodeFlowMap[nodeId]][nodeId].status = statusNow;
         if (statusNow == 4){
             vm.onNodeStop(nodeId);
         }
@@ -324,6 +317,73 @@ function updateNodeStatus(status) {
             vm.onNodeReRun(nodeId);
         }
     }
+}
+
+// 清除节点，注意不是删除，只是使其在界面上消失
+function hideNodesByFlow(flowId) {
+    for(let nodeId in workflow.nodes[flowId]){
+        d3.selectAll('path[from="' + nodeId + '"]').remove();
+        d3.selectAll('g[id="' + nodeId + '"]').remove();
+        d3.selectAll('path[to="' + nodeId + '"]').remove();
+    }
+}
+
+// 显示节点
+function showNodesByFlow(flowId) {
+    let svg = d3.select('#workflow svg');
+    // 显示节点
+    let links = {};
+    let status = {};
+    for(let nodeId in workflow.nodes[flowId]){
+        let node = workflow.nodes[flowId][nodeId];
+        addNode(svg, node);
+        if(workflow.links[nodeId]){
+            links[nodeId] = workflow.links[nodeId];
+            status[nodeId] = node.status;
+        }
+    }
+    // 显示连线
+    for (let nodeId in links) {
+        let sNode = d3.select('g[id="' + nodeId + '"]');
+        for (let i = 0; i < links[nodeId].length; i++) {
+            let delta = getPathOffset(sNode);
+            let sdx = delta[0];
+            let sdy = delta[1];
+            translate = getTranslate(sNode);
+            points.push([sdx + translate[0], sdy + translate[1]]);
+
+            let eNode = d3.select('g[id="' + links[nodeId][i] + '"]');
+            let pathId = sNode.attr('id') + "_" + eNode.attr('id');
+
+            let eRect = eNode.node().getBoundingClientRect();
+            let edy = eRect.height / (+eNode.attr('inputs') + 1);
+            translate = getTranslate(eNode);
+
+            points[1] = [translate[0]-cableR, translate[1] + edy];
+
+            let input = eRect.height / (+eNode.attr('inputs') + 1);
+            activeLine = d3.select('#workflow svg')
+                .append('path')
+                .attr('class', 'cable')
+                .attr('from', sNode.attr('id'))
+                .attr('start', sdx + ', ' + sdy)
+                .attr('output', sNode.attr('output'))
+                .attr('d', getBezier(points))
+                .attr('to', eNode.attr('id'))
+                .attr('input', eNode.attr('input'))
+                .attr('end', '0, ' + input)
+                .attr('id', pathId)
+                .on('click', function () {
+                    onPathClick(pathId);
+                    d3.event.stopPropagation();
+                });
+            activeLine = null;
+            points.length = 0;
+            translate = null;
+        }
+    }
+
+    updateNodeStatus(status);
 }
 /**
  * 节点相关 End
@@ -394,7 +454,6 @@ function lineEnded() {
 
 // 更新Path
 function updatePath(id, translate) {
-
     // 更新输出线的位置
     d3.selectAll('path[from="' + id + '"]')
         .each(function () {
@@ -442,7 +501,7 @@ function getPathOffset(node) {
 // 获取Path曲线
 function getBezier(points) {
     if(points[0][0] > points[1][0]){
-        console.log('四次平滑');
+        // console.log('四次平滑');
     }
     return 'M' + points[0][0] + ',' + points[0][1]
         + 'C' + points[0][0] + ',' + (points[0][1] + points[1][1]) / 2
@@ -467,63 +526,10 @@ function loadWorkflow() {
     $.getJSON('../config/workflow.json', function (data) {
         // 更新workflow
         workflow = data;
-        let svg = d3.select('#workflow svg');
-        // 读取tab信息
-        vm.flows = data.tabs;
-        // 前端添加tab
-        // 读取各节点的状态信息
-        let status = {};
-        for (let tabId in vm.flows) {
-            // 读取node信息
-            let nodes = data.nodes[tabId];
-            for (let nodeId in nodes) {
-                addNode(svg, nodes[nodeId]);
-                status[nodeId] = nodes[nodeId].status;
-            }
+        vm.flows = data.flows;
+        for(let flowId in workflow.flows){
+            showNodesByFlow(flowId);
+            break;
         }
-
-        // 读取link信息
-        let links = data.links;
-        for (let nodeId in links) {
-            let sNode = d3.select('g[id="' + nodeId + '"]');
-            for (let i = 0; i < links[nodeId].length; i++) {
-                let delta = getPathOffset(sNode);
-                let sdx = delta[0];
-                let sdy = delta[1];
-                translate = getTranslate(sNode);
-                points.push([sdx + translate[0], sdy + translate[1]]);
-
-                let eNode = d3.select('g[id="' + links[nodeId][i] + '"]');
-                let pathId = sNode.attr('id') + "_" + eNode.attr('id');
-
-                let eRect = eNode.node().getBoundingClientRect();
-                let edy = eRect.height / (+eNode.attr('inputs') + 1);
-                translate = getTranslate(eNode);
-
-                points[1] = [translate[0]-cableR, translate[1] + edy];
-
-                let input = eRect.height / (+eNode.attr('inputs') + 1);
-                activeLine = d3.select('#workflow svg')
-                    .append('path')
-                    .attr('class', 'cable')
-                    .attr('from', sNode.attr('id'))
-                    .attr('start', sdx + ', ' + sdy)
-                    .attr('output', sNode.attr('output'))
-                    .attr('d', getBezier(points))
-                    .attr('to', eNode.attr('id'))
-                    .attr('input', eNode.attr('input'))
-                    .attr('end', '0, ' + input)
-                    .attr('id', pathId)
-                    .on('click', function () {
-                        onPathClick(pathId);
-                        d3.event.stopPropagation();
-                    });
-                activeLine = null;
-                points.length = 0;
-                translate = null;
-            }
-        }
-
-        updateNodeStatus(status);
     });
 }
