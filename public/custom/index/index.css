@@ -162,7 +162,7 @@ span.logo span {
     background: #e3e3e3;
     position: absolute;
     bottom: 25px;
-    top: 35px;
+    top: 30px;
     left: 0;
     right: 0;
     box-sizing: border-box;
@@ -172,7 +172,7 @@ span.logo span {
     position: relative;
     background: #fff;
     overflow: hidden;
-    height: 35px;
+    height: 30px;
     box-sizing: border-box
 }
 
@@ -192,7 +192,7 @@ span.logo span {
     padding: 0;
     margin: 0;
     display: block;
-    height: 35px;
+    height: 30px;
     box-sizing: border-box;
     border-bottom: 1px solid #bbb;
     white-space: nowrap;
@@ -274,11 +274,11 @@ span.logo span {
 }
 
 .red-ui-tabs.red-ui-tabs-add {
-    padding-right: 35px
+    padding-right: 30px
 }
 
 .red-ui-tabs.red-ui-tabs-add.red-ui-tabs-scrollable {
-    padding-right: 35px;
+    padding-right: 30px;
 }
 
 .red-ui-tabs.red-ui-tabs-collapsible li:not(.active) {
@@ -360,7 +360,7 @@ span.logo span {
     box-sizing: border-box;
     top: 0;
     right: 0;
-    height: 35px;
+    height: 30px;
     background: #fff;
     border-bottom: 1px solid #bbb;
     z-index: 2
@@ -418,7 +418,7 @@ span.logo span {
     box-sizing: border-box;
     top: 0;
     right: 0;
-    height: 35px;
+    height: 30px;
     background: #fff;
     border-bottom: 1px solid #bbb;
     z-index: 2
@@ -551,7 +551,7 @@ span.logo span {
 }
 
 .red-ui-tab-scroll a {
-    height: 35px;
+    height: 30px;
     width: 21px;
     display: block;
     color: #888;
@@ -768,7 +768,7 @@ i.red-ui-tab-icon {
 }
 #sidebar-content {
     position: absolute;
-    top: 35px;
+    top: 30px;
     right: 0;
     bottom: 25px;
     left: 0;

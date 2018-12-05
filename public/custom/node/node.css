@@ -2,11 +2,6 @@
     border-bottom: 1px solid #ccc
 }
 
-.node-content {
-    background: #fff;
-    padding: 3px
-}
-
 .node-header {
     position: relative;
     background: #f3f3f3;
@@ -17,6 +12,7 @@
     overflow: hidden;
     user-select: none
 }
+
 
 .node-header > i {
     position: absolute;
@@ -30,6 +26,7 @@
     -o-transform: rotate(-90deg)
 }
 
+
 .node-header i.expanded {
     -webkit-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
@@ -39,6 +36,18 @@
 .node-header span {
     clear: both
 }
+
+.node-sub-header{
+    top: -1px;
+    /*background-color: #e3e3e3;*/
+}
+.node-sub-header > i{
+    margin: 0 10px;
+}
+.node-sub-header span {
+    padding: 10px;
+}
+
 .node_label {
     margin: 5px 0 5px 20px;
     overflow: hidden;
@@ -153,7 +162,7 @@
      position: absolute;
      pointer-events: none;
      left: 8px;
-     top: 9px;
+     top: 8px;
  }
 .searchBox-container input {
     border-radius: 0;
@@ -171,7 +180,7 @@
     overflow: hidden;
     background: #ffffff;
     text-align: center;
-    height: 35px;
+    height: 30px;
     padding: 3px;
     border-bottom: 1px solid #bbb;
     box-sizing: border-box
@@ -192,7 +201,7 @@
 }
 .node-scroll {
     position: absolute;
-    top: 35px;
+    top: 30px;
     right: 0;
     bottom: 25px;
     left: 0;

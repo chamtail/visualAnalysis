@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>数据流可视化分析平台</title>
@@ -66,14 +66,14 @@
             </div>
             <div id="node-container" class="node-scroll">
                 <template v-for="(module, key) in nodes">
-                    <div :id="'node-container-' + key" class="node-category node-close hide node-open"
+                    <div :id="'node-container-' + key" class="node-category"
                          style="display: block;">
+                        <div :id="'node-header-' + key" class="node-header">
+                            <i class="expanded fa fa-angle-down"></i>
+                            <span>{{module['display'][lang]}}</span>
+                        </div>
                         <div class="node-content" :id="'node-base-category-'+key" style="">
-                            <div :id="'node-header-' + key" class="node-header">
-                                <i class="expanded fa fa-angle-down"></i>
-                                <span>{{module['display'][lang]}}</span>
-                            </div>
-                            <div v-for="(info, key) in module">
+                            <template v-for="(info, key) in module">
                                 <template v-if="key=='nodes'">
                                     <template v-for="(node, key) in info">
                                         <div class="node" :data-template-name="key"
@@ -95,13 +95,13 @@
                                     </template>
                                 </template>
                                 <template v-else-if="key=='sub_modules'">
-                                    <template v-for="module in info">
-                                        <div :id="'node-header-' + key" class="node-header">
+                                    <template v-for="(subModule, subModuleName) in info">
+                                        <div :id="'node-sub-header-' + subModuleName" class="node-header node-sub-header">
                                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                                            <span>{{module['display'][lang]}}</span>
+                                            <span>{{subModule['display'][lang]}}</span>
                                         </div>
-                                        <div v-for="(node, key) in module['nodes']">
-                                            <div class="node" :data-template-name="key"
+                                        <div v-for="(node, nodeName) in subModule['nodes']" class="node-sub-content" :id="'node-sub-content-'+subModuleName">
+                                            <div class="node" :data-template-name="nodeName"
                                                  style="background-color: #fff; height: 30px;">
                                                 <div class="node_label" dir="">{{node[lang]}}</div>
                                                 <div class="node_icon_container">
@@ -118,7 +118,7 @@
                                         </div>
                                     </template>
                                 </template>
-                            </div>
+                            </template>
                         </div>
                     </div>
                 </template>
@@ -138,18 +138,23 @@
                 <div class="red-ui-tabs red-ui-tabs-add red-ui-tabs-scrollable" style="display: block;z-index: 0;">
                     <div class="red-ui-tabs-scroll-container">
                         <ul id="workspace-tabs" style="width: 100%;" class="">
-                            <li class="red-ui-tab ui-draggable active" id="red-ui-tab-fd9028d1-470fa8"
-                                style="width: 100%;">
-                                <a href="#" class="red-ui-tab-label" title="Flow 2">
-                                    <span class="workspace-disabled-icon">
-                                        <i class="fa fa-ban"></i>
-                                    </span>
-                                    <span class="bidiAware" dir="#">Flow 1</span>
-                                </a>
-                            </li>
+                            <template v-for="(flow, index) in flows">
+                                <li :class="['red-ui-tab ui-draggable', flow.id==activateFlow ? 'active' : '']" :id="'red-ui-tab-'+flow.id" style="width: 100%;">
+                                    <a href="#" class="red-ui-tab-label" title="flow.label">
+                                        <template v-if="flow.disabled">
+                                            <span class="workspace-disabled-icon">
+                                                <i class="fa fa-ban"></i>
+                                            </span>
+                                        </template>
+                                        <span class="bidiAware" dir="#">{{flow.label}}</span>
+                                    </a>
+                                </li>
+                            </template>
                         </ul>
                     </div>
-                    <div class="red-ui-tab-button"><a href="#"><i class="fa fa-plus"></i></a></div>
+                    <div class="red-ui-tab-button" id="workflow-add" @click="addWorkflow">
+                        <a href="#"><i class="fa fa-plus"></i></a>
+                    </div>
                     <div class="red-ui-tab-button red-ui-tab-scroll red-ui-tab-scroll-left">
                         <a href="#" style="display: none;">
                             <i class="fa fa-caret-left"></i>
@@ -285,37 +290,31 @@
                     <div class="sidebar-node-info">
                         <!-- node info -->
                         <template v-if="node.id != -1">
-                            <div :id="'accordion-'+node.id">
-                                <div class="card">
-                                    <div class="node-header" :id="'node-header-'+node.id" data-toggle="collapse"
-                                         :data-target="'#node-info-'+node.id"
-                                         aria-expanded="true" :aria-controls="'node-info-'+node.id">
-                                        <i class="fa fa-angle-down"></i>
-                                        <span>information</span>
-                                    </div>
-
-                                    <div :id="'node-info-'+node.id" class="collapse show"
-                                         :aria-labelledby="'node-header-'+node.id" :data-parent="'accordion-'+node.id">
-                                        <div style="position: relative; display: block;">
-                                            <table class="node-info">
-                                                <thead>
-                                                <tr>
-                                                    <td>name</td>
-                                                    <td>value</td>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <template v-if="node.params.length != 0">
-                                                    <template v-for="(model, index) in node.params">
-                                                        <tr class="node-info-node-row">
-                                                            <td>{{model.label[lang]}}</td>
-                                                            <td>{{model.default}}</td>
-                                                        </tr>
-                                                    </template>
+                            <div :id="'sidebar-node-info-'+node.id">
+                                <div class="node-header" :id="'node-header-'+node.id">
+                                    <i class="fa fa-angle-down expanded"></i>
+                                    <span>information</span>
+                                </div>
+                                <div :id="'node-info-'+node.id" class="node-content">
+                                    <div style="position: relative; display: block;">
+                                        <table class="node-info">
+                                            <thead>
+                                            <tr>
+                                                <td>name</td>
+                                                <td>value</td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <template v-if="node.params.length != 0">
+                                                <template v-for="(model, index) in node.params">
+                                                    <tr class="node-info-node-row">
+                                                        <td>{{model.label[lang]}}</td>
+                                                        <td>{{model.default}}</td>
+                                                    </tr>
                                                 </template>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                            </template>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -323,6 +322,32 @@
 
                         <!-- flow info -->
                         <template v-else>
+                            <div :id="'sidebar-flow-info-'+flow.id">
+                                <div class="node-header" :id="'node-header-'+flow.id">
+                                    <i class="fa fa-angle-down expanded"></i>
+                                    <span>information</span>
+                                </div>
+                                <div :id="'node-info-'+flow.id" class="node-content">
+                                    <div style="position: relative; display: block;">
+                                        <table class="node-info">
+                                            <thead>
+                                            <tr>
+                                                <td>name</td>
+                                                <td>value</td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <template v-for="(model, key) in flow">
+                                                <tr class="node-info-node-row">
+                                                    <td>{{key}}</td>
+                                                    <td>{{model}}</td>
+                                                </tr>
+                                            </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </template>
                     </div>
                 </div>
@@ -332,36 +357,31 @@
                 <div style="height: 100%; display: none;">
                     <div class="sidebar-node-variable-space">
                         <template v-for="(flow, index) in variableSpace">
-                            <div class="card">
-                                <div class="node-header" :id="'node-header-'+flow.id" data-toggle="collapse"
-                                     :data-target="'#variable-space-flow-'+flow.id"
-                                     aria-expanded="true" :aria-controls="'variable-space-flow-'+flow.id">
-                                    <i class="fa fa-angle-down"></i>
-                                    <span :class="'flow-'+flow.id">{{flow.label}}</span>
-                                </div>
+                            <div class="node-header" :id="'node-header-'+flow.id">
+                                <i class="fa fa-angle-down expanded"></i>
+                                <span :class="'flow-'+flow.id">{{flow.label}}</span>
+                            </div>
 
-                                <div :id="'variable-space-flow-'+flow.id" class="collapse show"
-                                     :aria-labelledby="'node-header-'+flow.id" data-parent="#accordion">
-                                    <div style="position: relative; display: block;">
-                                        <table class="node-info">
-                                            <thead>
-                                            <tr>
-                                                <td>id</td>
-                                                <td>name</td>
-                                                <td>size</td>
+                            <div :id="'variable-space-flow-'+flow.id" class="node-content">
+                                <div style="position: relative; display: block;">
+                                    <table class="node-info">
+                                        <thead>
+                                        <tr>
+                                            <td>id</td>
+                                            <td>name</td>
+                                            <td>size</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <template v-for="(node, index) in flow.nodes">
+                                            <tr class="node-info-node-row">
+                                                <td>{{node.id}}</td>
+                                                <td>{{node.name}}</td>
+                                                <td>{{node.size}}</td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                            <template v-for="(node, index) in flow.nodes">
-                                                <tr class="node-info-node-row">
-                                                    <td>{{node.id}}</td>
-                                                    <td>{{node.name}}</td>
-                                                    <td>{{node.size}}</td>
-                                                </tr>
-                                            </template>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </template>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </template>
@@ -459,8 +479,8 @@
 </body>
 </html>
 
-<!--<script src="../config/config.min.js"></script>-->
-<script src="../config/config.js"></script>
+<script src="../config/config.min.js"></script>
+<!--<script src="../config/config.js"></script>-->
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
@@ -469,31 +489,13 @@
 <script src="../public/custom/websocket/websocket.js"></script>
 <script src="../public/custom/charts/cluster.js"></script>
 <script>
-    // 说明：获取鼠标位置
-    // 整理：http://www.codebit.cn
-    // 来源：http://www.webreference.com
-    function mousePosition(ev) {
-        if (ev.pageX || ev.pageY) {
-            return {x: ev.pageX, y: ev.pageY};
-        }
-        return {
-            x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
-            y: ev.clientY + document.body.scrollTop - document.body.clientTop
-        };
-    }
-    document.onmousemove = mouseMove;
-
-    function mouseMove(ev) {
-        ev = ev || window.event;
-        var mousePos = mousePosition(ev);
-        //console.log("x: "+mousePos.x+"   y: " + mousePos.y);
-    }
     //vue 绑定
     var vm = new Vue({
         el: '#vm',
         data: {
             init_finish: false,
             nodes: {},
+            flows: {},
             variableSpace: {},
             node: {
                 id: "-1",
@@ -502,18 +504,18 @@
                 params: []
             },
             flow:{
-                "id": "-1",
-                "type": "tab",
-                "label": "Flow 1",
-                "disabled": false,
-                "info": "这是一个flow"
+                id: "1",
+                type: "tab",
+                label: "Flow 1",
+                disabled: false,
+                info: "这是一个flow"
             },
             path: {
                 id: "-1",
                 from: "-1",
                 to: "-1"
             },
-            selected: "aa",
+            activateFlow: "",
             lang: getCookieValue("lang"),
             routers: {},
             uploadFile: false,
@@ -522,13 +524,8 @@
             // 工作流初始化
             $(function () {
                 // 默认有一个tabs
-                workflow.tab.push({
-                    id: currentTab,
-                    type: "tab",
-                    label: "Flow " + currentTab,
-                    disabled: false,
-                    info: ""
-                });
+                vm.addWorkflow();
+
                 // 初始化左侧组件栏
                 vm.nodes = nodes_category;
                 if (vm.lang == "") {
@@ -546,7 +543,7 @@
                             document.onkeydown = function () {
                                 var oEvent = window.event;
                                 if (oEvent.keyCode === 46) {
-                                    console.log(vm.path);
+                                    console.log(vm.path.id);
                                     //逻辑处理
                                     if (vm.node.id != "-1") {
                                         onNodeDelete(vm.node.id);
@@ -566,24 +563,6 @@
                 separator();
             });
 
-            // 配置事件
-            $(function () {
-                var collapse = $("#node-header-fd9028d1-470fa8");
-                collapse.on('show.bs.collapse', function () {
-                    // do something…
-                    $('#sidebar-content .node-header > i').addClass("expanded");
-                });
-                collapse.on('hide.bs.collapse', function () {
-                    // do something…
-                    $('#sidebar-content .node-header > i').removeClass("expanded");
-                });
-            });
-
-            // 文件更改事件
-            $(function(){
-
-            });
-
             // 加载工作流
             $(function () {
                 //vm.init();
@@ -596,6 +575,7 @@
                 init();
                 vm.init_finish = true;
             }
+            console.log('here');
         },
         methods: {
             init: function () {
@@ -794,7 +774,6 @@
                         return;
                     }
 
-                    console.log(uploadFile);
                     workflow.nodes[currentTab][vm.node.id].path = uploadFile.name;
 
                     vm.onNodeRun(nodeId);
@@ -876,16 +855,12 @@
                 let svg = d3.select('#workflow svg');
 
                 // 读取tab信息
-                let tabs = data.tab;
-
-                // to do
-                // ...
+                vm.flows = data.tabs;
                 // 前端添加tab
                 // 读取各节点的状态信息
                 let status = {};
-                for (let i = 0; i < tabs.length; i++) {
+                for (let tabId in vm.flows) {
                     // 读取node信息
-                    let tabId = tabs[i].id;
                     let nodes = data.nodes[tabId];
                     for (let nodeId in nodes) {
                         addNode(svg, nodes[nodeId]);
@@ -927,13 +902,41 @@
                                 .attr('input', eNode.attr('input'))
                                 .attr('end', '0, ' + input)
                                 .attr('id', pathId)
-                                .attr('onclick', 'onPathClick("' + pathId + '")');
+                                .on('click', function () {
+                                    onPathClick(pathId);
+                                    d3.event.stopPropagation();
+                                });
                         activeLine = null;
                         points.length = 0;
                         translate = null;
                     }
                 }
 
+            },
+            addWorkflow: function () {
+                currentTab = currentTab + 1;  // 暂时使用自增
+                workflow.tabs[currentTab] = {
+                    id: currentTab,
+                    type: "tab",
+                    label: "Flow " + currentTab,
+                    disabled: false,
+                    info: "这是一个新flow"
+                };
+                vm.flows[currentTab] = {
+                    id: currentTab,
+                    type: "tab",
+                    label: "Flow " + currentTab,
+                    disabled: false,
+                    info: "这是一个新flow"
+                };
+                vm.flow = {
+                    id: currentTab,
+                    type: "tab",
+                    label: "Flow " + currentTab,
+                    disabled: false,
+                    info: "这是一个新flow"
+                };
+                vm.activateFlow = currentTab;
             },
             debug: function () {
                 $.ajaxSettings.async = false;  // 同步执行
@@ -1004,17 +1007,16 @@
     // 配置节点
     function onNodeConfig(id) {
         // 显示配置窗口
-        reset();
         $('#nodeParamsModal').modal('show');
-        var node = $('#' + id);
-        var nodeType = node.attr("data-template-name");
-
-        vm.node.id = id;
-        vm.node.name = node_config[nodeType]['display'][vm.lang];
-        vm.node.type = nodeType;
-        vm.node.params = getNodeParams(id, nodeType);
     }
-
+    // 显示工作流细节
+    function onWorkflowDetail(id){
+        reset();
+        vm.flow = workflow.tabs[id];
+    }
+    function onWorkflowConfig(id) {
+        
+    }
     // 获取节点配置
     function getNodeParams(id, nodeType) {
         var currentParams = workflow.nodes[currentTab][id];
@@ -1063,7 +1065,9 @@
 
         // 删除workflow中的记录
         var node = workflow.nodes[currentTab][id];
-        workflow.used[node.type] -= 1;
+        if(workflow.used[node.type]){
+            workflow.used[node.type] -= 1;
+        }
         delete workflow.nodes[currentTab][id];
         delete workflow.links[node.id];
 
@@ -1086,11 +1090,12 @@
     function onPathClick(id) {
         // 重置
         reset();
-        d3.select('path[id="' + id + '"]').attr('class', 'cable active');
+        //d3.selectAll('path[id="' + id + '"]').attr('class', 'cable active');
+        $('#'+id).addClass('active');
         vm.path.from = d3.select('path[id="' + id + '"]').attr('from');
         vm.path.to = d3.select('path[id="' + id + '"]').attr('to');
         vm.path.id = id;
-        console.log(vm.path);
+        console.log(JSON.stringify(vm.path));
     }
 
     // 删除连线
@@ -1186,6 +1191,7 @@
             $(".file-upload-path").html(fileName);
         })
     }
+
     function uiTab(l) {
         var E = "fa fa-lemon-o";
         var s, c, o, i, p = {}, u = 0, r = 0, f = l.element || $("#" + l.id), d = f.wrap("<div>").parent(), h = f.wrap("<div>").parent();

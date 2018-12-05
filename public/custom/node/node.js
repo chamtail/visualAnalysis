@@ -6,20 +6,24 @@
  */
 
 // 全局变量
-let currentTab = 1;  // 当前工作流tab
+let currentTab = 0;  // 当前工作流tab
 let startNode = -1;  // 开始节点
 let endNode = -1;  // 结束节点
 let workflow = {
     verCode: -1,  //校验码
-    tab: [],  // 标签记录，对应了分析任务
+    tabs: {},  // 标签记录，对应了分析任务
     nodes: {},  // 所有节点记录
     used: {},  // 节点使用记录
     links: {},  // 节点连接记录
 };
 
-// 初始化
+// 初始化，初始化各种事件
 function init() {
-    let svg = d3.select('#workflow svg');
+    let svg = d3.select('#workflow svg')
+        .on('click', function () {
+            onWorkflowDetail(currentTab);
+        });
+
 
     // 画网格
     drawGrid(svg, 5000, 5000, 20);
@@ -67,6 +71,33 @@ function init() {
 
         }
     });
+
+    // 绑定节点列表事件
+    $('.node-header').click(function () {
+        var id = $(this).attr('id');
+        var nextId = $(this).next().attr('id');
+        var el_i = $('#' + id + ' >i');
+        el_i.toggleClass('expanded');
+        var nextEl = $('#' + nextId);
+        console.log(nextId);
+        nextEl.slideToggle(500);
+    });
+
+    $('#node-collapse-all').click(function (e) {
+        var container = $('#node-container');
+        console.log(container.find('.node-content'));
+        container.find('.node-content').slideUp(500);
+    });
+
+    $('#node-expand-all').click(function (e) {
+        var container = $('#node-container');
+        console.log(container.find('.node-content'));
+        container.find('.node-content').slideDown(500);
+    });
+
+    $('#workflow-add').click(function (e) {
+        
+    });
 }
 
 // 画网格
@@ -74,7 +105,7 @@ function drawGrid(svg, width, height, gap) {
     svg.append('rect')
         .attr('width', width)
         .attr('height', height)
-        .attr('fill', "#fff");
+        .attr('fill', '#fff');
     for (let i = 0; i < width; i += gap) {
         svg.append('line')
             .attr('class', 'horizontal')
@@ -114,8 +145,17 @@ function addNode(svg, node) {
         .attr('status', node.status)
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
-        .attr('onclick', 'onNodeDetail(' + node.id + ')')
-        .attr('ondblclick', 'onNodeConfig(' + node.id + ')');
+        .on('click', function () {
+            console.log('click node');
+            onNodeDetail(node.id);
+            //    阻止事件向后传递
+            d3.event.stopPropagation();
+        })
+        .on('dblclick', function () {
+            console.log('dbclick node');
+            onNodeConfig(node.id);
+            d3.event.stopPropagation();
+        });
 
     let rect = g.append('rect')
         .attr('rx', 5)
@@ -154,8 +194,11 @@ function addNode(svg, node) {
         .attr('text-anchor', 'middle')
         .attr('font-family', 'FontAwesome')
         .attr('fill', '#1aad19 !important')
-        .attr('onclick', 'runNode(' + node.id + ')')
-        .text('\uf04b');
+        .text('\uf04b')
+        .on('click', function () {
+            runNode(node.id);
+            d3.event.stopPropagation();
+        });
 
     // input circle
     let inputs = node.inputs || 0;
@@ -227,7 +270,11 @@ function dragged() {
         d3.event.y = dy;
     }
     dragElem.attr('transform', 'translate(' + (d3.event.x - dx) + ', ' + (d3.event.y - dy) + ')');
-    updatePath(dragElem);
+
+    let id = dragElem.attr('id');
+    let translate = getTranslate(dragElem);
+    updateNode(id, translate);
+    updatePath(id, translate);
 }
 
 // 结束拖拽事件
@@ -253,6 +300,11 @@ function nodeInject(node) {
     return node;
 }
 
+// 更新节点
+function updateNode(id, translate) {
+    workflow.nodes[currentTab][dragElem.attr('id')].x = translate[0];
+    workflow.nodes[currentTab][dragElem.attr('id')].y = translate[1];
+}
 // 更新节点状态
 function updateNodeStatus(status) {
     for (let nodeId in status) {
@@ -324,7 +376,10 @@ function lineEnded() {
             .attr('input', endNode)
             .attr('end', '0, ' + input)
             .attr('id', id)
-            .attr('onclick', 'onPathClick("' + id + '")');
+            .on('click', function () {
+                onPathClick(id);
+                d3.event.stopPropagation();
+            });
     }
 
     // 记录下该连接信息
@@ -338,16 +393,14 @@ function lineEnded() {
 }
 
 // 更新Path
-function updatePath(elem) {
-    let id = elem.attr('id');
-    let t1 = getTranslate(elem);
+function updatePath(id, translate) {
 
     // 更新输出线的位置
     d3.selectAll('path[from="' + id + '"]')
         .each(function () {
             let start = d3.select(this).attr('start').split(',');
-            start[0] = +start[0] + t1[0];
-            start[1] = +start[1] + t1[1];
+            start[0] = +start[0] + translate[0];
+            start[1] = +start[1] + translate[1];
 
             let path = d3.select(this).attr('d');
             let end = path.substring(path.lastIndexOf(' ') + 1).split(',');
@@ -366,8 +419,8 @@ function updatePath(elem) {
             start[1] = +start[1];
 
             let end = d3.select(this).attr('end').split(',');
-            end[0] = +end[0] + t1[0] - cableR;
-            end[1] = +end[1] + t1[1];
+            end[0] = +end[0] + translate[0] - cableR;
+            end[1] = +end[1] + translate[1];
 
             d3.select(this).attr('d', getBezier([start, end]));
         });
@@ -416,16 +469,12 @@ function loadWorkflow() {
         workflow = data;
         let svg = d3.select('#workflow svg');
         // 读取tab信息
-        let tabs = data.tab;
-
-        // to do
-        // ...
+        vm.flows = data.tabs;
         // 前端添加tab
         // 读取各节点的状态信息
         let status = {};
-        for (let i = 0; i < tabs.length; i++) {
+        for (let tabId in vm.flows) {
             // 读取node信息
-            let tabId = tabs[i].id;
             let nodes = data.nodes[tabId];
             for (let nodeId in nodes) {
                 addNode(svg, nodes[nodeId]);
@@ -465,7 +514,10 @@ function loadWorkflow() {
                     .attr('input', eNode.attr('input'))
                     .attr('end', '0, ' + input)
                     .attr('id', pathId)
-                    .attr('onclick', 'onPathClick("' + pathId + '")');
+                    .on('click', function () {
+                        onPathClick(pathId);
+                        d3.event.stopPropagation();
+                    });
                 activeLine = null;
                 points.length = 0;
                 translate = null;
