@@ -603,6 +603,38 @@
                 });
             },
             deploy: function () {
+                var routers = generateRouters(workflow);
+                // 检查路由正确性
+                if (!this.checkRouters(routers[currentTab])) {
+                    console.log('checkRouters error');
+                    return false;
+                }
+                // 模型建立请求
+                var request = {};
+                request.verCode = workflow.verCode;
+                request.routers = routers[currentTab];
+                vm.routers = routers[currentTab];  // 保存路由信息
+                var data = JSON.stringify(request);
+                // 发送工作流
+                $.ajax({
+                    url: api_map.workflow_deploy,
+                    type: 'POST',
+                    data: data,
+                    contentType: 'application/json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            workflow.verCode = res.data.verCode;
+                            updateNodeStatus(res.data.initResult);
+                        } else {
+                            alert(res.msg);
+                        }
+                    },
+                    error: function (res) {
+                        alert('用户信息已失效，请重新登录！');
+                    }
+                });
+            },
+            generateRouters: function (workflow) {
                 // 生成节点路由表
                 var routers = {};
                 for (let tabIndex in workflow.nodes) {
@@ -646,35 +678,7 @@
                         }
                     }
                 }
-                // 检查路由正确性
-                if (!this.checkRouters(routers[currentTab])) {
-                    alert('error');
-                    return false;
-                }
-                // 模型建立请求
-                var request = {};
-                request.verCode = workflow.verCode;
-                request.routers = routers[currentTab];
-                this.routers = routers[currentTab];  // 保存路由信息
-                var data = JSON.stringify(request);
-                // 发送工作流
-                $.ajax({
-                    url: api_map.workflow_deploy,
-                    type: 'POST',
-                    data: data,
-                    contentType: 'application/json',
-                    success: function (res) {
-                        if (res.code == 0) {
-                            workflow.verCode = res.data.verCode;
-                            updateNodeStatus(res.data.initResult);
-                        } else {
-                            alert(res.msg);
-                        }
-                    },
-                    error: function (res) {
-                        alert('用户信息已失效，请重新登录！');
-                    }
-                });
+                return routers;
             },
             runNode: function (nodeId) {
                 var router = {};
@@ -856,6 +860,7 @@
                 vm.flows = data.flows;
                 for(let flowId in workflow.flows){
                     showNodesByFlow(flowId);
+                    vm.routers = vm.generateRouters(workflow)[flowId];
                     break;
                 }
             },
@@ -892,6 +897,7 @@
                 currentTab = flowId;
                 vm.activateFlow = flowId;
                 vm.flow = workflow.flows[flowId];
+                vm.routers = vm.generateRouters(workflow)[flowId];
             },
             configWorkflow: function (flowId) {
                 onWorkflowConfig(flowId);

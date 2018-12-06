@@ -222,11 +222,11 @@ function motifVisual(motifData)
 
         normalPiece.gt = st;
         normalPiece.lte = motifLabel[i][0];
-        normalPiece.color = 'green';
+        normalPiece.color = 'black';
 
         abnormalPiece.gt = motifLabel[i][0];
         abnormalPiece.lte = motifLabel[i][1];
-        abnormalPiece.color = 'red';
+        abnormalPiece.color = 'green';
 
         piecesData.push(normalPiece);
         piecesData.push(abnormalPiece);
@@ -236,14 +236,14 @@ function motifVisual(motifData)
     var endPiece = new Object();
     endPiece.gt = st;
     endPiece.lte = xdata.length;
-    endPiece.color = 'green';
+    endPiece.color = 'black';
     piecesData.push(endPiece);
 
 
     /*---------设置图标显示的牌配置项------------*/
     option = {
         title: {
-            text: '异常检测结果显示'
+            text: 'Motif结果显示'
             // subtext: '纯属虚构'
         },
         animation: false,
@@ -307,24 +307,21 @@ function motifVisual(motifData)
                 symbol: 'none',
                 itemStyle: {
                     normal: {
-                        color: "green"
+                        color: "black"
                     }
                 },
                 data: ydata,
                 markArea: {
                     itemStyle: {
                         normal: {
-                            color: "pink"
+                            color: "#B6FFED"
                         }
                     },
                     data: motifArea
-
                 }
             }
         ]
     };
-
-
     myChart.setOption(option);
 }
 

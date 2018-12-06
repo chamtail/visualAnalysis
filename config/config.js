@@ -408,3 +408,15 @@ var nodeStatusMap = {
     "6": "active",
     "7": "deactivate"
 };
+
+var variableSpace = {
+    "name": "name",
+    "label": {
+        "zh": "变量名称",
+        "en": "variable name"
+    },
+    "type": "text",
+    "default": "",
+    "enable": true,
+    "configurable": true
+};
