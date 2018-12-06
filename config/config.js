@@ -389,6 +389,7 @@ var host_url = 'http://' + IP + ':' + port;
 var api_map={
     'workflow_init': host_url + '/workflow/init',
     'workflow_deploy': host_url + '/workflow/deploy',
+    'workflow_save': host_url + '/workflow/save',
     'workflow_run': host_url + '/workflow/runAll',
     'workflow_stop': host_url + '/workflow/stopAll',
     'node_run': host_url + '/workflow/runOne',

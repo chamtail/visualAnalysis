@@ -55,6 +55,6 @@
       "configurable": false
     }
   ],
-  "description": "",
+  "description": "A node for loading data",
   "category": "input"
 }

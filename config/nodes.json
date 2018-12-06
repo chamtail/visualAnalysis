@@ -3,6 +3,7 @@
   "data-load": "enable",
   "prehandle": "enable",
   "stl": "enable",
+  "fsh": "enable",
   "data-save": "enable",
   "model-save": "enable"
 }

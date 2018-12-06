@@ -11,6 +11,12 @@
     "port": 8889,
     "api": "/workflow/deploy"
   },
+  "workflow_save": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflow/save"
+  },
   "workflow_run": {
     "protocol": "http",
     "host": "10.131.247.51",

@@ -1,0 +1,135 @@
+{
+  "display": {
+    "zh": "Shapelet分类",
+    "en": "Shapelet for classification"
+  },
+  "in": 1,
+  "out": 1,
+  "params": [
+    {
+      "name": "number_of_class",
+      "label": {
+        "zh": "类数",
+        "en": "number of class"
+      },
+      "type": "number",
+      "min": 1,
+      "default": 2,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "number_of_instance",
+      "label": {
+        "zh": "时间序列条数",
+        "en": "number of instance"
+      },
+      "type": "number",
+      "default": 50,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "max_length",
+      "label": {
+        "zh": "shapelet最长长度",
+        "en": "max length of shapelet"
+      },
+      "type": "number",
+      "default": 150,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "min_length",
+      "label": {
+        "zh": "shapelet最短长度",
+        "en": "min length of shapelet"
+      },
+      "type": "number",
+      "default": 10,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "step",
+      "label": {
+        "zh": "步长",
+        "en": "step"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "random_projection",
+      "label": {
+        "zh": "R",
+        "en": "R"
+      },
+      "type": "number",
+      "default": 10,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "top_k_candidates",
+      "label": {
+        "zh": "top k",
+        "en": "top k"
+      },
+      "type": "number",
+      "default": 10,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "number_of_class_test",
+      "label": {
+        "zh": "测试类数",
+        "en": "number of class for test"
+      },
+      "type": "number",
+      "min": 1,
+      "default": 2,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "number_of_instance_test",
+      "label": {
+        "zh": "测试时间序列条数",
+        "en": "number of instance for test"
+      },
+      "type": "number",
+      "default": 150,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "A node for classifying time series data",
+  "category": "process/classification"
+}

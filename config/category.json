@@ -28,5 +28,11 @@
       "zh": "异常处理模块",
       "en": "outlier module"
     }
+  },
+  "classification":{
+    "display": {
+      "zh": "分类模块",
+      "en": "classification module"
+    }
   }
 }

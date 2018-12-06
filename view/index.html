@@ -285,17 +285,16 @@
                 </div>
             </div>
             <div id="sidebar-content">
-                <div id="message"></div>
                 <div style="height: 100%; display: block;">
                     <div class="sidebar-node-info">
                         <!-- node info -->
                         <template v-if="node.id != -1">
                             <div :id="'sidebar-node-info-'+node.id">
-                                <div class="node-header" :id="'node-header-'+node.id">
+                                <div class="node-header" :id="'node-header-params-'+node.id">
                                     <i class="fa fa-angle-down expanded"></i>
                                     <span>information</span>
                                 </div>
-                                <div :id="'node-info-'+node.id" class="node-content">
+                                <div :id="'node-params-'+node.id" class="node-content">
                                     <div style="position: relative; display: block;">
                                         <table class="node-info">
                                             <thead>
@@ -315,6 +314,17 @@
                                             </template>
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div :id="'sidebar-node-description-'+node.id">
+                                <div class="node-header" :id="'node-header-description-'+node.id">
+                                    <i class="fa fa-angle-down expanded"></i>
+                                    <span>description</span>
+                                </div>
+                                <div :id="'node-description-'+node.id" class="node-content">
+                                    <div style="position: relative; display: block;">
+                                        {{node.description}}
                                     </div>
                                 </div>
                             </div>
@@ -352,7 +362,7 @@
                     </div>
                 </div>
                 <div style="height: 100%; display: none;">
-
+                    <div id="message"></div>
                 </div>
                 <div style="height: 100%; display: none;">
                     <div class="sidebar-node-variable-space">
@@ -509,7 +519,8 @@
                 id: "-1",
                 name: "",
                 type: "",
-                params: []
+                params: [],
+                description: "",
             },
             flow:{
                 id: "1",
@@ -573,7 +584,7 @@
 
             // 加载工作流
             $(function () {
-                //vm.init();
+                vm.init();
                 vm.debug();
             })
         },
@@ -587,7 +598,7 @@
         methods: {
             init: function () {
                 // 加载工作流
-                let verCode = "admin";
+                let verCode = "1";
                 $.ajax({
                     url: api_map.workflow_init + "?verCode=" + verCode,
                     type: 'POST',
@@ -603,7 +614,7 @@
                 });
             },
             deploy: function () {
-                var routers = generateRouters(workflow);
+                var routers = vm.generateRouters(workflow);
                 // 检查路由正确性
                 if (!this.checkRouters(routers[currentTab])) {
                     console.log('checkRouters error');
@@ -631,6 +642,21 @@
                     },
                     error: function (res) {
                         alert('用户信息已失效，请重新登录！');
+                    }
+                });
+            },
+            save: function () {
+                $.ajax({
+                    url: api_map.workflow_save,
+                    type: 'POST',
+                    data: JSON.stringify(workflow),
+                    contentType: 'application/json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            console.log("工作流保存成功");
+                        } else {
+                            console.log("工作流保存失败");
+                        }
                     }
                 });
             },
@@ -682,7 +708,7 @@
             },
             runNode: function (nodeId) {
                 var router = {};
-                router[nodeId] = this.routers[nodeId];
+                router[nodeId] = vm.routers[nodeId];
                 if (!this.checkRouters(router) || !this.checkNodeStatus(router)) {
                     alert('error');
                     return false;
@@ -721,6 +747,10 @@
                     alert('error');
                     return false;
                 }
+                // 显示启动
+                for(let nodeId in this.routers){
+                    vm.onNodeRun(nodeId);
+                }
                 var nodeRequest = {};
                 nodeRequest.verCode = workflow.verCode;
                 nodeRequest.routers = this.routers;
@@ -732,6 +762,7 @@
                     contentType: 'application/json',
                     success: function (res) {
                         if (res.code == 0) {
+                            console.log("节点们正在运行。。。");
                             return true;
                         } else {
                             alert(res.msg);
@@ -933,6 +964,8 @@
         vm.node.name = node_config[nodeType]['display'][vm.lang];
         vm.node.type = nodeType;
         vm.node.params = getNodeParams(id, nodeType);
+        vm.node.description = node_config[nodeType].description;
+        console.log(vm.node.description);
         console.log('显示节点细节&显示节点可视化');
         // 如果该节点状态为已运行
         var status = node.attr('status');
@@ -1103,7 +1136,8 @@
             id: "-1",
             name: "",
             type: "",
-            params: []
+            params: [],
+            description: ""
         };
         vm.path = {
             id: "-1",

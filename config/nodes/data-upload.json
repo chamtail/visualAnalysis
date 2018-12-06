@@ -51,6 +51,6 @@
       "configurable": false
     }
   ],
-  "description": "",
+  "description": "A node for uploading data",
   "category": "input"
 }

@@ -76,6 +76,7 @@ function init() {
     // 绑定节点列表事件
     $('.node-header').click(function () {
         var id = $(this).attr('id');
+        console.log(id);
         var nextId = $(this).next().attr('id');
         var el_i = $('#' + id + ' >i');
         el_i.toggleClass('expanded');
@@ -340,6 +341,10 @@ function showNodesByFlow(flowId) {
         if(workflow.links[nodeId]){
             links[nodeId] = workflow.links[nodeId];
             status[nodeId] = node.status;
+            for(let i=0, len=links[nodeId].length; i<len; i++){
+                let id = links[nodeId][i];
+                status[id] = workflow.nodes[flowId][id].status;
+            }
         }
     }
     // 显示连线
@@ -385,6 +390,7 @@ function showNodesByFlow(flowId) {
 
     updateNodeStatus(status);
 }
+
 /**
  * 节点相关 End
  */
