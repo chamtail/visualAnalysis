@@ -505,6 +505,7 @@
 <script src="../public/custom/charts/charts.js"></script>
 <script src="../public/custom/websocket/websocket.js"></script>
 <script src="../public/custom/charts/cluster.js"></script>
+<link href="../public/custom/charts/cluster.css" rel="stylesheet">
 <script>
     //vue 绑定
     var vm = new Vue({
@@ -1178,7 +1179,7 @@
             case "cluster":
                 console.log("cluster");
                 $('#cluster').attr('style', 'display:block');
-                showCluster();
+                initCluster();
                 break;
             default:
                 console.log('default');
