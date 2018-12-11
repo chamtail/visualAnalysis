@@ -41,6 +41,18 @@
     "port": 8889,
     "api": "/workflow/stopOne"
   },
+  "variable_save" : {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflow/variable/save"
+  },
+  "variable_load" : {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflow/variable/load"
+  },
   "get_data": {
     "protocol": "http",
     "host": "10.131.247.51",

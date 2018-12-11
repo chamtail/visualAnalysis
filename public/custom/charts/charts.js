@@ -180,8 +180,7 @@ function abnormalVisual(abnomalData) {
     myChart.setOption(option);
 }
 
-function motifVisual(motifData)
-{
+function motifVisual(motifData) {
     if(motifData == null){
         motifData = new Object();
         motifData.timestamp = ["00:00", '01:15', '02:30', '03:45', '05:00', '06:15', '07:30', '08:45', '10:00', '11:15', '12:30', '13:45', '15:00', '16:15', '17:30', '18:45', '20:00', '21:15', '22:30', '23:45'];
@@ -325,7 +324,6 @@ function motifVisual(motifData)
     myChart.setOption(option);
 }
 
-
 function showGraph(data) {
     var chartDom = document.getElementById('data-load');
     var myChart = echarts.getInstanceByDom(chartDom) || echarts.init(chartDom);
@@ -373,7 +371,7 @@ function showGraph(data) {
             }
         },
         series: [{
-            type: 'bar',
+            type: 'line',
             data: data.label1,
             // Set `large` for large data amount
             large: true

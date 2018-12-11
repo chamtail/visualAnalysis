@@ -114,6 +114,17 @@ var node_config = {
                 "configurable": true
             },
             {
+                "name": "variable",
+                "label": {
+                    "zh": "变量名称",
+                    "en": "variable name"
+                },
+                "type": "text",
+                "default": "",
+                "enable": false,
+                "configurable": true
+            },
+            {
                 "name": "inputs",
                 "label": {
                     "zh": "输入节点个数",
@@ -394,6 +405,8 @@ var api_map={
     'workflow_stop': host_url + '/workflow/stopAll',
     'node_run': host_url + '/workflow/runOne',
     'node_stop': host_url + '/workflow/stopOne',
+    'variable_save' : host_url + '/workflow/variable/save',
+    'variable_load' : host_url + '/workflow/variable/load',
     'get_data': host_url + '/workflow/getData',
     'upload': host_url + '/file/upload',
     'webSocket': 'ws://'+IP+':8889/webSocket',

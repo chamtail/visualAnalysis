@@ -78,6 +78,10 @@ li {
 #btn-deploy .deploy-button-content>img {
     margin-right: 8px;
 }
+.run-button {
+    background: #1aad19 !important;
+    color: #eee !important;
+}
 img {
     width: auto\9;
     height: auto;

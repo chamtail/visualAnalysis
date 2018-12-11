@@ -44,11 +44,29 @@
                             <img id="btn-deploy-icon" src="./public/deploy-full-o.png">
                             <span>Deploy</span>
                         </span>
-                        <span class="deploy-button-spinner hide" style="display: none;"><img
-                                src="./public/spin.svg"></span>
+                        <span class="deploy-button-spinner hide" style="display: none;">
+                            <img src="./public/spin.svg">
+                        </span>
                     </a>
                 </span>
             </li>
+            <li>
+                <span class="deploy-button-group button-group">
+                    <a id="btn-runWorkflow" class="run-button" @click="runWorkflow">
+                        <span class="deploy-button-content" style="opacity: 1;">
+                            <i class="fa fa-play-circle" aria-hidden="true"></i>
+                            <span>Run</span>
+                        </span>
+                        <span class="deploy-button-spinner hide" style="display: none;">
+                            <img src="./public/spin.svg"></span>
+                    </a>
+                </span>
+            </li>
+            <!--<li>-->
+                <!--<a class="btn btn-link" href="#"><i class="fa fa-play-circle-o" aria-hidden="true"></i>&nbsp;运行</a>-->
+            <!--</li>-->
+            <!--<a class="btn btn-link" href="#"><i class="fa fa-cloud-upload" aria-hidden="true"></i>&nbsp;部署</a>-->
+            <!--<a class="btn btn-link" href="#"><i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;分享</a>-->
         </ul>
         <div id="header-shade" class="hide" style="display: none;"></div>
     </div>
@@ -496,8 +514,8 @@
 </body>
 </html>
 
-<script src="../config/config.min.js"></script>
-<!--<script src="../config/config.js"></script>-->
+<!--<script src="../config/config.min.js"></script>-->
+<script src="../config/config.js"></script>
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
@@ -584,8 +602,8 @@
 
             // 加载工作流
             $(function () {
-                vm.init();
-                vm.debug();
+                //vm.init();
+                //vm.debug();
             })
         },
         updated: function () {
@@ -614,12 +632,17 @@
                 });
             },
             deploy: function () {
+                /**
+                 * 部署时只需要关注节点连接连接的正确性，不需要关注参数的正确性
+                 */
                 var routers = vm.generateRouters(workflow);
                 // 检查路由正确性
                 if (!this.checkRouters(routers[currentTab])) {
                     console.log('checkRouters error');
                     return false;
                 }
+                // 防止多次部署，disabled deploy
+                vm.disabledA('#btn-deploy');
                 // 模型建立请求
                 var request = {};
                 request.verCode = workflow.verCode;
@@ -707,8 +730,11 @@
                 return routers;
             },
             runNode: function (nodeId) {
-                var router = {};
-                router[nodeId] = vm.routers[nodeId];
+                if (!this.checkRouters(vm.routers) || !this.checkNodeStatus(vm.routers)) {
+                    alert('请先部署工作流！');
+                    return false;
+                }
+                var router = vm.routers[nodeId];
                 if (!this.checkRouters(router) || !this.checkNodeStatus(router)) {
                     alert('error');
                     return false;
@@ -719,7 +745,7 @@
                 var nodeRequest = {};
                 nodeRequest.verCode = workflow.verCode;
                 nodeRequest.routers = {};
-                nodeRequest.routers[nodeId] = this.routers[nodeId];
+                nodeRequest.routers[nodeId] = router;
                 var data = JSON.stringify(nodeRequest);
                 $.ajax({
                     url: api_map.node_run,
@@ -734,7 +760,6 @@
                             let nodeStatus = {};
                             nodeStatus[nodeId] = res.code;
                             updateNodeStatus(nodeStatus);
-                            vm.onNodeReRun(nodeId);
                         }
                     }
                 });
@@ -744,7 +769,7 @@
             },
             runWorkflow: function () {
                 if (!this.checkRouters(this.routers) || !this.checkNodeStatus(this.routers)) {
-                    alert('error');
+                    alert('请先部署工作流！');
                     return false;
                 }
                 // 显示启动
@@ -766,6 +791,11 @@
                             return true;
                         } else {
                             alert(res.msg);
+                            let nodeStatus = {};
+                            for(let nodeId in vm.routers){
+                                nodeStatus[nodeId] = res.code;
+                            }
+                            updateNodeStatus(nodeStatus);
                             return false;
                         }
                     }
@@ -787,7 +817,7 @@
                 return true;
             },
             checkNodeStatus: function (routers) {
-                // Check 4: 检测节点状态是否满足要求
+                // Check: 检测节点状态是否满足要求
                 for (let nodeId in routers) {
                     var node = $('#' + nodeId);
                     var status = node.attr('status');
@@ -804,13 +834,22 @@
             saveNodeConfig: function () {
                 $('#nodeParamsModal').modal('hide');
                 var data = $('#main-form').serializeArray();
+                var dataSetName = "-1";
+                var variable = "-1";  // -1 代表不需要变量
                 $.each(data, function () {
                     workflow.nodes[currentTab][vm.node.id][this.name] = this.value;
+                    console.log(this.name, this.value);
+                    if(this.name == "name"){
+                        dataSetName = this.value;
+                    }
+                    if(this.name == "variable"){
+                        variable = this.value;
+                    }
                 });
                 if (this.uploadFile) {
                     var nodeId = this.node.id;
                     var uploadFile = $('#file_' + nodeId)[0].files[0];
-                    if (uploadFile == undefined) {
+                    if (uploadFile == undefined || dataSetName == "") {
                         console.log("error");
                         return;
                     }
@@ -829,7 +868,7 @@
                     formData.append('verCode', workflow.verCode);
                     formData.append('nodeId', vm.node.id);
                     formData.append('nodeType', vm.node.type);
-                    formData.append('dataSetName', 'test');
+                    formData.append('dataSetName', dataSetName);
                     $.ajax({
                         url: api_map.upload,
                         type: 'POST',
@@ -848,7 +887,17 @@
                         }
                     });
                 }
-                onNodeDetail(vm.node.id);
+
+                // 保存变量
+                if(variable != "-1"){
+                    vm.saveVariableConfig(variable);
+                }
+
+                // 更新routers
+                vm.routers = vm.generateRouters(workflow)[currentTab];
+                onNodeDetail(vm.node.id, true);
+
+                vm.enableA('#btn-deploy');
             },
             deleteNode: function () {
                 onNodeDelete(vm.node.id);
@@ -929,9 +978,90 @@
                 vm.activateFlow = flowId;
                 vm.flow = workflow.flows[flowId];
                 vm.routers = vm.generateRouters(workflow)[flowId];
+
+                vm.enableA('#btn-deploy');
             },
             configWorkflow: function (flowId) {
                 onWorkflowConfig(flowId);
+            },
+            saveVariableConfig: function (variable) {
+                let request = {};
+                request['verCode'] = workflow.verCode;
+                request['flowId'] = vm.flow.id;
+                request['nodeId'] = vm.node.id;
+                request['variableName'] = variable;
+                let data = JSON.stringify(request);
+                // 保存变量
+                $.ajax({
+                    url: api_map.variable_save,
+                    type: 'POST',
+                    data: data,
+                    contentType: 'application/json',
+                    success: function (res) {
+                        if (res.code == 0) {
+
+                        } else {
+                            alert(res.msg);
+                        }
+                    },
+                    error: function (res) {
+                        alert('用户信息已失效，请重新登录！');
+                    }
+                });
+
+                // 更新本地
+                if(!vm.variableSpace[vm.flow.id]){
+                    vm.variableSpace[vm.flow.id] = {
+                        id: vm.flow.id,
+                        type: vm.flow.type,
+                        label: vm.flow.label,
+                        disabled: vm.flow.disabled,
+                        description: vm.flow.description,
+                        nodes: {}
+                    };
+                }
+                if(!vm.variableSpace[vm.flow.id].nodes[vm.node.id]){
+                    vm.variableSpace[vm.flow.id].nodes[vm.node.id] = {
+                        id: vm.node.id,
+                        name: variable,
+                        size: ""
+                    }
+                }
+                vm.variableSpace[vm.flow.id].nodes[vm.node.id].name = variable;
+            },
+            loadVariableConfig: function () {
+                let request = {};
+                request['verCode'] = workflow.verCode;
+                request['flowId'] = vm.flow.id;
+                request['nodeId'] = vm.node.id;
+                let data = JSON.stringify(request);
+                JSON.stringify(data);
+                $.ajax({
+                    url: api_map.variable_load,
+                    type: 'POST',
+                    data: data,
+                    contentType: 'application/json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            vm.variableSpace[vm.flow.id].nodes[vm.node.id] = res.data.size;
+                        } else {
+                            alert(res.msg);
+                        }
+                    },
+                    error: function (res) {
+                        alert('用户信息已失效，请重新登录！');
+                    }
+                });
+            },
+            disabledA: function (selector) {
+                let ele = $(selector);
+                ele.addClass('disabled');
+                ele.css("pointer-events","none");
+            },
+            enableA: function (selector) {
+                let ele = $(selector);
+                ele.removeClass('disabled');
+                ele.css("pointer-events","");
             },
             debug: function () {
                 $.ajaxSettings.async = false;  // 同步执行
@@ -949,12 +1079,13 @@
     });
 
     // 显示节点细节
-    function onNodeDetail(id) {
+    function onNodeDetail(id, force=false) {
         // 事件过滤, 配置一样便过滤。不止比较id
-//        if(id == vm.node.id){
-//            console.log('重复点击节点，事件无效！');
-//            return;
-//        }
+        if(id == vm.node.id && !force){
+            console.log('重复点击节点，事件无效！');
+            return;
+        }
+
         // 重制
         reset();
         var node = $('#' + id);
@@ -965,7 +1096,9 @@
         vm.node.type = nodeType;
         vm.node.params = getNodeParams(id, nodeType);
         vm.node.description = node_config[nodeType].description;
-        console.log(vm.node.description);
+//        if(vm.variableSpace[vm.flow.id].nodes[vm.node.id].size != ""){
+//            vm.loadVariableConfig();
+//        }
         console.log('显示节点细节&显示节点可视化');
         // 如果该节点状态为已运行
         var status = node.attr('status');
@@ -1004,11 +1137,11 @@
 
     // 显示工作流细节
     function onWorkflowDetail(id){
-        // 事件过滤
-        if(id == vm.flow.id){
-            console.log('重复点击工作流，事件无效！');
-            return;
-        }
+//        // 事件过滤
+//        if(id == vm.flow.id){
+//            console.log('重复点击工作流，事件无效！');
+//            return;
+//        }
 
         // 重置
         reset();
@@ -1032,7 +1165,7 @@
         var attrInfo = node_config[nodeType]['params'];
 
         for (var i = 0, len = attrInfo.length; i < len; i++) {
-            if (attrInfo[i]['enable'] && attrInfo[i]['configurable']) {
+            if (attrInfo[i]['configurable']) {
                 for (var key in keyList) {
                     if (attrInfo[i]['name'] == key) {
                         attrInfo[i]['default'] = currentParams[key];
@@ -1145,7 +1278,6 @@
             to: "-1"
         };
         vm.uploadFile = false;
-
         // 重设各节点状态
         for (let nodeId in workflow.nodes[currentTab]) {
             d3.selectAll('g[id="' + nodeId + '"]')

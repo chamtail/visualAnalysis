@@ -57,6 +57,8 @@ function init() {
                 return;
             }
 
+            vm.enableA('#btn-deploy');
+
             // 记录节点
             if (!workflow.nodes[currentTab]) {
                 workflow.nodes[currentTab] = {};
@@ -312,10 +314,10 @@ function updateNodeStatus(status) {
             .attr('status', statusNow);
         workflow.nodes[workflow.nodeFlowMap[nodeId]][nodeId].status = statusNow;
         if (statusNow == 4){
-            vm.onNodeStop(nodeId);
+            vm.onNodeReRun(nodeId);
         }
         if (statusNow == 5){
-            vm.onNodeReRun(nodeId);
+            vm.onNodeStop(nodeId);
         }
     }
 }
@@ -522,6 +524,7 @@ function resetPathParmas() {
     translate = null;
     startNode = null;
     endNode = null;
+    vm.enableA('#btn-deploy');
 }
 /**
  * 连线相关 End
