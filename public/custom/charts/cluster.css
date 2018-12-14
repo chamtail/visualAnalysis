@@ -1,0 +1,36 @@
+.left-container {
+    height: 300px;
+    width: 35%;
+    display: inline-block;
+}
+
+.right-container {
+    height: 300px;
+    width: 65%;
+    display: inline-block;
+}
+
+.cluster-image {
+    height: 300px;
+    width: 50%;
+    display: inline-block;
+}
+
+.page-container {
+    height: 20px;
+    width: 100%;
+    display: inline-block;
+}
+
+.page-component {
+    font-size: 25em;
+    cursor: pointer;
+}
+
+.left-arrow {
+    margin-left: 45%;
+}
+
+.right-arrow {
+    margin-left: 40%;
+}
