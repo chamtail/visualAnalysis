@@ -5,5 +5,9 @@
   "stl": "enable",
   "fsh": "enable",
   "data-save": "enable",
-  "model-save": "enable"
+  "model-save": "enable",
+  "sax-classify": "enable",
+  "elis": "enable",
+  "mpsegment": "enable",
+  "kshape":"enable"
 }

@@ -1,0 +1,80 @@
+{
+  "display": {
+    "zh": "ELIS分类",
+    "en": "SAX for classification"
+  },
+  "in": 1,
+  "out": 1,
+  "params": [
+    {
+      "name": "Regulation",
+      "label": {
+        "zh": "正则化",
+        "en": "Regulation"
+      },
+      "type": "number",
+      "min": 0,
+      "default": 0.01,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "Iteration",
+      "label": {
+        "zh": "迭代数",
+        "en": "Iteration"
+      },
+      "type": "number",
+      "default": 0,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "Learning_Rate",
+      "label": {
+        "zh": "学习率",
+        "en": "Learning_Rate"
+      },
+      "type": "number",
+      "default": 0.01,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "Data_Generation",
+      "label": {
+        "zh": "数据生成数量",
+        "en": "Data_Generation"
+      },
+      "type": "number",
+      "min":2,
+      "default": "",
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "A node for classifying time series data using ELIS",
+  "category": "process/classification"
+}

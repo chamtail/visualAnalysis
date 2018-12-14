@@ -1,0 +1,46 @@
+{
+  "display": {
+    "zh": "kshape",
+    "en": "clustering"
+  },
+  "in": 1,
+  "out": 1,
+  "params": [
+    {
+      "name": "num_of_clusters",
+      "label": {
+        "zh": "聚类类数",
+        "en": "num_of_clusters"
+      },
+      "type": "number",
+      "min": 1,
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "A node for time series data clustering",
+  "category": "process/clustering"
+}
