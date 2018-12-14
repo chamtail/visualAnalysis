@@ -514,8 +514,8 @@
 </body>
 </html>
 
-<!--<script src="../config/config.min.js"></script>-->
-<script src="../config/config.js"></script>
+<script src="../config/config.min.js"></script>
+<!--<script src="../config/config.js"></script>-->
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
@@ -541,11 +541,11 @@
                 description: "",
             },
             flow:{
-                id: "1",
-                type: "tab",
-                label: "Flow 1",
+                id: "-1",
+                type: "",
+                label: "",
                 disabled: false,
-                info: "这是一个flow"
+                info: ""
             },
             variableSpace: {},
             path: {
@@ -895,6 +895,11 @@
 
                 // 更新routers
                 vm.routers = vm.generateRouters(workflow)[currentTab];
+
+                // 更新节点参数
+                vm.deploy();
+
+                // 显示节点属性
                 onNodeDetail(vm.node.id, true);
 
                 vm.enableA('#btn-deploy');
@@ -1043,7 +1048,13 @@
                     contentType: 'application/json',
                     success: function (res) {
                         if (res.code == 0) {
-                            vm.variableSpace[vm.flow.id].nodes[vm.node.id] = res.data.size;
+                            //vm.variableSpace[vm.flow.id].nodes[vm.node.id] = res.data.size;
+                            for(let i=0, len=res.data.length; i<len; i++){
+                                let fId = res.data[i].flowId;
+                                let nId = res.data[i].nodeId;
+                                vm.variableSpace[fId].nodes[nId].name = res.data[i].variableName;
+                                vm.variableSpace[fId].nodes[nId].size = res.data[i].size;
+                            }
                         } else {
                             alert(res.msg);
                         }
@@ -1080,7 +1091,7 @@
 
     // 显示节点细节
     function onNodeDetail(id, force=false) {
-        // 事件过滤, 配置一样便过滤。不止比较id
+        // 事件过滤, 配置一样便过滤。不只比较id
         if(id == vm.node.id && !force){
             console.log('重复点击节点，事件无效！');
             return;
