@@ -34,5 +34,17 @@
       "zh": "分类模块",
       "en": "classification module"
     }
+  },
+  "segmentation":{
+    "display": {
+      "zh": "分段模块",
+      "en": "segmentation module"
+    }
+  },
+  "clustering":{
+    "display": {
+      "zh": " 聚类模块",
+      "en": "clustering module"
+    }
   }
 }

@@ -1,0 +1,58 @@
+{
+  "display": {
+    "zh": "mp-based分段",
+    "en": "matrix-profile-based segmentation"
+  },
+  "in": 1,
+  "out": 1,
+  "params": [
+    {
+      "name": "length_of_step",
+      "label": {
+        "zh": "移动步长",
+        "en": "length_of_step"
+      },
+      "type": "number",
+      "min": 1,
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "number_of_segment_points",
+      "label": {
+        "zh": "分段点个数",
+        "en": "number_of_segment_points"
+      },
+      "type": "number",
+      "min":1,
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "A node for time series data segmentation based on matrix-profile",
+  "category": "process/segmentation"
+}

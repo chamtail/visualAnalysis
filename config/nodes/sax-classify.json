@@ -1,0 +1,68 @@
+{
+  "display": {
+    "zh": "SAX分类",
+    "en": "SAX for classification"
+  },
+  "in": 1,
+  "out": 1,
+  "params": [
+    {
+      "name": "length_of_window",
+      "label": {
+        "zh": "滑动窗口长度",
+        "en": "length_of_window"
+      },
+      "type": "number",
+      "min": 1,
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "length_of_word",
+      "label": {
+        "zh": "分割词汇长度",
+        "en": "length_of_word"
+      },
+      "type": "number",
+      "default": 16,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "size_of_alphabet",
+      "label": {
+        "zh": "字母集大小",
+        "en": "size of alphabet"
+      },
+      "type": "number",
+      "default": 4,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "A node for classifying time series data using SAX",
+  "category": "process/classification"
+}
