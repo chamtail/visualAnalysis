@@ -39,8 +39,8 @@ function clickPageNext(i) {
     showCluster();
 }
 
-function initCluster() {
-    $.get('../data/Classification.json', function (data) {
+function initCluster(data) {
+    // $.get('../data/Classification.json', function (data) {
         const clusterNum = data.clusterNum;
         const seriesInfo = data.clusteredSeries;
         imageCount = [];
@@ -49,16 +49,16 @@ function initCluster() {
             imageCount.push(seriesInfo[i].length - 1);
             imageIndex.push(0);
         }
-    });
-    showCluster();
+    // });
+    showCluster(data);
 }
 
-function showCluster() {
+function showCluster(data) {
     var dom = document.getElementById("cluster");
     while (dom.firstChild) {
         dom.removeChild(dom.firstChild);
     }
-    $.get('../data/Classification.json', function (data) {
+    // $.get('../data/Classification.json', function (data) {
             var clusterNum = data.clusterNum;
             var seriesInfo = data.clusteredSeries;
             for (var i = 0; i < clusterNum; i++) {
@@ -108,7 +108,7 @@ function showCluster() {
                     })[0];
                     myChart.setOption(option = {
                         title: {
-                            text: j === 0 ? "Cluster" + " " + (i + 1) : "序列" + j,
+                            text: j === 0 ? "分类中心" + " " + (i + 1) : "序列" + j,
                             x: 'center',
                             align: 'right'
                         },
@@ -164,6 +164,6 @@ function showCluster() {
                 });
                 pageContainer.appendChild(rightArrow);
             }
-        }
-    );
+        // }
+    // );
 }
