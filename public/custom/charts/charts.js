@@ -396,6 +396,9 @@ function showGraph(data) {
     myChart.hideLoading();
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
+    $(".visual-chart").resize(function () {
+        myChart.resize();
+    });
     //用于使chart自适应高度和宽度
     window.onresize = myChart.resize();
 }

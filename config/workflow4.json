@@ -1,0 +1,75 @@
+{
+  "verCode": "admin",
+  "flows": {
+    "1": {
+      "id": 1,
+      "type": "tab",
+      "label": "Flow 1",
+      "disabled": false,
+      "info": "这是一个新flow"
+    }
+  },
+  "nodes": {
+    "1": {
+      "1544779455002": {
+        "id": 1544779455002,
+        "status": "4",
+        "type": "data-upload",
+        "x": 116.5,
+        "y": 98,
+        "z": 1,
+        "text": "上传数据   ",
+        "path": "Gun_Point_TRAIN.csv",
+        "name": "test",
+        "variable": "a",
+        "inputs": 0,
+        "outputs": 1
+      },
+      "1544779459423": {
+        "id": 1544779459423,
+        "status": "4",
+        "type": "data-upload",
+        "x": 117.5,
+        "y": 197,
+        "z": 1,
+        "text": "上传数据   ",
+        "path": "Gun_Point_TEST.csv",
+        "name": "测试",
+        "variable": "b",
+        "inputs": 0,
+        "outputs": 1
+      },
+      "1544779464016": {
+        "id": 1544779464016,
+        "status": "4",
+        "type": "sax-classify",
+        "x": 430.5,
+        "y": 134,
+        "z": 1,
+        "text": "SAX分类   ",
+        "length_of_window": 1,
+        "length_of_word": 16,
+        "size_of_alphabet": 4,
+        "inputs": 1,
+        "outputs": 1
+      }
+    }
+  },
+  "used": {
+    "data-upload": 2,
+    "sax-classify": 1
+  },
+  "links": {
+    "1544779455002": [
+      "1544779464016"
+    ],
+    "1544779459423": [
+      "1544779464016"
+    ]
+  },
+  "nodeFlowMap": {
+    "1544779455002": 1,
+    "1544779459423": 1,
+    "1544779464016": 1
+  }
+}

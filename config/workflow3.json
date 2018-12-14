@@ -1,0 +1,73 @@
+{
+  "verCode": "admin",
+  "flows": {
+    "1": {
+      "id": 1,
+      "type": "tab",
+      "label": "Flow 1",
+      "disabled": false,
+      "info": "这是一个新flow"
+    }
+  },
+  "nodes": {
+    "1": {
+      "1544772485370": {
+        "id": 1544772485370,
+        "status": "7",
+        "type": "data-upload",
+        "x": 63.5,
+        "y": 72,
+        "z": 1,
+        "text": "上传数据   ",
+        "path": "stl.csv",
+        "name": "测试",
+        "variable": "data_stl",
+        "inputs": 0,
+        "outputs": 1
+      },
+      "1544772489104": {
+        "id": 1544772489104,
+        "status": "7",
+        "type": "prehandle",
+        "x": 314.5,
+        "y": 55,
+        "z": 1,
+        "text": "标准化   ",
+        "strategy": "zscore",
+        "inputs": 1,
+        "outputs": 1
+      },
+      "1544772490512": {
+        "id": 1544772490512,
+        "status": "7",
+        "type": "stl",
+        "x": 477.5,
+        "y": 110,
+        "z": 1,
+        "text": "异常检测   ",
+        "maxanoms": 0.02,
+        "day": "day",
+        "inputs": 1,
+        "outputs": 1
+      }
+    }
+  },
+  "used": {
+    "data-upload": 1,
+    "prehandle": 1,
+    "stl": 1
+  },
+  "links": {
+    "1544772485370": [
+      "1544772489104"
+    ],
+    "1544772489104": [
+      "1544772490512"
+    ]
+  },
+  "nodeFlowMap": {
+    "1544772485370": 1,
+    "1544772489104": 1,
+    "1544772490512": 1
+  }
+}

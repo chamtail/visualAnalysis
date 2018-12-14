@@ -25,7 +25,6 @@ function init() {
             onWorkflowDetail(currentTab);
         });
 
-
     // 画网格
     drawGrid(svg, 5000, 5000, 20);
 
@@ -312,11 +311,11 @@ function updateNodeStatus(status) {
         d3.selectAll('g[id="' + nodeId + '"]')
             .attr('class', 'node ' + nodeStatusMap[statusNow])
             .attr('status', statusNow);
-        workflow.nodes[workflow.nodeFlowMap[nodeId]][nodeId].status = statusNow;
-        if (statusNow == 4){
+        workflow.nodes[workflow.nodeFlowMap[nodeId]][nodeId].status = statusNow.toString();
+        if (statusNow == 4 || statusNow == "4"){
             vm.onNodeReRun(nodeId);
         }
-        if (statusNow == 5){
+        if (statusNow == 5 || statusNow == "5"){
             vm.onNodeStop(nodeId);
         }
     }
@@ -531,8 +530,8 @@ function resetPathParmas() {
  */
 
 // 加载工作流
-function loadWorkflow() {
-    $.getJSON('../config/workflow.json', function (data) {
+function loadWorkflow(workflowFile) {
+    $.getJSON('../config/'+workflowFile+'.json', function (data) {
         // 更新workflow
         workflow = data;
         vm.flows = data.flows;

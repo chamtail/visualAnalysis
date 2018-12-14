@@ -1,0 +1,99 @@
+{
+  "verCode": "admin",
+  "flows": {
+    "1": {
+      "id": 1,
+      "type": "tab",
+      "label": "Flow 1",
+      "disabled": false,
+      "info": "这是一个新flow"
+    }
+  },
+  "nodes": {
+    "1": {
+      "1544758188979": {
+        "id": 1544758188979,
+        "status": 7,
+        "type": "data-upload",
+        "x": 167.5,
+        "y": 61,
+        "z": 1,
+        "text": "上传数据   ",
+        "path": "Gun_Point_TRAIN.csv",
+        "name": "tr",
+        "variable": "a",
+        "inputs": 0,
+        "outputs": 1
+      },
+      "1544758195279": {
+        "id": 1544758195279,
+        "status": 7,
+        "type": "data-upload",
+        "x": 145.5,
+        "y": 215,
+        "z": 1,
+        "text": "上传数据   ",
+        "path": "Gun_Point_TEST.csv",
+        "name": "te",
+        "variable": "b",
+        "inputs": 0,
+        "outputs": 1
+      },
+      "1544758198576": {
+        "id": 1544758198576,
+        "status": 7,
+        "type": "fsh",
+        "x": 599.5,
+        "y": 105,
+        "z": 1,
+        "text": "Shapelet分类   ",
+        "number_of_class": "2",
+        "number_of_instance": "50",
+        "max_length": "150",
+        "min_length": "10",
+        "step": "1",
+        "random_projection": "10",
+        "top_k_candidates": "10",
+        "number_of_class_test": "2",
+        "number_of_instance_test": "150",
+        "inputs": 1,
+        "outputs": 1
+      },
+      "1544758200638": {
+        "id": 1544758200638,
+        "status": 7,
+        "type": "sax-classify",
+        "x": 548.5,
+        "y": 230,
+        "z": 1,
+        "text": "SAX分类   ",
+        "length_of_window": "30",
+        "length_of_word": "16",
+        "size_of_alphabet": "4",
+        "inputs": 1,
+        "outputs": 1
+      }
+    }
+  },
+  "used": {
+    "data-upload": 2,
+    "fsh": 1,
+    "sax-classify": 1
+  },
+  "links": {
+    "1544758188979": [
+      "1544758198576",
+      "1544758200638"
+    ],
+    "1544758195279": [
+      "1544758198576",
+      "1544758200638"
+    ]
+  },
+  "nodeFlowMap": {
+    "1544758188979": 1,
+    "1544758195279": 1,
+    "1544758198576": 1,
+    "1544758200638": 1
+  }
+}

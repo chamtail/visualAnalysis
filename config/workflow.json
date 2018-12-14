@@ -1,5 +1,5 @@
 {
-  "verCode": "1",
+  "verCode": "-1",
   "flows": {
     "1": {
       "id": 1,
@@ -7,92 +7,84 @@
       "label": "Flow 1",
       "disabled": false,
       "info": "这是一个新flow"
-    },
-    "2": {
-      "id": 2,
-      "type": "tab",
-      "label": "Flow 2",
-      "disabled": false,
-      "info": "这是一个新flow"
     }
   },
   "nodes": {
     "1": {
-      "1544076657417": {
-        "id": 1544076657417,
-        "status": "1",
+      "1544756286579": {
+        "id": 1544756286579,
+        "status": "7",
         "type": "data-upload",
-        "x": 193.5,
-        "y": 90,
+        "x": 60.5,
+        "y": 79,
         "z": 1,
         "text": "上传数据   ",
-        "path": "stl.csv",
-        "name": "测试",
+        "path": "Gun_Point_TRAIN.csv",
+        "name": "训练数据",
+        "variable": "a",
         "inputs": 0,
         "outputs": 1
       },
-      "1544076659803": {
-        "id": 1544076659803,
-        "status": "1",
-        "type": "prehandle",
-        "x": 353.5,
-        "y": 84,
-        "z": 1,
-        "text": "标准化   ",
-        "strategy": "zscore",
-        "inputs": 1,
-        "outputs": 1
-      },
-      "1544076661320": {
-        "id": 1544076661320,
-        "status": "1",
-        "type": "stl",
-        "x": 548.5,
-        "y": 77,
-        "z": 1,
-        "text": "异常检测   ",
-        "maxanoms": 0.02,
-        "day": "day",
-        "inputs": 1,
-        "outputs": 1
-      }
-    },
-    "2": {
-      "1544076668785": {
-        "id": 1544076668785,
-        "status": 1,
+      "1544756288066": {
+        "id": 1544756288066,
+        "status": "7",
         "type": "data-upload",
-        "x": 147.5,
-        "y": 97,
-        "z": 2,
+        "x": 116.5,
+        "y": 197,
+        "z": 1,
         "text": "上传数据   ",
-        "path": "stl.csv",
-        "name": "测试",
+        "path": "Gun_Point_TEST.csv",
+        "name": "测试数据",
+        "variable": "b",
         "inputs": 0,
         "outputs": 1
       },
-      "1544076676146": {
-        "id": 1544076676146,
-        "status": "1",
-        "type": "stl",
-        "x": 384.5,
-        "y": 142,
-        "z": 2,
-        "text": "异常检测   ",
-        "maxanoms": 0.02,
-        "day": "day",
+      "1544756291042": {
+        "id": 1544756291042,
+        "status": "7",
+        "type": "sax-classify",
+        "x": 327.5,
+        "y": 80,
+        "z": 1,
+        "text": "SAX分类   ",
+        "length_of_window": "64",
+        "length_of_word": "16",
+        "size_of_alphabet": "4",
         "inputs": 1,
         "outputs": 1
       },
-      "1544076885016": {
-        "id": 1544076885016,
-        "status": "1",
-        "type": "prehandle",
-        "x": 394.5,
-        "y": 10,
-        "z": 2,
-        "text": "标准化   ",
-        "strategy": "zscore",
+      "1544756294325": {
+        "id": 1544756294325,
+        "status": "7",
+        "type": "fsh",
+        "x": 346.5,
+        "y": 129,
+        "z": 1,
+        "text": "Shapelet分类   ",
+        "number_of_class": "2",
+        "number_of_instance": "50",
+        "max_length": "150",
+        "min_length": "10",
+        "step": "1",
+        "random_projection": "10",
+        "top_k_candidates": "10",
+        "number_of_class_test": "2",
+        "number_of_instance_test": "150",
+        "inputs": 1,
+        "outputs": 1
+      },
+      "1544756296763": {
+        "id": 1544756296763,
+        "status": "7",
+        "type": "elis",
+        "x": 374.5,
+        "y": 192,
+        "z": 1,
+        "text": "ELIS分类   ",
+        "Regulation": "0.01",
+        "Iteration": "7500",
+        "Learning_Rate": "0.01",
+        "Data_Generation": "",
         "inputs": 1,
         "outputs": 1
       }
@@ -100,28 +92,27 @@
   },
   "used": {
     "data-upload": 2,
-    "prehandle": 2,
-    "stl": 2,
-    "data-save": 0
+    "sax-classify": 1,
+    "fsh": 1,
+    "elis": 1
   },
   "links": {
-    "1544076657417": [
-      "1544076659803"
+    "1544756286579": [
+      "1544756291042",
+      "1544756294325",
+      "1544756296763"
     ],
-    "1544076659803": [
-      "1544076661320"
-    ],
-    "1544076668785": [
-      "1544076676146",
-      "1544076885016"
+    "1544756288066": [
+      "1544756291042",
+      "1544756294325",
+      "1544756296763"
     ]
   },
   "nodeFlowMap": {
-    "1544076657417": 1,
-    "1544076659803": 1,
-    "1544076661320": 1,
-    "1544076668785": 2,
-    "1544076676146": 2,
-    "1544076885016": 2
+    "1544756286579": 1,
+    "1544756288066": 1,
+    "1544756291042": 1,
+    "1544756294325": 1,
+    "1544756296763": 1
   }
 }

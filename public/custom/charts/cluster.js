@@ -40,7 +40,7 @@ function clickPageNext(i) {
 }
 
 function initCluster() {
-    $.get('../data/Classification.json', function (data) {
+    $.getJSON('../data/Classification.json', function (data) {
         const clusterNum = data.clusterNum;
         const seriesInfo = data.clusteredSeries;
         imageCount = [];
@@ -58,7 +58,7 @@ function showCluster() {
     while (dom.firstChild) {
         dom.removeChild(dom.firstChild);
     }
-    $.get('../data/Classification.json', function (data) {
+    $.getJSON('../data/Classification.json', function (data) {
             var clusterNum = data.clusterNum;
             var seriesInfo = data.clusteredSeries;
             for (var i = 0; i < clusterNum; i++) {

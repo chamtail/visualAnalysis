@@ -23,6 +23,7 @@
 
     <link rel="stylesheet" type="text/css" href="../public/custom/index/index.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/node/node.css">
+    <link rel="stylesheet" type="text/css" href="../public/custom/charts/cluster.css">
 </head>
 <body>
 <div id="vm">
@@ -515,11 +516,7 @@
 </html>
 
 <script src="../config/config.min.js"></script>
-<<<<<<< HEAD
 <!--<script src="../config/config.js"></script>-->
-=======
-<!-- <script src="../config/config.js"></script> -->
->>>>>>> dcf41fca8c42dae1a9b78973258bbdd2728abaeb
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
@@ -621,7 +618,7 @@
         methods: {
             init: function () {
                 // 加载工作流
-                let verCode = "1";
+                let verCode = "admin";
                 $.ajax({
                     url: api_map.workflow_init + "?verCode=" + verCode,
                     type: 'POST',
@@ -669,7 +666,7 @@
                         }
                     },
                     error: function (res) {
-                        alert('用户信息已失效，请重新登录！');
+                        alert('工作流部署失败！');
                     }
                 });
             },
@@ -826,7 +823,7 @@
                 for (let nodeId in routers) {
                     var node = $('#' + nodeId);
                     var status = node.attr('status');
-                    if (status == 3 || status == 5 || status == 7) {
+                    if (status == 3 || status == 7) {
                         alert('状态不正确');
                         return false;
                     }
@@ -902,7 +899,7 @@
                 vm.routers = vm.generateRouters(workflow)[currentTab];
 
                 // 更新节点参数
-                vm.deploy();
+                //vm.deploy();
 
                 // 显示节点属性
                 onNodeDetail(vm.node.id, true);
@@ -1000,6 +997,7 @@
                 request['flowId'] = vm.flow.id;
                 request['nodeId'] = vm.node.id;
                 request['variableName'] = variable;
+                request['size'] = "";
                 let data = JSON.stringify(request);
                 // 保存变量
                 $.ajax({
@@ -1015,7 +1013,7 @@
                         }
                     },
                     error: function (res) {
-                        alert('用户信息已失效，请重新登录！');
+                        alert('变量保存失败！');
                     }
                 });
 
@@ -1053,7 +1051,8 @@
                     contentType: 'application/json',
                     success: function (res) {
                         if (res.code == 0) {
-                            //vm.variableSpace[vm.flow.id].nodes[vm.node.id] = res.data.size;
+//                            vm.variableSpace[vm.flow.id].nodes[vm.node.id].name = res.data.variableName;
+//                            vm.variableSpace[vm.flow.id].nodes[vm.node.id].size = res.data.size;
                             for(let i=0, len=res.data.length; i<len; i++){
                                 let fId = res.data[i].flowId;
                                 let nId = res.data[i].nodeId;
@@ -1065,7 +1064,7 @@
                         }
                     },
                     error: function (res) {
-                        alert('用户信息已失效，请重新登录！');
+                        alert('加载变量失败！');
                     }
                 });
             },
@@ -1305,6 +1304,7 @@
     function visualize(data) {
         $('.visual-chart').attr('style', 'display:none');
         var op = data.op;
+        console.log(data);
         switch (op) {
             case "data-upload":
             case "data-load":
@@ -1324,9 +1324,13 @@
                 motifVisual(data.result);
                 break;
             case "cluster":
+            case "sax-classify":
+            case "fsh":
+            case "elis":
+            case "kshape":
                 console.log("cluster");
                 $('#cluster').attr('style', 'display:block');
-                initCluster();
+                initCluster(data.result);
                 break;
             default:
                 console.log('default');
