@@ -24,6 +24,7 @@
     <link rel="stylesheet" type="text/css" href="../public/custom/index/index.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/node/node.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/charts/cluster.css">
+    <link rel="stylesheet" type="text/css" href="../public/custom/cmd/cmd.css">
 </head>
 <body>
 <div id="vm">
@@ -119,20 +120,23 @@
                                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                             <span>{{subModule['display'][lang]}}</span>
                                         </div>
-                                        <div v-for="(node, nodeName) in subModule['nodes']" class="node-sub-content" :id="'node-sub-content-'+subModuleName">
-                                            <div class="node" :data-template-name="nodeName"
-                                                 style="background-color: #fff; height: 30px;">
-                                                <div class="node_label" dir="">{{node[lang]}}</div>
-                                                <div class="node_icon_container">
-                                                    <div class="node_icon"
-                                                         :style="'background-image: url(../public/images/'+node+'.png)'"></div>
+                                        <div class="node-content node-sub-content" :id="'node-sub-category-'+subModuleName" style="">
+                                            <div v-for="(node, nodeName) in subModule['nodes']" class="node-sub-content"
+                                                 :id="'node-sub-content-'+subModuleName" :data-content-id="'node-sub-header-' + subModuleName">
+                                                <div class="node" :data-template-name="nodeName"
+                                                     style="background-color: #fff; height: 30px;">
+                                                    <div class="node_label" dir="">{{node[lang]}}</div>
+                                                    <div class="node_icon_container">
+                                                        <div class="node_icon"
+                                                             :style="'background-image: url(../public/images/'+node+'.png)'"></div>
+                                                    </div>
+                                                    <template v-if="node['out'] != 0">
+                                                        <div class="node_port node_port_output" style="top: -48px;"></div>
+                                                    </template>
+                                                    <template v-if="node['in'] != 0">
+                                                        <div class="node_port node_port_input" style="top: -58px;"></div>
+                                                    </template>
                                                 </div>
-                                                <template v-if="node['out'] != 0">
-                                                    <div class="node_port node_port_output" style="top: -48px;"></div>
-                                                </template>
-                                                <template v-if="node['in'] != 0">
-                                                    <div class="node_port node_port_input" style="top: -58px;"></div>
-                                                </template>
                                             </div>
                                         </div>
                                     </template>
@@ -245,14 +249,24 @@
                         </button>
                     </div>
                 </div>
-                <div class="input-group" style="margin-top: 20px">
-                    <label class="input-group-addon">In[1]</label>
-                    <input type="text" class="form-control" aria-label="Recipient's username"
-                           aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">Submit</button>
+                <div id="cmd-shell">
+                    <div class="shell-view">
+                        <span class="prompt">$</span>
+                        <span class="input">
+                            <span class="left"></span>
+                            <span class="cursor"></span>
+                            <span class="right"></span>
+                        </span>
                     </div>
                 </div>
+                <!--<div class="input-group" style="margin-top: 20px">-->
+                    <!--<label class="input-group-addon">In[1]</label>-->
+                    <!--<input type="text" class="form-control cmd" aria-label="Recipient's username"-->
+                           <!--aria-describedby="basic-addon2">-->
+                    <!--<div class="input-group-append">-->
+                        <!--<button class="btn btn-outline-secondary" type="button" @click="runCmd">Submit</button>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
 
             <div id="workflow-separator" class="ui-draggable separator"></div>
@@ -515,16 +529,17 @@
 </body>
 </html>
 
-<script src="../config/config.min.js"></script>
-<!--<script src="../config/config.js"></script>-->
+<!--<script src="../config/config.min.js"></script>-->
+<script src="../config/config.js"></script>
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
 <script src="../public/custom/index/index.js"></script>
 <script src="../public/custom/charts/charts.js"></script>
-<script src="../public/custom/websocket/websocket.js"></script>
 <script src="../public/custom/charts/cluster.js"></script>
-<link href="../public/custom/charts/cluster.css" rel="stylesheet">
+<script src="../public/custom/websocket/websocket.js"></script>
+<script src="../public/js/underscore-1.8.2.min.js"></script>
+<script src="../public/custom/cmd/cmd.js"></script>
 <script>
     //vue 绑定
     var vm = new Vue({
@@ -563,6 +578,7 @@
         mounted: function () {
             // 工作流初始化
             $(function () {
+                workflow.verCode = vm.getRequest();
                 // 默认有一个flow
                 vm.addWorkflow();
 
@@ -604,7 +620,7 @@
 
             // 加载工作流
             $(function () {
-                //vm.init();
+                vm.init();
                 //vm.debug();
             })
         },
@@ -1077,6 +1093,38 @@
                 let ele = $(selector);
                 ele.removeClass('disabled');
                 ele.css("pointer-events","");
+            },
+            runCmd: function (cmd) {
+                console.log(cmd);
+                $.ajax({
+                    url: api_map.cmd_run,
+                    type:'POST',
+                    data:{
+                        "verCode": workflow.verCode,
+                        "cmd": cmd,
+                    },
+                    dataType:"json",
+                    success:function(res){
+                        if(res.code != 0){
+                            alert(res.msg);
+                        }
+                    },
+                    error:function(e){
+                        console.log(e);
+                    }
+                });
+            },
+            getRequest: function () {
+                var url = location.search; //获取url中"?"符后的字串
+                var theRequest = new Object();
+                if (url.indexOf("?") != -1) {
+                    var str = url.substr(1);
+                    var strs = str.split("&");
+                    for(var i = 0; i < strs.length; i ++) {
+                        theRequest[strs[i].split("=")[0]]=decodeURIComponent(strs[i].split("=")[1]);
+                    }
+                }
+                return theRequest;
             },
             debug: function () {
                 $.ajaxSettings.async = false;  // 同步执行

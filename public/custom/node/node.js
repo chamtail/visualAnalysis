@@ -77,7 +77,6 @@ function init() {
     // 绑定节点列表事件
     $('.node-header').click(function () {
         var id = $(this).attr('id');
-        console.log(id);
         var nextId = $(this).next().attr('id');
         var el_i = $('#' + id + ' >i');
         el_i.toggleClass('expanded');

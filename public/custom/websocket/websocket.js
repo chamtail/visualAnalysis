@@ -41,20 +41,43 @@ function initEventHandle() {
     ws.onmessage = function (event) {    //如果获取到消息，心跳检测重置
         heartCheck.reset().start();      //拿到任何消息都说明当前连接是正常的
         console.log("ws收到消息啦:" + event.data);
-        setMessageInnerHTML(JSON.stringify(event.data));
         // 解析后端传入的数据
-        var data = JSON.stringify(event.data);
+        var json = JSON.parse(event.data);
+        if(json.code == 0){
+            var data = json.data;
+            // octave返回信息
+            if(data.container === 'octave'){
+                console.log('octave');
+                if(data.result.type === 'text'){
+                    console.log(data.result.content);//返回结果是文本就直接输出
+                    var $shell = $('.shell-view');
+                    var template_output = _.template('<div class="output-view"><span class="prompt"><%= separate %></span>&nbsp;<span class="output<%= error %>"><%= value %></span></div>');
+                    $shell.before(template_output({separate:'&gt;', value:data.result.content, error: ''}) + '<br />');
+                }
+                else if(data.result.type === 'png'){
+                    console.log(data.result.content);
+                    var $shell = $('.shell-view');
+                    var template_output = _.template('<div class="output-view"><span class="prompt"><%= separate %></span>&nbsp;<span class="output<%= error %>"><img src="<%= value %>"></span></div>');
+                    $shell.before(template_output({separate:'&gt;', value:data.result.content, error: ''}) + '<br />');
+                }
+            }
 
-        // 更新节点状态
-        var info = data.replace(/\"/g, "").split("_");
-        var verCode = info[0];
-        var nodeType = info[1];
-        var nodeId = info[2];
-        var nodeStatus = info[3];
-        var status = {};
-        status[nodeId] = nodeStatus;
-        vm.onNodeReRun(nodeId);
-        updateNodeStatus(status);
+            // docker返回信息
+            if(data.container === 'docker'){
+                var verCode = data.result.verCode;
+                if(verCode != workflow.verCode){
+                    console.log('抱歉，该用户不符合预期');
+                    return;
+                }
+                var nodeType = data.result.type;
+                var nodeId = data.result.id;
+                var nodeStatus = data.result.status;
+                var status = {};
+                status[nodeId] = nodeStatus;
+                vm.onNodeReRun(nodeId);
+                updateNodeStatus(status);
+            }
+        }
     }
 }
 
@@ -66,10 +89,10 @@ window.onbeforeunload = function() {
 function reconnect(url) {
     if(lockReconnect) return;
     lockReconnect = true;
-    setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
-        createWebSocket(url);
-        lockReconnect = false;
-    }, 2000);
+    // setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
+    //     createWebSocket(url);
+    //     lockReconnect = false;
+    // }, 2000);
 }
 
 //心跳检测

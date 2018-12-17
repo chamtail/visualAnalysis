@@ -398,6 +398,13 @@ var IP = 'localhost'; //'10.131.247.51';
 var port = 8889;
 var host_url = 'http://' + IP + ':' + port;
 var api_map={
+    'user_login': host_url + '/workflowUser/login',
+    'user_logout': host_url + '/workflowUser/logout',
+    'user_register': host_url + '/workflowUser/register',
+    'user_verify': host_url + '/workflowUser/getVerify',
+    'user_check_verify': host_url + '/workflowUser/checkVerify',
+    'user_forget_password': host_url + '/workflowUser/forgetPassword',
+    'user_change_password': host_url + '/workflowUser/changePassword',
     'workflow_init': host_url + '/workflow/init',
     'workflow_deploy': host_url + '/workflow/deploy',
     'workflow_save': host_url + '/workflow/save',
@@ -405,6 +412,7 @@ var api_map={
     'workflow_stop': host_url + '/workflow/stopAll',
     'node_run': host_url + '/workflow/runOne',
     'node_stop': host_url + '/workflow/stopOne',
+    'cmd_run': host_url + '/workflow/runCmd',
     'variable_save' : host_url + '/workflow/variable/save',
     'variable_load' : host_url + '/workflow/variable/load',
     'get_data': host_url + '/workflow/getData',
@@ -421,16 +429,4 @@ var nodeStatusMap = {
     "5": "run_error",
     "6": "active",
     "7": "deactivate"
-};
-
-var variableSpace = {
-    "name": "name",
-    "label": {
-        "zh": "变量名称",
-        "en": "variable name"
-    },
-    "type": "text",
-    "default": "",
-    "enable": true,
-    "configurable": true
 };

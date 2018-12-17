@@ -1,4 +1,46 @@
 {
+  "user_login": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflowUser/login"
+  },
+  "user_logout": {
+  "protocol": "http",
+  "host": "10.131.247.51",
+  "port": 8889,
+  "api": "/workflowUser/logout"
+},
+  "user_register": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflowUser/register"
+  },
+  "user_verify": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflowUser/getVerify"
+  },
+  "user_check_verify": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflowUser/checkVerify"
+  },
+  "user_forget_password": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflowUser/forgetPassword"
+  },
+  "user_change_password": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflowUser/changePassword"
+  },
   "workflow_init": {
     "protocol": "http",
     "host": "10.131.247.51",
@@ -40,6 +82,12 @@
     "host": "10.131.247.51",
     "port": 8889,
     "api": "/workflow/stopOne"
+  },
+  "cmd_run": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8889,
+    "api": "/workflow/runCmd"
   },
   "variable_save" : {
     "protocol": "http",
