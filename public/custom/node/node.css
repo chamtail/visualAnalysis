@@ -206,8 +206,7 @@
     bottom: 25px;
     left: 0;
     padding: 0;
-    /*overflow-y: auto;*/
-    /*overflow-x: hidden;*/
+    overflow-y: auto;
 }
 .node-content {
     background: #fff;

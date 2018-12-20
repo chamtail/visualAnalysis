@@ -157,20 +157,24 @@ span.logo span {
     line-height: 40px
 }
 .workflow{
-    overflow: auto;
+    /* overflow: auto; */
     background-color: #e3e3e3;
     cursor: crosshair;
 }
 #workflow-editor, #chart{
     overflow: auto;
-    background: #e3e3e3;
+    background: #f3f3f3;
     position: absolute;
-    bottom: 25px;
+    width: 100%;
     top: 30px;
     left: 0;
     right: 0;
+    bottom: 0;
     box-sizing: border-box;
     transition: right 0.2s cubic-bezier(0.25, 0.1, 0.51, -0.12);
+}
+#workflow-editor{
+    bottom: 25px;
 }
 .red-ui-tabs {
     position: relative;
@@ -1665,4 +1669,11 @@ div.node-info {
 .visual-chart{
     height: 100%;
     display: none;
+}
+
+.tab-title{
+    position: absolute;
+    padding: 10px;
+    left: 10px;
+    font-weight: 900;
 }
