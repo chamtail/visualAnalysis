@@ -121,24 +121,29 @@ function separator() {
 
 // 最小化
 function minScreen(workspace) {
-    console.log(workspace);
     exitFullscreen('#'+workspace);
+    $('#'+workspace+' .min').hide();
+    $('#'+workspace+' .max').show();
 }
 
 // 最大化
 function maxScreen(workspace) {
     requestFullScreen('#'+workspace);
+    $('#'+workspace+' .max').hide();
+    $('#'+workspace+' .min').show();
 }
 
 //进入全屏
 function requestFullScreen(element) {
     var de = document.querySelector(element) || document.documentElement;
-    if (de.requestFullscreen) {
-        de.requestFullscreen();
+    if (de.requestFullScreen) {
+        de.requestFullScreen();
     } else if (de.mozRequestFullScreen) {
         de.mozRequestFullScreen();
     } else if (de.webkitRequestFullScreen) {
         de.webkitRequestFullScreen();
+    } else if (de.msRequestFullscreen) {
+        de.msRequestFullscreen();
     }
 }
 
@@ -147,10 +152,37 @@ function exitFullscreen(element) {
     var de = document.querySelector(element) || document.documentElement;
     if (de.exitFullscreen) {
         de.exitFullscreen();
+    } else if (de.webkitExitFullscreen) {
+        de.webkitExitFullscreen();
     } else if (de.mozCancelFullScreen) {
         de.mozCancelFullScreen();
-    } else if (de.webkitCancelFullScreen) {
-        de.webkitCancelFullScreen();
+    } else if (de.msExitFullscreen) {
+        de.msExitFullscreen();
+    }
+}
+
+//切换全屏
+function toggleFullScreen(document) {
+    if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || (document.mozFullScreen !== undefined && !document.mozFullScreen) || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)) {
+        if (elem.requestFullScreen) {
+            elem.requestFullScreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullScreen) {
+            elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+    } else {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
     }
 }
 
@@ -183,4 +215,26 @@ function button_op() {
         node2.addClass('show');
         //currentNode.children('a:first-child').attr('aria-expanded', 'true');
     });
+}
+
+// 说明：获取鼠标位置
+// 整理：http://www.codebit.cn
+// 来源：http://www.webreference.com
+function mousePosition(ev){
+    if(ev.pageX || ev.pageY){
+        return {x:ev.pageX, y:ev.pageY};
+    }
+    return {
+        x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+        y:ev.clientY + document.body.scrollTop - document.body.clientTop
+    };
+}
+document.onmousemove = mouseMove;
+
+function mouseMove(ev){
+    ev = ev || window.event;
+    var mousePos = mousePosition(ev);
+    // console.log("x: "+mousePos.x+"   y: " + mousePos.y);
+    $('#xPos1').text(mousePos.x);
+    $('#yPos1').text(mousePos.y);
 }

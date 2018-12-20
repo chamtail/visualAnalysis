@@ -58,7 +58,7 @@ function initEventHandle() {
                     console.log(data.result.content);
                     var $shell = $('.shell-view');
                     var template_output = _.template('<div class="output-view"><span class="prompt"><%= separate %></span>&nbsp;<span class="output<%= error %>"><img src="<%= value %>"></span></div>');
-                    $shell.before(template_output({separate:'&gt;', value:data.result.content, error: ''}) + '<br />');
+                    $shell.before(template_output({separate:'&gt;', value:"data:image/png; base64,"+data.result.content, error: ''}) + '<br />');
                 }
             }
 
