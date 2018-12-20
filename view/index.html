@@ -579,7 +579,12 @@
         mounted: function () {
             // 工作流初始化
             $(function () {
-                workflow.verCode = vm.getRequest();
+                workflow.verCode = vm.getRequest().verCode;
+                console.log(workflow.verCode);
+                if (workflow.verCode == -1 || workflow.verCode == undefined){
+                    window.location.href = 'login.html';
+                }
+
                 // 默认有一个flow
                 vm.addWorkflow();
 
@@ -635,9 +640,8 @@
         methods: {
             init: function () {
                 // 加载工作流
-                let verCode = "admin";
                 $.ajax({
-                    url: api_map.workflow_init + "?verCode=" + verCode,
+                    url: api_map.workflow_init + "?verCode=" + workflow.verCode,
                     type: 'POST',
                     contentType: 'application/json',
                     success: function (res) {
