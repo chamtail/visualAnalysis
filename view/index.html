@@ -233,8 +233,17 @@
                 <div id="chart">
                     <div class="visual-chart" id="data-load"></div>
                     <div class="visual-chart" id="abnormalChart"></div>
-                    <div class="visual-chart" id="motifChart"></div>
                     <div class="visual-chart" id="cluster"></div>
+                    <div class="visual-chart" id="motifArea">
+                        <div id="motifChart"></div>
+
+                        <div id = "motifList" class="motifList">
+                            <table id = "motifTable" style="border:2px solid #d0d8e2;"></table>
+                        </div>
+
+                        <div id="subMotifChart"></div>
+                    </div>
+
                 </div>
             </div>
 
@@ -538,6 +547,7 @@
 <script src="../public/custom/index/index.js"></script>
 <script src="../public/custom/charts/charts.js"></script>
 <script src="../public/custom/charts/cluster.js"></script>
+<script src="../public/custom/charts/motif.js"></script>
 <script src="../public/custom/websocket/websocket.js"></script>
 <script src="../public/js/underscore-1.8.2.min.js"></script>
 <script src="../public/custom/cmd/cmd.js"></script>
@@ -1379,8 +1389,9 @@
                 break;
             case "motif":
                 console.log("motif");
-                $('#motifChart').attr('style', 'display:block');
-                motifVisual(data.result);
+                $('#motifArea').attr('style', 'display:block');
+                var motifData = generateMotifData(5);
+                motifAreaVisual(motifData);
                 break;
             case "cluster":
             case "sax-classify":
