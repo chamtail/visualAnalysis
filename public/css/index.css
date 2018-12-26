@@ -219,3 +219,10 @@ span.logo span {
     background: #f3f3f3 url(../images/grip.png) no-repeat 50% 50%;
     cursor: col-resize;
 }
+td{
+    border:0.5px solid rgba(156, 156, 156, 0.46);
+    padding: 6px 6px 6px 12px;
+    color: #4c4c4c;
+    text-align: center;
+    /*width:150px;*/
+}
