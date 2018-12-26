@@ -9,5 +9,6 @@
   "sax-classify": "enable",
   "elis": "enable",
   "mpsegment": "enable",
-  "kshape":"enable"
+  "kshape":"enable",
+  "hime":"enable"
 }
