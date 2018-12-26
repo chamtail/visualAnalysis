@@ -64,8 +64,20 @@
                     </a>
                 </span>
             </li>
+            <li>
+                <span class="deploy-button-group button-group">
+                    <a id="btn-logout" class="run-button" @click="logout">
+                        <span class="deploy-button-content" style="opacity: 1;">
+                            <i class="fa fa-play-circle" aria-hidden="true"></i>
+                            <span>logout</span>
+                        </span>
+                        <span class="deploy-button-spinner hide" style="display: none;">
+                            <img src="./public/spin.svg"></span>
+                    </a>
+                </span>
+            </li>
             <!--<li>-->
-                <!--<a class="btn btn-link" href="#"><i class="fa fa-play-circle-o" aria-hidden="true"></i>&nbsp;运行</a>-->
+            <!--<a class="btn btn-link" href="#"><i class="fa fa-play-circle-o" aria-hidden="true"></i>&nbsp;运行</a>-->
             <!--</li>-->
             <!--<a class="btn btn-link" href="#"><i class="fa fa-cloud-upload" aria-hidden="true"></i>&nbsp;部署</a>-->
             <!--<a class="btn btn-link" href="#"><i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;分享</a>-->
@@ -116,13 +128,16 @@
                                 </template>
                                 <template v-else-if="key=='sub_modules'">
                                     <template v-for="(subModule, subModuleName) in info">
-                                        <div :id="'node-sub-header-' + subModuleName" class="node-header node-sub-header">
+                                        <div :id="'node-sub-header-' + subModuleName"
+                                             class="node-header node-sub-header">
                                             <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                             <span>{{subModule['display'][lang]}}</span>
                                         </div>
-                                        <div class="node-content node-sub-content" :id="'node-sub-category-'+subModuleName" style="">
+                                        <div class="node-content node-sub-content"
+                                             :id="'node-sub-category-'+subModuleName" style="">
                                             <div v-for="(node, nodeName) in subModule['nodes']" class="node-sub-content"
-                                                 :id="'node-sub-content-'+subModuleName" :data-content-id="'node-sub-header-' + subModuleName">
+                                                 :id="'node-sub-content-'+subModuleName"
+                                                 :data-content-id="'node-sub-header-' + subModuleName">
                                                 <div class="node" :data-template-name="nodeName"
                                                      style="background-color: #fff; height: 30px;">
                                                     <div class="node_label" dir="">{{node[lang]}}</div>
@@ -131,10 +146,12 @@
                                                              :style="'background-image: url(../public/images/'+node+'.png)'"></div>
                                                     </div>
                                                     <template v-if="node['out'] != 0">
-                                                        <div class="node_port node_port_output" style="top: -48px;"></div>
+                                                        <div class="node_port node_port_output"
+                                                             style="top: -48px;"></div>
                                                     </template>
                                                     <template v-if="node['in'] != 0">
-                                                        <div class="node_port node_port_input" style="top: -58px;"></div>
+                                                        <div class="node_port node_port_input"
+                                                             style="top: -58px;"></div>
                                                     </template>
                                                 </div>
                                             </div>
@@ -162,8 +179,10 @@
                     <div class="red-ui-tabs-scroll-container">
                         <ul id="workspace-tabs" style="width: 100%;" class="">
                             <template v-for="(flow, index) in flows">
-                                <li :class="['red-ui-tab ui-draggable', flow.id==activateFlow ? 'active' : '']" :id="'red-ui-tab-'+flow.id" style="width: 100%;">
-                                    <a href="#" class="red-ui-tab-label" :title="flow.label" @click="changeWorkflow(flow.id)" @dblclick="configWorkflow(flow.id)">
+                                <li :class="['red-ui-tab ui-draggable', flow.id==activateFlow ? 'active' : '']"
+                                    :id="'red-ui-tab-'+flow.id" style="width: 100%;">
+                                    <a href="#" class="red-ui-tab-label" :title="flow.label"
+                                       @click="changeWorkflow(flow.id)" @dblclick="configWorkflow(flow.id)">
                                         <template v-if="flow.disabled">
                                             <span class="workspace-disabled-icon">
                                                 <i class="fa fa-ban"></i>
@@ -237,8 +256,8 @@
                     <div class="visual-chart" id="motifArea">
                         <div id="motifChart"></div>
 
-                        <div id = "motifList" class="motifList">
-                            <table id = "motifTable" style="border:2px solid #d0d8e2;"></table>
+                        <div id="motifList" class="motifList">
+                            <table id="motifTable" style="border:2px solid #d0d8e2;"></table>
                         </div>
 
                         <div id="subMotifChart"></div>
@@ -271,12 +290,12 @@
                     </div>
                 </div>
                 <!--<div class="input-group" style="margin-top: 20px">-->
-                    <!--<label class="input-group-addon">In[1]</label>-->
-                    <!--<input type="text" class="form-control cmd" aria-label="Recipient's username"-->
-                           <!--aria-describedby="basic-addon2">-->
-                    <!--<div class="input-group-append">-->
-                        <!--<button class="btn btn-outline-secondary" type="button" @click="runCmd">Submit</button>-->
-                    <!--</div>-->
+                <!--<label class="input-group-addon">In[1]</label>-->
+                <!--<input type="text" class="form-control cmd" aria-label="Recipient's username"-->
+                <!--aria-describedby="basic-addon2">-->
+                <!--<div class="input-group-append">-->
+                <!--<button class="btn btn-outline-secondary" type="button" @click="runCmd">Submit</button>-->
+                <!--</div>-->
                 <!--</div>-->
             </div>
 
@@ -539,8 +558,8 @@
 </body>
 </html>
 
-<script src="../config/config.min.js"></script>
-<!--<script src="../config/config.js"></script>-->
+<!--<script src="../config/config.min.js"></script>-->
+<script src="../config/config.js"></script>
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
@@ -560,7 +579,7 @@
             nodes_category: {},
             flows: {},
             nodes: {},
-            nodeFlowMap:{},
+            nodeFlowMap: {},
             node: {
                 id: "-1",
                 name: "",
@@ -568,7 +587,7 @@
                 params: [],
                 description: "",
             },
-            flow:{
+            flow: {
                 id: "-1",
                 type: "",
                 label: "",
@@ -581,22 +600,30 @@
                 from: "-1",
                 to: "-1"
             },
-            activateFlow: "",
+            activateFlow: 0,
             lang: getCookieValue("lang"),
             routers: {},
             uploadFile: false,
+//            operationLog: {
+//                id:{
+//                    type: "flow/node",
+//                    configured : false,
+//                    modified: false,
+//
+//                }
+//            }
         },
         mounted: function () {
             // 工作流初始化
             $(function () {
                 workflow.verCode = vm.getRequest().verCode;
                 console.log(workflow.verCode);
-                if (workflow.verCode == -1 || workflow.verCode == undefined){
+                if (workflow.verCode == -1 || workflow.verCode == undefined) {
                     window.location.href = 'login.html';
                 }
 
                 // 默认有一个flow
-                vm.addWorkflow();
+                vm.init();
 
                 // 初始化左侧组件栏
                 vm.nodes_category = nodes_category;
@@ -633,12 +660,6 @@
             $(function () {
                 separator();
             });
-
-            // 加载工作流
-            $(function () {
-                //vm.init();
-                //vm.debug();
-            })
         },
         updated: function () {
             // 初始化node拖拽
@@ -648,16 +669,21 @@
             }
         },
         methods: {
+            // 初始化工作流
             init: function () {
-                // 加载工作流
+                console.log('loading');
                 $.ajax({
-                    url: api_map.workflow_init + "?verCode=" + workflow.verCode,
+                    url: api_map.workflow_init,
                     type: 'POST',
-                    contentType: 'application/json',
+                    data: {
+                        verCode: workflow.verCode
+                    },
+                    dataType: 'json',
                     success: function (res) {
                         if (res.code == 0) {
                             vm.loadWorkflow(res.data.workflow);
                             vm.variableSpace = res.data.variableSpace;
+                            console.log('loaded');
                         } else {
                             console.log("用户不存在，请注册！");
                         }
@@ -669,8 +695,9 @@
                  * 部署时只需要关注节点连接连接的正确性，不需要关注参数的正确性
                  */
                 var routers = vm.generateRouters(workflow);
+                vm.routers = routers[vm.activateFlow];
                 // 检查路由正确性
-                if (!this.checkRouters(routers[currentTab])) {
+                if (!this.checkRouters(vm.routers)) {
                     console.log('checkRouters error');
                     return false;
                 }
@@ -679,8 +706,7 @@
                 // 模型建立请求
                 var request = {};
                 request.verCode = workflow.verCode;
-                request.routers = routers[currentTab];
-                vm.routers = routers[currentTab];  // 保存路由信息
+                request.routers = vm.routers;
                 var data = JSON.stringify(request);
                 // 发送工作流
                 $.ajax({
@@ -694,6 +720,7 @@
                             updateNodeStatus(res.data.initResult);
                         } else {
                             alert(res.msg);
+                            vm.enableA('#btn-deploy');
                         }
                     },
                     error: function (res) {
@@ -739,6 +766,10 @@
                             routers[tabIndex][node_id].next = workflow.links[node_id];
                             for (let i = 0; i < workflow.links[node_id].length; i++) {
                                 let nId = workflow.links[node_id][i];
+                                // 考虑到节点id可能为null
+                                if (!nId) {
+                                    continue;
+                                }
                                 if (!routers[tabIndex][nId]) {
                                     routers[tabIndex][nId] = {
                                         id: nId,
@@ -807,7 +838,7 @@
                     return false;
                 }
                 // 显示启动
-                for(let nodeId in this.routers){
+                for (let nodeId in this.routers) {
                     vm.onNodeRun(nodeId);
                 }
                 var nodeRequest = {};
@@ -826,12 +857,32 @@
                         } else {
                             alert(res.msg);
                             let nodeStatus = {};
-                            for(let nodeId in vm.routers){
+                            for (let nodeId in vm.routers) {
                                 nodeStatus[nodeId] = res.code;
                             }
                             updateNodeStatus(nodeStatus);
                             return false;
                         }
+                    }
+                });
+            },
+            runCmd: function (cmd) {
+                console.log(cmd);
+                $.ajax({
+                    url: api_map.cmd_run,
+                    type: 'POST',
+                    data: {
+                        verCode: "admin",
+                        cmd: cmd,
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.code != 0) {
+                            alert(res.msg);
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
                     }
                 });
             },
@@ -871,24 +922,25 @@
                 var dataSetName = "-1";
                 var variable = "-1";  // -1 代表不需要变量
                 $.each(data, function () {
-                    workflow.nodes[currentTab][vm.node.id][this.name] = this.value;
+                    workflow.nodes[vm.activateFlow][vm.node.id][this.name] = this.value;
                     console.log(this.name, this.value);
-                    if(this.name == "name"){
+                    if (this.name == "name") {
                         dataSetName = this.value;
                     }
-                    if(this.name == "variable"){
+                    if (this.name == "variable") {
                         variable = this.value;
                     }
                 });
+                // 如果该组件需要上传文件并且是第一次或者修改文件路径时
                 if (this.uploadFile) {
                     var nodeId = this.node.id;
-                    var uploadFile = $('#file_' + nodeId)[0].files[0];
-                    if (uploadFile == undefined || dataSetName == "") {
+                    var filePath = $('#file_' + nodeId)[0].files[0];
+                    if (filePath == undefined || dataSetName == "") {
                         console.log("error");
                         return;
                     }
 
-                    workflow.nodes[currentTab][vm.node.id].path = uploadFile.name;
+                    workflow.nodes[vm.activateFlow][vm.node.id].path = filePath.name;
 
                     vm.onNodeRun(nodeId);
 
@@ -898,9 +950,10 @@
                     flow.routers[nodeId] = this.routers[nodeId];
 
                     var formData = new FormData();
-                    formData.append('file', uploadFile);
+                    formData.append('file', filePath);
                     formData.append('verCode', workflow.verCode);
                     formData.append('nodeId', vm.node.id);
+                    formData.append('flowId', vm.flow.id);
                     formData.append('nodeType', vm.node.type);
                     formData.append('dataSetName', dataSetName);
                     $.ajax({
@@ -923,12 +976,12 @@
                 }
 
                 // 保存变量
-                if(variable != "-1"){
+                if (variable != "-1") {
                     vm.saveVariableConfig(variable);
                 }
 
                 // 更新routers
-                vm.routers = vm.generateRouters(workflow)[currentTab];
+                vm.routers = vm.generateRouters(workflow)[vm.activateFlow];
 
                 // 更新节点参数
                 //vm.deploy();
@@ -972,38 +1025,36 @@
             },
             loadWorkflow: function (data) {
                 if (data == "" || data == null || JSON.stringify(data) == "{}") {
+                    vm.addWorkflow();
                     return;
                 }
                 // 更新workflow
                 workflow = data;
                 vm.flows = data.flows;
-                for(let flowId in workflow.flows){
+                for (let flowId in data.flows) {
+                    vm.activateFlow = parseInt(flowId);
                     showNodesByFlow(flowId);
                     vm.routers = vm.generateRouters(workflow)[flowId];
+                    vm.flow = data.flows[flowId];
                     break;
                 }
             },
             addWorkflow: function () {
-                currentTab = currentTab + 1;  // 暂时使用自增
-                workflow.flows[currentTab] = {
-                    id: currentTab,
+                vm.activateFlow = parseInt(vm.activateFlow) + 1;  // 暂时使用自增
+                workflow.flows[vm.activateFlow] = {
+                    id: vm.activateFlow,
                     type: "tab",
-                    label: "Flow " + currentTab,
+                    label: "Flow " + vm.activateFlow,
                     disabled: false,
                     info: "这是一个新flow"
                 };
-                vm.flows[currentTab] = {
-                    id: currentTab,
-                    type: "tab",
-                    label: "Flow " + currentTab,
-                    disabled: false,
-                    info: "这是一个新flow"
-                };
-                vm.changeWorkflow(currentTab);
+                vm.flows[vm.activateFlow] = workflow.flows[vm.activateFlow];
+                vm.save();
+                vm.changeWorkflow(vm.activateFlow, true);
             },
-            changeWorkflow: function (flowId) {
+            changeWorkflow: function (flowId, force = false) {
                 // 如果点击同一个flow，忽略该事件
-                if(vm.activateFlow == flowId){
+                if (vm.activateFlow == flowId && !force) {
                     console.log("重复点击，该操作无效");
                     return;
                 }
@@ -1013,11 +1064,9 @@
                 // 添加当前flow的节点
                 showNodesByFlow(flowId);
                 // 更新中间变量
-                currentTab = flowId;
-                vm.activateFlow = flowId;
                 vm.flow = workflow.flows[flowId];
+                vm.activateFlow = parseInt(flowId);
                 vm.routers = vm.generateRouters(workflow)[flowId];
-
                 vm.enableA('#btn-deploy');
             },
             configWorkflow: function (flowId) {
@@ -1050,7 +1099,7 @@
                 });
 
                 // 更新本地
-                if(!vm.variableSpace[vm.flow.id]){
+                if (!vm.variableSpace[vm.flow.id]) {
                     vm.variableSpace[vm.flow.id] = {
                         id: vm.flow.id,
                         type: vm.flow.type,
@@ -1060,7 +1109,7 @@
                         nodes: {}
                     };
                 }
-                if(!vm.variableSpace[vm.flow.id].nodes[vm.node.id]){
+                if (!vm.variableSpace[vm.flow.id].nodes[vm.node.id]) {
                     vm.variableSpace[vm.flow.id].nodes[vm.node.id] = {
                         id: vm.node.id,
                         name: variable,
@@ -1085,7 +1134,7 @@
                         if (res.code == 0) {
 //                            vm.variableSpace[vm.flow.id].nodes[vm.node.id].name = res.data.variableName;
 //                            vm.variableSpace[vm.flow.id].nodes[vm.node.id].size = res.data.size;
-                            for(let i=0, len=res.data.length; i<len; i++){
+                            for (let i = 0, len = res.data.length; i < len; i++) {
                                 let fId = res.data[i].flowId;
                                 let nId = res.data[i].nodeId;
                                 vm.variableSpace[fId].nodes[nId].name = res.data[i].variableName;
@@ -1103,32 +1152,12 @@
             disabledA: function (selector) {
                 let ele = $(selector);
                 ele.addClass('disabled');
-                ele.css("pointer-events","none");
+                ele.css("pointer-events", "none");
             },
             enableA: function (selector) {
                 let ele = $(selector);
                 ele.removeClass('disabled');
-                ele.css("pointer-events","");
-            },
-            runCmd: function (cmd) {
-                console.log(cmd);
-                $.ajax({
-                    url: api_map.cmd_run,
-                    type:'POST',
-                    data:{
-                        verCode: "admin",
-                        cmd: cmd,
-                    },
-                    dataType:"json",
-                    success:function(res){
-                        if(res.code != 0){
-                            alert(res.msg);
-                        }
-                    },
-                    error:function(e){
-                        console.log(e);
-                    }
-                });
+                ele.css("pointer-events", "");
             },
             getRequest: function () {
                 var url = location.search; //获取url中"?"符后的字串
@@ -1136,11 +1165,11 @@
                 if (url.indexOf("?") != -1) {
                     var str = url.substr(1);
                     var strs = str.split("&");
-                    for(var i = 0; i < strs.length; i ++) {
-                        theRequest[strs[i].split("=")[0]]=decodeURIComponent(strs[i].split("=")[1]);
+                    for (var i = 0; i < strs.length; i++) {
+                        theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
                     }
                 }
-                if(theRequest == undefined || theRequest == null || JSON.stringify(theRequest) == "{}"){
+                if (theRequest == undefined || theRequest == null || JSON.stringify(theRequest) == "{}") {
                     theRequest = -1;
                 }
                 return theRequest;
@@ -1156,14 +1185,20 @@
                 vm.variableSpace = vs;
                 //console.log(JSON.stringify(vm.variableSpace));
                 $.ajaxSettings.async = true;  // 异步执行
+            },
+            logout: function () {
+                // 保存当前工作流
+                vm.save();
+                // 跳转至登陆界面
+                window.location.href = 'login.html';
             }
         }
     });
 
     // 显示节点细节
-    function onNodeDetail(id, force=false) {
+    function onNodeDetail(id, force = false) {
         // 事件过滤, 配置一样便过滤。不只比较id
-        if(id == vm.node.id && !force){
+        if (id == vm.node.id && !force) {
             console.log('重复点击节点，事件无效！');
             return;
         }
@@ -1218,7 +1253,7 @@
     }
 
     // 显示工作流细节
-    function onWorkflowDetail(id){
+    function onWorkflowDetail(id) {
 //        // 事件过滤
 //        if(id == vm.flow.id){
 //            console.log('重复点击工作流，事件无效！');
@@ -1237,7 +1272,10 @@
 
     // 获取节点配置
     function getNodeParams(id, nodeType) {
-        var currentParams = workflow.nodes[currentTab][id];
+        if (!workflow.nodes[vm.activateFlow]) {
+            return;
+        }
+        var currentParams = workflow.nodes[vm.activateFlow][id];
 
         var keyList = {};
         for (var key in currentParams) {
@@ -1282,14 +1320,14 @@
         d3.selectAll('path[to="' + id + '"]').remove();
 
         // 删除workflow中的记录
-        var node = workflow.nodes[currentTab][id];
-        if(workflow.used[node.type]){
+        var node = workflow.nodes[vm.activateFlow][id];
+        if (workflow.used[node.type]) {
             workflow.used[node.type] -= 1;
         }
-        delete workflow.nodes[currentTab][id];
+        delete workflow.nodes[vm.activateFlow][id];
         delete workflow.links[node.id];
         delete workflow.nodeFlowMap[node.id];
-        for (var nodeId in workflow.nodes[currentTab]) {
+        for (var nodeId in workflow.nodes[vm.activateFlow]) {
             if (workflow.links[nodeId]) {
                 var index = workflow.links[nodeId].indexOf(id.toString());
                 if (index > -1) {
@@ -1307,7 +1345,7 @@
     // 点击连线
     function onPathClick(id) {
         // 事件过滤
-        if(id == vm.path.id){
+        if (id == vm.path.id) {
             console.log('重复点击连线，事件无效！');
             return;
         }
@@ -1363,9 +1401,9 @@
         };
         vm.uploadFile = false;
         // 重设各节点状态
-        for (let nodeId in workflow.nodes[currentTab]) {
+        for (let nodeId in workflow.nodes[vm.activateFlow]) {
             d3.selectAll('g[id="' + nodeId + '"]')
-                    .attr('class', 'node ' + nodeStatusMap[workflow.nodes[currentTab][nodeId].status]);
+                    .attr('class', 'node ' + nodeStatusMap[workflow.nodes[vm.activateFlow][nodeId].status]);
         }
     }
 
@@ -1410,10 +1448,10 @@
 
     // 上传文件
     function onUploadFileChange() {
-        $(".file-upload").on("change","input[type='file']",function(){
+        $(".file-upload").on("change", "input[type='file']", function () {
             var filePath = $(this).val();
-            var arr=filePath.split('\\');
-            var fileName=arr[arr.length-1];
+            var arr = filePath.split('\\');
+            var fileName = arr[arr.length - 1];
             $(".file-upload-path").html(fileName);
         })
     }
