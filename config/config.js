@@ -385,12 +385,12 @@ var node_config = {
 
 // 算法参数列表
 var node_params = {
-    "data-load":['data_set', 'read_number'],
-    'data-upload':['path', 'name'],
-    'prehandle':['strategy'],
-    'stl':['maxanoms', 'day'],
-    'data-save':['data_path'],
-    'model-save':['model_path'],
+    "data-load":['data_set', 'read_number', 'variable'],
+    'data-upload':['path', 'name', 'variable'],
+    'prehandle':['strategy', 'variable'],
+    'stl':['maxanoms', 'day', 'variable'],
+    'data-save':['data_path', 'variable'],
+    'model-save':['model_path', 'variable'],
 };
 
 // API列表
