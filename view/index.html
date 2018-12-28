@@ -76,6 +76,19 @@
                     </a>
                 </span>
             </li>
+
+            <li>
+                <span class="deploy-button-group button-group">
+                    <a id="btn-refresh" class="run-button" @click="loadVariableConfig">
+                        <span class="deploy-button-content" style="opacity: 1;">
+                            <i class="fa fa-play-circle" aria-hidden="true"></i>
+                            <span>refresh</span>
+                        </span>
+                        <span class="deploy-button-spinner hide" style="display: none;">
+                            <img src="./public/spin.svg"></span>
+                    </a>
+                </span>
+            </li>
             <!--<li>-->
             <!--<a class="btn btn-link" href="#"><i class="fa fa-play-circle-o" aria-hidden="true"></i>&nbsp;运行</a>-->
             <!--</li>-->
@@ -557,7 +570,9 @@
 </div>
 </body>
 </html>
-
+<script>
+    var env = 'dev';
+</script>
 <script src="../config/config.min.js"></script>
 <!--<script src="../config/config.js"></script>-->
 <script src="../public/custom/node/node.js"></script>

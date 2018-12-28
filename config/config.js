@@ -394,8 +394,14 @@ var node_params = {
 };
 
 // API列表
+var envMap = {
+    dev : 8000,
+    test : 8088,
+    prod : 8080
+};
+
 var IP = 'localhost'; //'10.131.247.51';
-var port = 8889;
+var port = envMap[env];
 var host_url = 'http://' + IP + ':' + port;
 var api_map={
     'user_login': host_url + '/workflowUser/login',
@@ -417,7 +423,7 @@ var api_map={
     'variable_load' : host_url + '/workflow/variable/load',
     'get_data': host_url + '/workflow/getData',
     'upload': host_url + '/file/upload',
-    'webSocket': 'ws://'+IP+':8889/webSocket',
+    'webSocket': 'ws://'+IP+':'+envMap[env]+'/webSocket',
 };
 
 // 节点状态映射
