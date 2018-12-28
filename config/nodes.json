@@ -10,5 +10,6 @@
   "elis": "enable",
   "mpsegment": "enable",
   "kshape":"enable",
-  "hime":"enable"
+  "hime":"enable",
+  "rshash":"enable"
 }

@@ -21,22 +21,22 @@ let imageCount = [];
 
 let imageIndex = [];
 
-function clickPagePrev(i) {
+function clickPagePrev(i,data) {
     const index = imageIndex[i];
     if (index === 0) {
         return;
     }
     imageIndex[i] -= pageSize;
-    showCluster();
+    showCluster(data);
 }
 
-function clickPageNext(i) {
+function clickPageNext(i,data) {
     const index = imageIndex[i];
     if (index + pageSize >= imageCount[i]) {
         return;
     }
     imageIndex[i] += pageSize;
-    showCluster();
+    showCluster(data);
 }
 
 function initCluster(data) {
@@ -63,6 +63,7 @@ function showCluster(data) {
         line.setAttribute("class", "line");
         dom.appendChild(line);
         let leftContainer = document.createElement("div");
+
         leftContainer.setAttribute('class', 'left-container');
         line.appendChild(leftContainer);
         let rightContainer = document.createElement("div");
@@ -71,11 +72,14 @@ function showCluster(data) {
 
         for (var j = 0; j < seriesInfo[i].length && j < imageIndex[i] + pageSize + 1; ++j) {
             var imageContainer;
+            let id= i.toString() + ',' + j.toString();
             if (j === 0) {
                 imageContainer = leftContainer;
             } else {
                 let container = document.createElement("div");
+
                 container.setAttribute('class', 'cluster-image');
+                container.setAttribute('id',id);
                 rightContainer.appendChild(container);
                 imageContainer = container;
             }
@@ -133,6 +137,10 @@ function showCluster(data) {
                 }],
                 series: series,
             });
+            myChart.setOption(option);
+            $("#"+ id).resize(function () {
+                myChart.resize();
+            });
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
             }
@@ -149,7 +157,7 @@ function showCluster(data) {
         leftArrow.style.color = "#4285f4";
         const index = i;
         leftArrow.addEventListener('click', function () {
-            clickPagePrev(index);
+            clickPagePrev(index, data);
         });
         pageContainer.appendChild(leftArrow);
         let rightArrow = document.createElement("a");
@@ -157,8 +165,82 @@ function showCluster(data) {
         rightArrow.text = ">";
         rightArrow.style.color = "#4285f4";
         rightArrow.addEventListener('click', function () {
-            clickPageNext(index);
+            clickPageNext(index, data);
         });
         pageContainer.appendChild(rightArrow);
     }
 }
+(function($, h, c) {
+    var a = $([]),
+        e = $.resize = $.extend($.resize, {}),
+        i,
+        k = "setTimeout",
+        j = "resize",
+        d = j + "-special-event",
+        b = "delay",
+        f = "throttleWindow";
+    e[b] = 250;
+    e[f] = true;
+    $.event.special[j] = {
+        setup: function() {
+            if (!e[f] && this[k]) {
+                return false;
+            }
+            var l = $(this);
+            a = a.add(l);
+            $.data(this, d, {
+                w: l.width(),
+                h: l.height()
+            });
+            if (a.length === 1) {
+                g();
+            }
+        },
+        teardown: function() {
+            if (!e[f] && this[k]) {
+                return false;
+            }
+            var l = $(this);
+            a = a.not(l);
+            l.removeData(d);
+            if (!a.length) {
+                clearTimeout(i);
+            }
+        },
+        add: function(l) {
+            if (!e[f] && this[k]) {
+                return false;
+            }
+            var n;
+            function m(s, o, p) {
+                var q = $(this),
+                    r = $.data(this, d);
+                r.w = o !== c ? o: q.width();
+                r.h = p !== c ? p: q.height();
+                n.apply(this, arguments);
+            }
+            if ($.isFunction(l)) {
+                n = l;
+                return m;
+            } else {
+                n = l.handler;
+                l.handler = m;
+            }
+        }
+    };
+    function g() {
+        i = h[k](function() {
+                a.each(function() {
+                    var n = $(this),
+                        m = n.width(),
+                        l = n.height(),
+                        o = $.data(this, d);
+                    if (m !== o.w || l !== o.h) {
+                        n.trigger(j, [o.w = m, o.h = l]);
+                    }
+                });
+                g();
+            },
+            e[b]);
+    }
+})(jQuery, this);

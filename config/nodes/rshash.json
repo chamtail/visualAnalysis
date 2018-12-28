@@ -1,66 +1,64 @@
 {
   "display": {
-    "zh": "ELIS分类",
-    "en": "SAX for classification"
+    "zh": "rshash",
+    "en": "outlier detection"
   },
   "in": 1,
   "out": 1,
   "params": [
     {
-      "name": "Regulation",
+      "name": "number_of_samples",
       "label": {
-        "zh": "正则化",
-        "en": "Regulation"
+        "zh": "采样数",
+        "en": "number_of_samples"
       },
       "type": "number",
-      "min": 0,
-      "default": 0.01,
+      "default": 1000,
       "enable": true,
       "configurable": true
     },
     {
-      "name": "Iteration",
+      "name": "number_of_tables",
       "label": {
-        "zh": "迭代数",
-        "en": "Iteration"
+        "zh": "哈希表数量",
+        "en": "number_of_tables"
       },
       "type": "number",
-      "default": 0,
+      "default": 4,
       "enable": true,
       "configurable": true
     },
     {
-      "name": "Learning_Rate",
+      "name": "enumeration",
       "label": {
-        "zh": "学习率",
-        "en": "Learning_Rate"
+        "zh": "迭代次数",
+        "en": "enumeration"
       },
       "type": "number",
-      "default": 0.01,
+      "default": 4,
       "enable": true,
       "configurable": true
     },
     {
-      "name": "Data_Generation",
+      "name": "size_of_table",
       "label": {
-        "zh": "数据生成数量",
-        "en": "Data_Generation"
+        "zh": "哈希表大小",
+        "en": "size_of_table"
       },
       "type": "number",
-      "min":2,
-      "default": "",
+      "default": 10000,
       "enable": true,
       "configurable": true
     },
     {
-      "name": "variable",
+      "name": "percentage_of_normal",
       "label": {
-        "zh": "变量名称",
-        "en": "variable name"
+        "zh": "正常点百分比",
+        "en": "percentage_of_normal"
       },
-      "type": "text",
-      "default": "",
-      "enable": false,
+      "type": "number",
+      "default": 0.8,
+      "enable": true,
       "configurable": true
     },
     {
@@ -86,6 +84,6 @@
       "configurable": false
     }
   ],
-  "description": "A node for classifying time series data using ELIS",
-  "category": "process/classification"
+  "description": "",
+  "category": "process/outlier"
 }

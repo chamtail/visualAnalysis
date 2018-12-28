@@ -31,10 +31,15 @@ function init() {
     // 绑定拖拽
     $('#palette .node').draggable({
         helper: 'clone',
+        appendTo: "body",
+        revert: !0,
+        revertDuration: 0,
         addClass: false,
         connectToSortable: '#workflow',
         start: function (e, ui) {
             ui.helper.addClass('ui-draggable-helper');
+        },
+        drag: function (e, ui) {
         },
         stop: function (e, ui) {
             let node = {
@@ -71,6 +76,13 @@ function init() {
                 workflow.used[node.type] = 1;
             }
 
+        }
+    });
+
+    // 绑定正在拖动
+    $('#palette .node').droppable({
+        drop: function (e, ui) {
+            console.log(e);
         }
     });
 

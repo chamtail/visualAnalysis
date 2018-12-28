@@ -192,10 +192,10 @@
                 <div id="workflow-editor">
                     <!--<div class="btn-toolbar justify-content-between" role="toolbar" style="float: right; margin: 5px;">-->
                     <!--<div class="btn-group btn-group-sm" role="group" aria-label="First group">-->
-                    <!--<button type="button" class="btn" onclick="minScreen('workflow')" style="display: none;">-->
+                    <!--<button type="button" class="btn min" onclick="minScreen('workflow')" style="display: none;">-->
                     <!--<i class="fa fa-minus" aria-hidden="true"></i>-->
                     <!--</button>-->
-                    <!--<button type="button" class="btn" onclick="maxScreen('workflow')">-->
+                    <!--<button type="button" class="btn max" onclick="maxScreen('workflow')">-->
                     <!--<i class="fa fa-window-maximize" aria-hidden="true"></i>-->
                     <!--</button>-->
                     <!--</div>-->
@@ -219,12 +219,13 @@
             </div>
             <!-- 可视化部分 -->
             <div id="visual" class="visual" style="position: absolute; width: 100%; height: 45%; top:45%;">
-                <div class="btn-toolbar justify-content-between" role="toolbar" style="float: right; margin: 5px">
+                <div class="btn-toolbar justify-content-between" role="toolbar" style="float: right;">
+                    <div class="tab-title"><span>可视化</span></div>
                     <div class="btn-group btn-group-sm" role="group" aria-label="First group">
-                        <button type="button" class="btn" onclick="minScreen('visual')" style="display: none;">
+                        <button type="button" class="btn min" onclick="minScreen('visual')" style="display: none;">
                             <i class="fa fa-minus" aria-hidden="true"></i>
                         </button>
-                        <button type="button" class="btn" onclick="maxScreen('visual')">
+                        <button type="button" class="btn max" onclick="maxScreen('visual')">
                             <i class="fa fa-window-maximize" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -232,19 +233,29 @@
                 <div id="chart">
                     <div class="visual-chart" id="data-load"></div>
                     <div class="visual-chart" id="abnormalChart"></div>
-                    <div class="visual-chart" id="motifChart"></div>
                     <div class="visual-chart" id="cluster"></div>
+                    <div class="visual-chart" id="motifArea">
+                        <div id="motifChart"></div>
+
+                        <div id = "motifList" class="motifList">
+                            <table id = "motifTable" style="border:2px solid #d0d8e2;"></table>
+                        </div>
+
+                        <div id="subMotifChart"></div>
+                    </div>
+
                 </div>
             </div>
 
             <!-- 命令行部分 -->
             <div id="command" class="command" style="position: absolute; width: 100%; height: 10%; top:90%;">
-                <div class="btn-toolbar justify-content-between" role="toolbar" style="float: right; margin: 5px">
+                <div class="btn-toolbar justify-content-between" role="toolbar" style="float: right;">
+                    <div class="tab-title"><span>命令行</span></div>
                     <div class="btn-group btn-group-sm" role="group" aria-label="First group">
-                        <button type="button" class="btn" onclick="minScreen('command')" style="display: none;">
+                        <button type="button" class="btn min" onclick="minScreen('command')" style="display: none;">
                             <i class="fa fa-minus" aria-hidden="true"></i>
                         </button>
-                        <button type="button" class="btn" onclick="maxScreen('command')">
+                        <button type="button" class="btn max" onclick="maxScreen('command')">
                             <i class="fa fa-window-maximize" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -394,8 +405,7 @@
                         </template>
                     </div>
                 </div>
-                <div style="height: 100%; display: none;">
-                    <div id="message"></div>
+                <div style="height: 100%; display: block;">
                 </div>
                 <div style="height: 100%; display: none;">
                     <div class="sidebar-node-variable-space">
@@ -530,13 +540,14 @@
 </html>
 
 <script src="../config/config.min.js"></script>
-<!-- <script src="../config/config.js"></script> -->
+<!--<script src="../config/config.js"></script>-->
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/js/Echarts/echarts.js"></script>
 <script src="../public/custom/index/index.js"></script>
 <script src="../public/custom/charts/charts.js"></script>
 <script src="../public/custom/charts/cluster.js"></script>
+<script src="../public/custom/charts/motif.js"></script>
 <script src="../public/custom/websocket/websocket.js"></script>
 <script src="../public/js/underscore-1.8.2.min.js"></script>
 <script src="../public/custom/cmd/cmd.js"></script>
@@ -578,7 +589,12 @@
         mounted: function () {
             // 工作流初始化
             $(function () {
-                workflow.verCode = vm.getRequest();
+                workflow.verCode = vm.getRequest().verCode;
+                console.log(workflow.verCode);
+                if (workflow.verCode == -1 || workflow.verCode == undefined){
+                    window.location.href = 'login.html';
+                }
+
                 // 默认有一个flow
                 vm.addWorkflow();
 
@@ -620,7 +636,7 @@
 
             // 加载工作流
             $(function () {
-                vm.init();
+                //vm.init();
                 //vm.debug();
             })
         },
@@ -634,9 +650,8 @@
         methods: {
             init: function () {
                 // 加载工作流
-                let verCode = "admin";
                 $.ajax({
-                    url: api_map.workflow_init + "?verCode=" + verCode,
+                    url: api_map.workflow_init + "?verCode=" + workflow.verCode,
                     type: 'POST',
                     contentType: 'application/json',
                     success: function (res) {
@@ -682,7 +697,8 @@
                         }
                     },
                     error: function (res) {
-                        alert('工作流部署失败！');
+                        alert('啊哦，服务器连接失败了～');
+                        vm.enableA('#btn-deploy');
                     }
                 });
             },
@@ -1100,8 +1116,8 @@
                     url: api_map.cmd_run,
                     type:'POST',
                     data:{
-                        "verCode": workflow.verCode,
-                        "cmd": cmd,
+                        verCode: "admin",
+                        cmd: cmd,
                     },
                     dataType:"json",
                     success:function(res){
@@ -1123,6 +1139,9 @@
                     for(var i = 0; i < strs.length; i ++) {
                         theRequest[strs[i].split("=")[0]]=decodeURIComponent(strs[i].split("=")[1]);
                     }
+                }
+                if(theRequest == undefined || theRequest == null || JSON.stringify(theRequest) == "{}"){
+                    theRequest = -1;
                 }
                 return theRequest;
             },
@@ -1279,6 +1298,8 @@
             }
         }
 
+        // 可以重新部署
+        vm.enableA('#btn-deploy');
         // 重置
         reset();
     }
@@ -1368,8 +1389,9 @@
                 break;
             case "motif":
                 console.log("motif");
-                $('#motifChart').attr('style', 'display:block');
-                motifVisual(data.result);
+                $('#motifArea').attr('style', 'display:block');
+                var motifData = generateMotifData(5);
+                motifAreaVisual(motifData);
                 break;
             case "cluster":
             case "sax-classify":
