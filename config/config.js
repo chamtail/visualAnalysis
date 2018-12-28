@@ -423,7 +423,7 @@ var api_map={
     'variable_load' : host_url + '/workflow/variable/load',
     'get_data': host_url + '/workflow/getData',
     'upload': host_url + '/file/upload',
-    'webSocket': 'ws://'+IP+':8889/webSocket',
+    'webSocket': 'ws://'+IP+':'+envMap[env]+'/webSocket',
 };
 
 // 节点状态映射
