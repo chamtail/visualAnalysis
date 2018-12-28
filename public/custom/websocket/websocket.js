@@ -89,10 +89,10 @@ window.onbeforeunload = function() {
 function reconnect(url) {
     if(lockReconnect) return;
     lockReconnect = true;
-    // setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
-    //     createWebSocket(url);
-    //     lockReconnect = false;
-    // }, 2000);
+    setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
+        createWebSocket(url);
+        lockReconnect = false;
+    }, 10000); // 重连时间间隔10秒钟
 }
 
 //心跳检测

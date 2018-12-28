@@ -6,7 +6,6 @@
  */
 
 // 全局变量
-let currentTab = 0;  // 当前工作流tab
 let startNode = -1;  // 开始节点
 let endNode = -1;  // 结束节点
 let workflow = {
@@ -22,7 +21,7 @@ let workflow = {
 function init() {
     let svg = d3.select('#workflow svg')
         .on('click', function () {
-            onWorkflowDetail(currentTab);
+            onWorkflowDetail(vm.activateFlow);
         });
 
     // 画网格
@@ -48,7 +47,7 @@ function init() {
                 type: ui.helper.attr('data-template-name'),
                 x: ui.position.left - 180,
                 y: ui.position.top - 50,
-                z: currentTab,
+                z: vm.activateFlow,
                 text: ui.helper.text()
             };
 
@@ -64,11 +63,11 @@ function init() {
             vm.enableA('#btn-deploy');
 
             // 记录节点
-            if (!workflow.nodes[currentTab]) {
-                workflow.nodes[currentTab] = {};
+            if (!workflow.nodes[vm.activateFlow]) {
+                workflow.nodes[vm.activateFlow] = {};
             }
-            workflow.nodes[currentTab][node.id] = node;
-            workflow.nodeFlowMap[node.id] = currentTab;
+            workflow.nodes[vm.activateFlow][node.id] = node;
+            workflow.nodeFlowMap[node.id] = vm.activateFlow;
             // 计算节点编号
             if (workflow.used[node.type]) {
                 workflow.used[node.type] += 1;
@@ -154,7 +153,7 @@ function addNode(svg, node) {
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
         .on('click', function () {
             onNodeDetail(node.id);
-            //    阻止事件向后传递
+            // 阻止事件向后传递
             d3.event.stopPropagation();
         })
         .on('dblclick', function () {
@@ -307,8 +306,8 @@ function nodeInject(node) {
 
 // 更新节点
 function updateNode(id, translate) {
-    workflow.nodes[currentTab][dragElem.attr('id')].x = translate[0];
-    workflow.nodes[currentTab][dragElem.attr('id')].y = translate[1];
+    workflow.nodes[vm.activateFlow][dragElem.attr('id')].x = translate[0];
+    workflow.nodes[vm.activateFlow][dragElem.attr('id')].y = translate[1];
 }
 
 // 更新节点状态
@@ -322,7 +321,7 @@ function updateNodeStatus(status) {
         d3.selectAll('g[id="' + nodeId + '"]')
             .attr('class', 'node ' + nodeStatusMap[statusNow])
             .attr('status', statusNow);
-        workflow.nodes[workflow.nodeFlowMap[nodeId]][nodeId].status = statusNow.toString();
+        workflow.nodes[workflow.nodeFlowMap[nodeId]][nodeId].status = parseInt(statusNow);
         if (statusNow == 4 || statusNow == "4"){
             vm.onNodeReRun(nodeId);
         }
@@ -350,6 +349,7 @@ function showNodesByFlow(flowId) {
     for(let nodeId in workflow.nodes[flowId]){
         let node = workflow.nodes[flowId][nodeId];
         addNode(svg, node);
+        status[nodeId] = node.status;
         if(workflow.links[nodeId]){
             links[nodeId] = workflow.links[nodeId];
             status[nodeId] = node.status;
