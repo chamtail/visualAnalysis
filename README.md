@@ -30,7 +30,7 @@
 4. 将代码push到主分支上：$git push origin master
 5. 合并完之后记得切换回自己到分支工作区再继续写哟～
 
-#### 节点配置说明
+#### 项目文档
 详见[wiki](https://gitee.com/DSM_fudan/visualAnalysis/wikis/%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E?sort_id=1037802)。
 
 未完待续。。。
