@@ -238,3 +238,83 @@ function mouseMove(ev){
     $('#xPos1').text(mousePos.x);
     $('#yPos1').text(mousePos.y);
 }
+
+// 获取url中的参数
+function getUrlParams() {
+    var url = location.search; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+        var str = url.substr(1);
+        var strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+        }
+    }
+    return theRequest;
+}
+
+function checkRouters(routers) {
+    console.log(JSON.stringify(routers));
+    // Check 1: 检测当前节点路由表是否为空
+    var routersIsEmpty = (JSON.stringify(routers) == "{}" || JSON.stringify(routers) == undefined);
+    if (routersIsEmpty) {
+        console.log("无节点");
+        return false;
+    }
+
+    // Check 2: 检测节点参数是否有误
+
+    // Check 3: 检测链表中是否存在异常
+
+    return true;
+}
+function generateRouters(workflow) {
+    // 生成节点路由表
+    var routers = {};
+    for (let tabIndex in workflow.nodes) {
+        routers[tabIndex] = {};
+        for (let nodeId in workflow.nodes[tabIndex]) {
+            var node_origin = workflow.nodes[tabIndex][nodeId];
+            var node_type = node_origin['type'];
+            var node_id = node_origin['id'];
+            if (!routers[tabIndex][node_id]) {
+                routers[tabIndex][node_id] = {
+                    id: node_id,
+                    last: [],
+                    next: [],
+                    algorithm: node_type,
+                    paramsList: []
+                }
+            }
+            if (workflow.links[node_id] && workflow.links[node_id].length != 0) {
+                routers[tabIndex][node_id].next = workflow.links[node_id];
+                for (let i = 0; i < workflow.links[node_id].length; i++) {
+                    let nId = workflow.links[node_id][i];
+                    // 考虑到节点id可能为null
+                    if (!nId) {
+                        continue;
+                    }
+                    if (!routers[tabIndex][nId]) {
+                        routers[tabIndex][nId] = {
+                            id: nId,
+                            last: [],
+                            next: [],
+                            algorithm: workflow.nodes[tabIndex][nId]['type'],
+                            paramsList: []
+                        };
+                    }
+                    if (routers[tabIndex][nId].last.indexOf(node_id) < 0) {
+                        routers[tabIndex][nId].last.push(node_id);
+                    }
+                }
+            }
+            var algoParamsList = node_params[node_type];
+            routers[tabIndex][node_id].paramsList = [];
+            for (var i = 0, len = algoParamsList.length; i < len; i++) {
+                var param_name = algoParamsList[i];
+                routers[tabIndex][node_id].paramsList.push(node_origin[param_name]);
+            }
+        }
+    }
+    return routers;
+}

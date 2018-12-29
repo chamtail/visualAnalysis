@@ -88,10 +88,10 @@
 </html>
 
 <script>
-    var env = 'dev';
+    var env = 'debug';
 </script>
 <script src="../config/config.min.js"></script>
-<!--<script src="../config/config.js"></script>-->
+<script src="../public/js/cookie.js"></script>
 <script>
     var vm = new Vue({
         el: '#login',
@@ -135,7 +135,9 @@
                     dataType: 'json',
                     success: function (res) {
                         if (res.code == 0) {
-                            window.location.href = 'index.html?verCode=' + res.data.verCode;
+                            // 15分钟有效期
+                            setCookie('token', res.data.token, 0.25, "/");
+                            window.location.href = 'index.html';
                         } else {
                             popWarn(res.msg);
                             vm.src = api_map.user_verify + '?' + Math.random();
