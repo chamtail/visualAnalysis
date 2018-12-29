@@ -6,6 +6,8 @@
 #### Software Architecture
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1123/100828_73209334_2141312.jpeg "实验室时间序列可视化分析平台.jpg")
 
+#### Sequence Diagram
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1229/151602_136bf791_2141312.png "workflow时序图.png")
 #### Installation
 
 1. [下载安装XAMPP服务器](http://note.youdao.com/noteshare?id=611a754774eb730c5f730cc3bcbadb32)
