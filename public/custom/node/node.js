@@ -19,7 +19,7 @@ let workflow = {
 function init() {
     let svg = d3.select('#workflow svg')
         .on('click', function () {
-            onWorkflowDetail(vm.currentFlow);
+            onComponentDetail(vm.currentFlow, 'flow');
         });
 
     // 画网格
@@ -80,26 +80,6 @@ function init() {
             // 重构代码
         }
     });
-
-    // 绑定节点列表事件
-    $('.node-header').click(function () {
-        var id = $(this).attr('id');
-        var nextId = $(this).next().attr('id');
-        var el_i = $('#' + id + ' >i');
-        el_i.toggleClass('expanded');
-        var nextEl = $('#' + nextId);
-        nextEl.slideToggle(500);
-    });
-
-    $('#node-collapse-all').click(function (e) {
-        var container = $('#node-container');
-        container.find('.node-content').slideUp(500);
-    });
-
-    $('#node-expand-all').click(function (e) {
-        var container = $('#node-container');
-        container.find('.node-content').slideDown(500);
-    });
 }
 
 // 画网格
@@ -148,12 +128,12 @@ function addNode(svg, node) {
         .attr('id', node.id)
         .attr('transform', 'translate(' + node.x + ', ' + node.y + ')')
         .on('click', function () {
-            onNodeDetail(node.id);
+            onComponentDetail(node.id, node.type);
             // 阻止事件向后传递
             d3.event.stopPropagation();
         })
         .on('dblclick', function () {
-            onNodeConfig(node.id);
+            onComponentConfig();
             d3.event.stopPropagation();
         });
 
@@ -292,7 +272,7 @@ function getTranslate(node) {
 
 // 给节点注入属性
 function nodeInject(node) {
-    let injectedNode = node_config[node.type]['params'];
+    let injectedNode = component_config[node.type]['params'];
     for (let i = 0, len = injectedNode.length; i < len; i++) {
         let paramKey = injectedNode[i].name;
         if (node[paramKey] == undefined){
@@ -477,6 +457,9 @@ function lineEnded() {
             });
     }
 
+    if(endNode == null){
+        return;
+    }
     // 重构代码
     // 记录下该连接信息
     if (!workflow.task[startNode].links) {
@@ -485,7 +468,7 @@ function lineEnded() {
     workflow.task[startNode].links.push(endNode);
     // 重构代码
     // 重置参数
-    resetPathParmas();
+    resetPathParams();
 }
 
 // 更新Path
@@ -546,7 +529,7 @@ function getBezier(points) {
 }
 
 // 重置参数
-function resetPathParmas() {
+function resetPathParams() {
     activeLine = null;
     points.length = 0;
     translate = null;
@@ -558,22 +541,31 @@ function resetPathParmas() {
  * 连线相关 End
  */
 
-// 显示节点细节
-function onNodeDetail(id, force = false) {
-    // 事件过滤, 配置一样便过滤。不只比较id
-    if (id == vm.node.id && !force) {
-        console.log('重复点击节点，事件无效！');
+/**
+ * 组件相关 Start
+ */
+// 显示组件
+function onComponentDetail(id, type, force=false){
+    // 过滤重复事件
+    if(id == vm.component.id && type == vm.component.type && !force){
+        console.log(vm.component.id, vm.component.type);
+        console.log('重复点击组件，事件无效！');
         return;
     }
     // 更新状态
     update();
-    var node = $('#' + id);
+    // 更新组件信息
+    vm.component = getComponent(id, type, vm.lang);
+    if(type == 'flow'){
+        return;
+    }
+    let node = $('#' + id);
     node.addClass('active');
-    var nodeType = node.attr("data-template-name");
-    vm.node = getNodeInfo(id, nodeType);
+    let nodeType = node.attr("data-template-name");
+    vm.node = getComponent(id, nodeType);
     console.log('显示节点细节&显示节点可视化');
     // 如果该节点状态为已运行, 则进行可视化
-    var status = node.attr('status');
+    let status = node.attr('status');
     if (status == 4) {
         console.log("可视化");
         $.ajax({
@@ -597,56 +589,83 @@ function onNodeDetail(id, force = false) {
     }
 }
 
-// 配置节点
-function onNodeConfig() {
-    // 显示配置窗口
-    $('#nodeParamsModal').modal('show');
+// 配置组件
+function onComponentConfig() {
+    $('#configModal').modal('show');
 }
 
-// 显示工作流细节
-function onWorkflowDetail(flowId, force=false){
-    // 事件过滤
-    if(flowId == vm.flow.id && !force){
-        console.log('重复点击工作流，事件无效！');
+// 删除组件
+function onComponentDelete(id, type) {
+    console.log("删除" + type + "#" + id);
+    if(type == 'flow'){
+        // 先隐藏该工作流上的节点
+        hideNodesByFlow(id);
+        // 删除工作流下的所有节点
+        let nodesList = workflow.task[id].nodes;
+        for(let i=0, len=nodesList.length; i<len; i++) {
+            let nodeId = nodesList[i];
+            workflow.used[workflow.task[nodeId].type] -= 1;
+            delete workflow.task[nodeId];
+        }
+    } else{
+        // 删除与之相连的路径
+        d3.selectAll('path[from="' + id + '"]').remove();
+        d3.selectAll('g[id="' + id + '"]').remove();
+        d3.selectAll('path[to="' + id + '"]').remove();
+
+        // 删除与该节点相关的记录
+        let flowId = workflow.task[id].z;
+        let index = workflow.task[flowId].nodes.indexOf(id.toString());
+        if (index > -1) {
+            workflow.task[flowId].nodes.splice(index, 1);
+        }
+        for(let i=0, len=workflow.task[flowId].nodes.length; i<len; i++){
+            let nodeId = workflow.task[flowId].nodes[i];
+            let index = workflow.task[nodeId].links.indexOf(id.toString());
+            if (index > -1) {
+                workflow.task[nodeId].links.splice(index, 1);
+            }
+        }
+    }
+    // 删除该组件
+    delete workflow.task[id];
+    // 组件使用次数减一
+    if (workflow.used[type]) {
+        workflow.used[type] -= 1;
+    }
+    // 更新workflow
+    vm.updateWorkflow(workflow);
+    $('#configModal').modal('hide');
+}
+
+// 保存组件配置
+function onComponentConfigSave() {
+    updateComponentParams();
+}
+// 获取组件参数
+function getComponentParams(id, type) {
+    if (!workflow.task[id]) {
         return;
     }
+    let currentParams = workflow.task[id];
 
-    // 更新状态
-    update();
-
-    // 更新工作流信息
-    getFlowInfo(flowId);
-}
-
-// 配置工作流
-function onWorkflowConfig() {
-    $('#nodeParamsModal').modal('show');
-}
-
-// 获取节点配置
-function getNodeParams(nodeId, nodeType) {
-    if (!workflow.task[vm.currentFlow]) {
-        return;
-    }
-    var currentParams = workflow.task[nodeId];
-
-    var keyList = {};
-    for (var key in currentParams) {
+    let keyList = {};
+    for (let key in currentParams) {
         keyList[key] = 1;
     }
-    var params = [];
-    var attrInfo = node_config[nodeType]['params'];
+    let params = [];
+    let attrInfo = component_config[type]['params'];
 
-    for (var i = 0, len = attrInfo.length; i < len; i++) {
+    for (let i = 0, len = attrInfo.length; i < len; i++) {
         if (attrInfo[i]['configurable']) {
-            for (var key in keyList) {
+            for (let key in keyList) {
                 if (attrInfo[i]['name'] == key) {
                     attrInfo[i]['default'] = currentParams[key];
                 }
-                if (attrInfo[i]['type'] == 'file') {
-                    vm.uploadFile = true;
-                    onUploadFileChange();
-                }
+                // if (attrInfo[i]['type'] == 'file') {
+                //     vm.uploadFile = true;
+                //     onUploadFileChange();
+                // }
             }
             params.push(attrInfo[i]);
         }
@@ -654,33 +673,36 @@ function getNodeParams(nodeId, nodeType) {
     return params;
 }
 
-// 获取节点信息
-function getNodeInfo(nodeId, nodeType, lang='zh') {
-    var node = {};
-    node.id = nodeId;
-    node.name = node_config[nodeType]['display'][lang];
-    node.type = nodeType;
-    node.params = getNodeParams(nodeId, nodeType);
-    node.description = node_config[nodeType].description;
-    return node;
+// 更新组件参数
+function updateComponentParams() {
+    let id = vm.component.id;
+    if (!workflow.task[id]) {
+        return;
+    }
+    let newParams = vm.component.params;
+    for (let i = 0, len = newParams.length; i < len; i++) {
+        workflow.task[id][newParams[i].name] = newParams[i].default;
+    }
+}
+// 获取组件信息
+function getComponent(id, type, lang='zh') {
+    if(!workflow.task[id]){
+        return;
+    }
+    let component = {};
+    component.id = id;
+    component.name = component_config[type]['display'][lang];
+    component.type = type;
+    component.params = getComponentParams(id, type);
+    if(component_config[type].description){
+        component.description = component_config[type].description;
+    }
+    return component;
 }
 
-// 获取工作流信息
-function getFlowInfo(flowId) {
-    if(!workflow.task[flowId]){
-        workflow.task[flowId] = {
-            id: flowId,
-            type: "flow",
-            label: "Flow " + flowId,
-            disabled: false,
-            description: "这是一个新flow",
-            nodes: []
-        };
-    }
-    for(let key in vm.flow){
-        vm.flow[key] = workflow.task[flowId][key];
-    }
-}
+/**
+ * 组件相关 End
+ */
 
 // 运行节点
 function runNode(id) {
@@ -690,37 +712,6 @@ function runNode(id) {
 // 暂停节点
 function stopNode(id) {
     vm.stopNode(id);
-}
-
-// 删除节点
-function onNodeDelete(id) {
-    console.log("删除节点#" + id);
-    // 删除与之相连的路径
-    d3.selectAll('path[from="' + id + '"]').remove();
-    d3.selectAll('g[id="' + id + '"]').remove();
-    d3.selectAll('path[to="' + id + '"]').remove();
-
-    // 重构代码
-    let node = workflow.task[id];
-    let flowId = node.z;
-    let type = node.type;
-    if (workflow.used[type]) {
-        workflow.used[type] -= 1;
-    }
-    delete workflow.task[id];
-    let index = workflow.task[flowId].nodes.indexOf(id.toString());
-    if (index > -1) {
-        workflow.task[flowId].nodes.splice(index, 1);
-    }
-    console.log(workflow.task[flowId].nodes);
-    for(let i=0, len=workflow.task[flowId].nodes.length; i<len; i++){
-        let nodeId = workflow.task[flowId].nodes[i];
-        let index = workflow.task[nodeId].links.indexOf(id.toString());
-        if (index > -1) {
-            workflow.task[nodeId].links.splice(index, 1);
-        }
-    }
-    // 重构代码
 }
 
 // 点击连线
@@ -742,10 +733,10 @@ function onPathClick(id) {
 // 删除连线
 function onPathDelete(id) {
     d3.select('path[id="' + id + '"]').remove();
-    var nodeIds = id.split("_");
-    var sId = nodeIds[0];
-    var eId = nodeIds[1];
-    var index = workflow.task[sId].links.indexOf(eId.toString());
+    let nodeIds = id.split("_");
+    let sId = nodeIds[0];
+    let eId = nodeIds[1];
+    let index = workflow.task[sId].links.indexOf(eId.toString());
     if (index > -1) {
         workflow.task[sId].links.splice(index, 1);
     }

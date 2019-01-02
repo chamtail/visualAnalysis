@@ -3,7 +3,7 @@
  */
 
 // 节点分类
-var nodes_category = {
+var node_category = {
     "input": {
         "display": {"zh": "输入模块", "en": "input module"},
         "nodes": {
@@ -56,8 +56,42 @@ var nodes_category = {
     }
 };
 
-// 节点配置
-var node_config = {
+// 组件配置
+var component_config = {
+    "flow": {
+        "display": {"zh": "工作流配置", "en": "workflow configuration"},
+        "params": [{
+            "name": "id",
+            "label": {"zh": "ID", "en": "ID"},
+            "type": "text",
+            "default": "",
+            "enable": true,
+            "configurable": false
+        }, {
+            "name": "type",
+            "label": {"zh": "类型", "en": "type"},
+            "type": "text",
+            "default": "flow",
+            "enable": true,
+            "configurable": false
+        }, {
+            "name": "label",
+            "label": {"zh": "标签", "en": "label"},
+            "type": "text",
+            "default": "",
+            "enable": true,
+            "configurable": false
+        }, {
+            "name": "disabled",
+            "label": {"zh": "disabled", "en": "disabled"},
+            "type": "checkbox",
+            "default": false,
+            "enable": true,
+            "configurable": true
+        }],
+        "description": "这是一个工作流。",
+        "category": "flow"
+    },
     "data-upload": {
         "display": {"zh": "上传数据", "en": "upload data"},
         "in": 0,
@@ -572,7 +606,8 @@ var node_config = {
 };
 
 // 算法参数列表
-var node_params = {
+var component_params = {
+    "flow": ["disabled"],
     "data-upload": ["path", "name"],
     "data-load": ["data_set", "read_number"],
     "prehandle": ["strategy"],
@@ -613,7 +648,7 @@ var api_map = {
     "variable_load": "http://10.131.247.51:8000/workflow/variable/load",
     "get_data": "http://10.131.247.51:8000/workflow/getData",
     "upload": "http://10.131.247.51:8000/file/upload",
-    "webSocket": "ws://10.131.247.51:8000/webSocket"
+    "webSocket": "ws://10.131.247.51:8000/webSocket/admin"
 };
 
 // 节点状态映射

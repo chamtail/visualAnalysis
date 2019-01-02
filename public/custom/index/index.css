@@ -1570,7 +1570,7 @@ table.node-info tr.blank th {
 table.node-info tr.blank > * {
     padding-top: 8px;
     border: none;
-    padding-left: 0px
+    padding-left: 0
 }
 
 table.node-info tr.blank a {
@@ -1635,6 +1635,10 @@ table.node-info tr:not(.blank) td:last-child {
 
 div.node-info {
     margin: 5px
+}
+
+table.node-info tr.active, table.node-info tr.active td:first-child{
+    background-color: mintcream;
 }
 
 .file-upload {

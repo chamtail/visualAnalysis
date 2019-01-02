@@ -1,4 +1,5 @@
 {
+  "flow" : "flow",
   "data-upload": "enable",
   "data-load": "enable",
   "prehandle": "enable",

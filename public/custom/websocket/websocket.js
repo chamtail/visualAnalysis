@@ -2,7 +2,7 @@
  * Created by Jeremy on 2018/11/13.
  */
 let lockReconnect = false;  //避免ws重复连接
-let wsUrl = api_map['webSocket'];
+let wsUrl = api_map['webSocket'] + "/" + getCookieValue("token");
 console.log(wsUrl);
 let ws = null;  // 判断当前浏览器是否支持WebSocket
 createWebSocket(wsUrl); //连接ws
@@ -64,8 +64,8 @@ function initEventHandle() {
 
             // docker返回信息
             if(data.container === 'docker'){
-                var verCode = data.result.verCode;
-                if(verCode != workflow.verCode){
+                var token = data.result.token;
+                if(token != workflow.token){
                     console.log('抱歉，该用户不符合预期');
                     return;
                 }
