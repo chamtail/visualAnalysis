@@ -552,6 +552,7 @@
         el: '#vm',
         data: {
             initFinish: false,
+            workflowChanged: false,
             nodeCategory: {},
             flows: {},
             nodes:{},
@@ -636,26 +637,34 @@
                 vm.initFinish = true;
             }
 
-            // 绑定节点列表事件
-            $('.component-header').unbind().click(function () {
-                var id = $(this).attr('id');
-                var nextId = $(this).next().attr('id');
-                var el_i = $('#' + id + ' >i');
-                el_i.toggleClass('expanded');
-                var nextEl = $('#' + nextId);
-                nextEl.slideToggle(500);
-            });
-            $('#node-collapse-all').unbind().click(function (e) {
-                var container = $('#node-container');
-                container.find('.component-header > i').removeClass('expanded');
-                container.find('.component-content').slideUp(500);
-            });
+            if (vm.workflowChanged) {
+                console.log('update now!');
+                vm.updateWorkflow(workflow);
 
-            $('#node-expand-all').unbind().click(function (e) {
-                var container = $('#node-container');
-                container.find('.component-header > i').addClass('expanded');
-                container.find('.component-content').slideDown(500);
-            });
+                // 绑定节点列表事件
+                $('.component-header').unbind().click(function () {
+                    var id = $(this).attr('id');
+                    var nextId = $(this).next().attr('id');
+                    var el_i = $('#' + id + ' >i');
+                    el_i.toggleClass('expanded');
+                    var nextEl = $('#' + nextId);
+                    nextEl.slideToggle(500);
+                });
+                $('#node-collapse-all').unbind().click(function (e) {
+                    var container = $('#node-container');
+                    container.find('.component-header > i').removeClass('expanded');
+                    container.find('.component-content').slideUp(500);
+                });
+
+                $('#node-expand-all').unbind().click(function (e) {
+                    var container = $('#node-container');
+                    container.find('.component-header > i').addClass('expanded');
+                    container.find('.component-content').slideDown(500);
+                });
+
+                vm.workflowChanged = false;
+            }
+            
         },
         methods: {
             // 加载工作流
@@ -764,6 +773,7 @@
                         success: function (res) {
                             if (res.code == 0) {
                                 console.log("节点们正在运行。。。");
+                                vm.saveWorkflow();
                                 return true;
                             } else {
                                 alert(res.msg);
@@ -859,6 +869,9 @@
                     } else{
                         vm.nodes[id] = workflow.task[id];
                         var flowId = vm.nodes[id].z;
+                        if (workflow.task[id].variable == "") {
+                            continue;
+                        }
                         vm.variableSpace[flowId][id] = {
                             id: id,
                             name: workflow.task[id].variable,
@@ -897,7 +910,7 @@
                     dataType: 'json',
                     success: function (res) {
                         if (res.code == 0) {
-
+                            vm.saveWorkflow();
                         } else {
                             alert(res.msg);
                             let nodeStatus = {};
@@ -928,75 +941,7 @@
                         .attr('fill', '#1aad19 !important')
                         .text('\uf021');
             },
-//            saveNodeConfig: function (nodeId) {
-//                $('#configModal').modal('hide');
-//                var data = $('#main-form').serializeArray();
-//                var dataSetName = "-1";
-//                var variable = "-1";  // -1 代表不需要变量
-//                $.each(data, function () {
-//                    workflow.task[nodeId][this.name] = this.value;
-//                    console.log(this.name, this.value);
-//                    if (this.name == "name") {
-//                        dataSetName = this.value;
-//                    }
-//                    if (this.name == "variable") {
-//                        variable = this.value;
-//                    }
-//                });
-//                // 如果该组件需要上传文件并且是第一次或者修改文件路径时
-//                if (this.uploadFile) {
-//                    var nodeId = this.node.id;
-//                    var filePath = $('#file_' + nodeId)[0].files[0];
-//                    if (filePath == undefined || dataSetName == "") {
-//                        console.log("error");
-//                        return;
-//                    }
-//
-//                    workflow.task[nodeId].path = filePath.name;
-//
-//                    vm.onNodeRun(nodeId);
-//
-//                    var flow = {};
-//                    flow.token = workflow.token;
-//
-//                    var formData = new FormData();
-//                    formData.append('file', filePath);
-//                    formData.append('token', workflow.token);
-//                    formData.append('nodeId', nodeId);
-//                    formData.append('flowId', vm.currentFlow);
-//                    formData.append('nodeType', vm.node.type);
-//                    formData.append('dataSetName', dataSetName);
-//                    $.ajax({
-//                        url: api_map.upload,
-//                        type: 'POST',
-//                        data: formData,
-//                        cache: false,    //上传文件不需缓存
-//                        processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
-//                        contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
-//                        success: function (res) {
-//                            if (res.code == 0) {
-//                                updateNodeStatus(res.data.initResult);
-//                            } else {
-//                                vm.onNodeStop(nodeId);
-//                                alert(res.msg);
-//                            }
-//                        }
-//                    });
-//                }
-//
-//                // 保存变量
-//                if (variable != "-1") {
-//                    vm.saveVariableConfig(variable);
-//                }
-//
-//                // 更新节点参数
-//                //vm.deployWorkflow();
-//
-//                // 显示节点属性
-////                onNodeDetail(vm.node.id, true);
-//                onComponentDetail(vm.component.id, vm.component.type, true);
-//                vm.enableA('#btn-deploy');
-//            },
+
 
             runCmd: function (cmd) {
                 console.log(cmd);
@@ -1086,80 +1031,34 @@
                 }
                 return true;
             },
-            saveVariableConfig: function (variable) {
-                let request = {};
-                request['token'] = workflow.token;
-                request['flowId'] = vm.currentFlow;
-                request['nodeId'] = vm.node.id;
-                request['variableName'] = variable;
-                request['size'] = "";
-                let data = JSON.stringify(request);
-                // 保存变量
-                $.ajax({
-                    url: api_map.variable_save,
-                    type: 'POST',
-                    data: data,
-                    contentType: 'application/json',
-                    success: function (res) {
-                        if (res.code == 0) {
+            
+            updateVariableSpace: function () {
+                vm.flows = {};
+                vm.nodes = {};
+                vm.variableSpace = {};
 
-                        } else {
-                            alert(res.msg);
-                        }
-                    },
-                    error: function (res) {
-                        alert('变量保存失败！');
+                // 获取任务栏即变量空间
+                for(let id in workflow.task){
+                    console.log(id);
+                    if(!workflow.task[id]){
+                        continue;
                     }
-                });
-
-                // 更新本地
-                if (!vm.variableSpace[vm.currentFlow]) {
-                    vm.variableSpace[vm.currentFlow] = {
-                        id: vm.currentFlow,
-                        type: vm.flow.type,
-                        label: vm.flow.label,
-                        disabled: vm.flow.disabled,
-                        description: vm.flow.description,
-                        nodes: {}
-                    };
-                }
-                if (!vm.variableSpace[vm.currentFlow].nodes[vm.node.id]) {
-                    vm.variableSpace[vm.currentFlow].nodes[vm.node.id] = {
-                        id: vm.node.id,
-                        name: variable,
-                        size: ""
+                    if(workflow.task[id].type == "flow"){
+                        vm.flows[id] = workflow.task[id];
+                        vm.variableSpace[id] = {};
+                    } else{
+                        vm.nodes[id] = workflow.task[id];
+                        var flowId = vm.nodes[id].z;
+                        if (workflow.task[id].variable == "") {
+                            continue;
+                        }
+                        vm.variableSpace[flowId][id] = {
+                            id: id,
+                            name: workflow.task[id].variable,
+                            size: workflow.task[id].size
+                        };
                     }
                 }
-                vm.variableSpace[vm.currentFlow].nodes[vm.node.id].name = variable;
-            },
-            loadVariableConfig: function () {
-                let request = {};
-                request['token'] = workflow.token;
-                request['flowId'] = vm.currentFlow;
-                request['nodeId'] = vm.node.id;
-                let data = JSON.stringify(request);
-                JSON.stringify(data);
-                $.ajax({
-                    url: api_map.variable_load,
-                    type: 'POST',
-                    data: data,
-                    contentType: 'application/json',
-                    success: function (res) {
-                        if (res.code == 0) {
-                            for (let i = 0, len = res.data.length; i < len; i++) {
-                                let fId = res.data[i].flowId;
-                                let nId = res.data[i].nodeId;
-                                vm.variableSpace[fId].nodes[nId].name = res.data[i].variableName;
-                                vm.variableSpace[fId].nodes[nId].size = res.data[i].size;
-                            }
-                        } else {
-                            alert(res.msg);
-                        }
-                    },
-                    error: function (res) {
-                        alert('加载变量失败！');
-                    }
-                });
             },
             changeTab: function (tab) {
                 $('.red-ui-tab-link-buttons a').removeClass('active selected');

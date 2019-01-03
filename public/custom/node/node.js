@@ -78,6 +78,7 @@ function init() {
             }
             workflow.used[node.type] += 1;
             // 重构代码
+            vm.workflowChanged = true;
         }
     });
 }
@@ -634,7 +635,8 @@ function onComponentDelete(id, type) {
         workflow.used[type] -= 1;
     }
     // 更新workflow
-    vm.updateWorkflow(workflow);
+    vm.workflowChanged = true;
+    //vm.updateWorkflow(workflow);
     $('#configModal').modal('hide');
 }
 
@@ -642,6 +644,7 @@ function onComponentDelete(id, type) {
 function onComponentConfigSave() {
     updateComponentParams();
 }
+
 // 获取组件参数
 function getComponentParams(id, type) {
     if (!workflow.task[id]) {
@@ -684,6 +687,7 @@ function updateComponentParams() {
         workflow.task[id][newParams[i].name] = newParams[i].default;
     }
 }
+
 // 获取组件信息
 function getComponent(id, type, lang='zh') {
     if(!workflow.task[id]){
@@ -740,6 +744,7 @@ function onPathDelete(id) {
     if (index > -1) {
         workflow.task[sId].links.splice(index, 1);
     }
+    vm.workflowChanged = true;
 }
 
 // 加载工作流
