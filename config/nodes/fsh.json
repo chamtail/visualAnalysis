@@ -1,6 +1,6 @@
 {
   "display": {
-    "zh": "Shapelet分类",
+    "zh": "Fast-Shapelet",
     "en": "Shapelet for classification"
   },
   "in": 1,
@@ -9,7 +9,7 @@
     {
       "name": "number_of_class",
       "label": {
-        "zh": "类数",
+        "zh": "训练集内类标签个数",
         "en": "number of class"
       },
       "type": "number",
@@ -21,7 +21,7 @@
     {
       "name": "number_of_instance",
       "label": {
-        "zh": "时间序列条数",
+        "zh": "训练集内时间序列条数",
         "en": "number of instance"
       },
       "type": "number",
@@ -32,7 +32,7 @@
     {
       "name": "max_length",
       "label": {
-        "zh": "shapelet最长长度",
+        "zh": "shapelet最长长度(<=时间序列长度)",
         "en": "max length of shapelet"
       },
       "type": "number",
@@ -43,7 +43,7 @@
     {
       "name": "min_length",
       "label": {
-        "zh": "shapelet最短长度",
+        "zh": "shapelet最短长度(通常设为10)",
         "en": "min length of shapelet"
       },
       "type": "number",
@@ -54,7 +54,7 @@
     {
       "name": "step",
       "label": {
-        "zh": "步长",
+        "zh": "shapelet长度的搜索步长",
         "en": "step"
       },
       "type": "number",
@@ -65,7 +65,7 @@
     {
       "name": "random_projection",
       "label": {
-        "zh": "R",
+        "zh": "random projection次数 (默认10)",
         "en": "R"
       },
       "type": "number",
@@ -76,7 +76,7 @@
     {
       "name": "top_k_candidates",
       "label": {
-        "zh": "top k",
+        "zh": "topK candidates (默认10)",
         "en": "top k"
       },
       "type": "number",
@@ -87,7 +87,7 @@
     {
       "name": "number_of_class_test",
       "label": {
-        "zh": "测试类数",
+        "zh": "测试集内类标签个数",
         "en": "number of class for test"
       },
       "type": "number",
@@ -99,7 +99,7 @@
     {
       "name": "number_of_instance_test",
       "label": {
-        "zh": "测试时间序列条数",
+        "zh": "测试集内时间序列条数",
         "en": "number of instance for test"
       },
       "type": "number",

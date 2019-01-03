@@ -1,7 +1,7 @@
 {
   "display": {
-    "zh": "SAX分类",
-    "en": "SAX for classification"
+    "zh": "SEQL(ICDE17)",
+    "en": "Sequence Learner for classification"
   },
   "in": 1,
   "out": 1,
@@ -9,7 +9,7 @@
     {
       "name": "length_of_window",
       "label": {
-        "zh": "滑动窗口长度",
+        "zh": "SAX参数，滑动窗口大小 （一般设为0.2 * L，其中L为时间序列长度）",
         "en": "length_of_window"
       },
       "type": "number",
@@ -21,7 +21,7 @@
     {
       "name": "length_of_word",
       "label": {
-        "zh": "分割词汇长度",
+        "zh": "SAX参数，单词长度 （一般设为16）",
         "en": "length_of_word"
       },
       "type": "number",
@@ -32,7 +32,7 @@
     {
       "name": "size_of_alphabet",
       "label": {
-        "zh": "字母集大小",
+        "zh": "SAX参数，Y轴切分数 （一般设为4）",
         "en": "size of alphabet"
       },
       "type": "number",
@@ -74,6 +74,6 @@
       "configurable": false
     }
   ],
-  "description": "A node for classifying time series data using SAX",
+  "description": "A node for classifying time series data using SEQL",
   "category": "process/classification"
 }

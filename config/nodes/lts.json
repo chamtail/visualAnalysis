@@ -1,11 +1,45 @@
 {
   "display": {
-    "zh": "ELIS",
-    "en": "ELIS for classification"
+    "zh": "LTS",
+    "en": "LTS for classification"
   },
   "in": 1,
   "out": 1,
   "params": [
+    {
+      "name": "S_Num",
+      "label": {
+        "zh": "相同长度的shapelet个数",
+        "en": "S_Num"
+      },
+      "type": "number",
+      "min": 1,
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "S_Len",
+      "label": {
+        "zh": "shapelet最小长度",
+        "en": "S_Len"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "S_R",
+      "label": {
+        "zh": "shapelet长度种类数 (shapelet长度为S_Len * i，i=1,2，...,S_R，每种长度的shapelet均有S_Num个)",
+        "en": "S_R"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
     {
       "name": "Regulation",
       "label": {
@@ -13,8 +47,7 @@
         "en": "Regulation"
       },
       "type": "number",
-      "min": 0,
-      "default": 0.01,
+      "default": 0.1,
       "enable": true,
       "configurable": true
     },
@@ -25,7 +58,7 @@
         "en": "Iteration"
       },
       "type": "number",
-      "default": 0,
+      "default": 10,
       "enable": true,
       "configurable": true
     },
@@ -37,18 +70,6 @@
       },
       "type": "number",
       "default": 0.01,
-      "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "Data_Generation",
-      "label": {
-        "zh": "数据生成数量 （不输入表示不生成数据；可输入大于1的整数，例如：输入5，表示数据量翻5倍，即每条时间序列变换出4条新的序列）",
-        "en": "Data_Generation"
-      },
-      "type": "number",
-      "min":2,
-      "default": "",
       "enable": true,
       "configurable": true
     },
@@ -86,6 +107,6 @@
       "configurable": false
     }
   ],
-  "description": "A node for classifying time series data using ELIS",
+  "description": "A node for classifying time series data using LTS",
   "category": "process/classification"
 }

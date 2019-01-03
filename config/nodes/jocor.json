@@ -1,42 +1,31 @@
 {
   "display": {
-    "zh": "stl",
-    "en": "outlier detection"
+    "zh": "jocor",
+    "en": "subsequence detect based on coefficient"
   },
   "in": 1,
   "out": 1,
   "params": [
     {
-      "name": "maxanoms",
+      "name": "min_length_of_subsequence",
       "label": {
-        "zh": "最大异常",
-        "en": "max anoms"
+        "zh": "查询序列最小长度",
+        "en": "min_length_of_subsequence"
       },
       "type": "number",
-      "default": 0.02,
+      "min": 1,
       "enable": true,
       "configurable": true
     },
     {
-      "name": "day",
+      "name": "step",
       "label": {
-        "zh": "日期",
-        "en": "day"
+        "zh": "滑动步长",
+        "en": "skipped_step"
       },
-      "type": "text",
-      "default": "day",
+      "type": "number",
+      "min": 1,
       "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "variable",
-      "label": {
-        "zh": "变量名称",
-        "en": "variable name"
-      },
-      "type": "text",
-      "default": "",
-      "enable": false,
       "configurable": true
     },
     {
@@ -63,5 +52,5 @@
     }
   ],
   "description": "",
-  "category": "process/outlier"
+  "category": "process/coefficient"
 }
