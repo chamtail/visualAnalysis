@@ -113,6 +113,12 @@
     "port": 8000,
     "api": "/file/upload"
   },
+  "cache_clean": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8000,
+    "api": "/workflow/cache/clean"
+  },
   "webSocket": {
     "protocol": "ws",
     "host": "10.131.247.51",

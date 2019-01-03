@@ -648,6 +648,7 @@ var api_map = {
     "variable_load": "http://10.131.247.51:8000/workflow/variable/load",
     "get_data": "http://10.131.247.51:8000/workflow/getData",
     "upload": "http://10.131.247.51:8000/file/upload",
+    "cache_clean": "http://10.131.247.51:8000/workflow/cache/clean",
     "webSocket": "ws://10.131.247.51:8000/webSocket/admin"
 };
 

@@ -457,7 +457,7 @@ function lineEnded() {
             });
     }
 
-    if(endNode == null){
+    if(endNode == -1){
         return;
     }
     // 重构代码

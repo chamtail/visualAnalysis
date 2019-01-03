@@ -79,7 +79,7 @@
 
             <li>
                 <span class="deploy-button-group button-group">
-                    <a id="btn-refresh" class="run-button" @click="loadVariableConfig">
+                    <a id="btn-refresh" class="run-button" @click="cleanCache">
                         <span class="deploy-button-content" style="opacity: 1;">
                             <i class="fa fa-play-circle" aria-hidden="true"></i>
                             <span>refresh</span>
@@ -406,33 +406,33 @@
                 <div style="height: 100%; display: none;">
                     <div class="sidebar-variable-space">
                         <!--<template v-if="flow.id != ''">-->
-                            <template v-for="(flow, index) in variableSpace">
-                                <div class="component-header" :id="'variable-header-'+index">
-                                    <i class="fa fa-angle-down expanded"></i>
-                                    <span :class="'flow-'+index">{{flows[index].label}}</span>
-                                </div>
+                        <template v-for="(flow, index) in variableSpace">
+                            <div class="component-header" :id="'variable-header-'+index">
+                                <i class="fa fa-angle-down expanded"></i>
+                                <span :class="'flow-'+index">{{flows[index].label}}</span>
+                            </div>
 
-                                <div :id="'variable-space-flow-'+index" class="component-content">
-                                    <div style="position: relative; display: block;">
-                                        <table class="node-info">
-                                            <thead>
-                                            <tr>
-                                                <td>name</td>
-                                                <td>size</td>
+                            <div :id="'variable-space-flow-'+index" class="component-content">
+                                <div style="position: relative; display: block;">
+                                    <table class="node-info">
+                                        <thead>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>size</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <template v-for="n in flow">
+                                            <tr :class="['node-info-node-row', node.id == n.id ? 'active' : '']">
+                                                <td>{{n.name}}</td>
+                                                <td>{{n.size}}</td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                            <template v-for="n in flow">
-                                                <tr :class="['node-info-node-row', node.id == n.id ? 'active' : '']">
-                                                    <td>{{n.name}}</td>
-                                                    <td>{{n.size}}</td>
-                                                </tr>
-                                            </template>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </template>
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </template>
+                            </div>
+                        </template>
                         <!--</template>-->
                     </div>
                 </div>
@@ -674,8 +674,11 @@
                             vm.updateWorkflow(res.data.workflow);
                             console.log('loaded');
                         } else {
-                            console.log("用户不存在，请注册！");
+                            //console.log("用户不存在，请注册！");
                             //window.location.href = 'login.html';
+                            // todo
+                            // 新建默认工作流
+                            vm.addWorkflow();
                         }
                     }
                 });
@@ -1198,6 +1201,27 @@
                 }
             },
 
+            cleanCache: function () {
+                $.ajax({
+                    url: api_map.cache_clean,
+                    type: 'POST',
+                    data: {
+                        token: workflow.token
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            console.log('缓存清除成功');
+                            window.location.href = 'login.html';
+                        } else {
+                            alert(res.msg);
+                        }
+                    },
+                    error: function (res) {
+                        alert('缓存清除失败！');
+                    }
+                });
+            },
             debug: function () {
 
             }
@@ -1312,5 +1336,5 @@
         });
     }
 </script>
-<script src="../public/js/Echarts/echarts.js"></script>
+<script src="../public/js/echarts/echarts.js"></script>
 <script src="../public/js/underscore-1.8.2.min.js"></script>
