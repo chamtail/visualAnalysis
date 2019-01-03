@@ -79,7 +79,7 @@
 
             <li>
                 <span class="deploy-button-group button-group">
-                    <a id="btn-refresh" class="run-button" @click="loadVariableConfig">
+                    <a id="btn-refresh" class="run-button" @click="cleanCache">
                         <span class="deploy-button-content" style="opacity: 1;">
                             <i class="fa fa-play-circle" aria-hidden="true"></i>
                             <span>refresh</span>
@@ -593,7 +593,7 @@
                 workflow.token = getCookieValue("token");
                 console.log("token: ", workflow.token);
                 if (workflow.token == "" || workflow.token == undefined) {
-                    window.location.href = 'login.html';
+                    //window.location.href = 'login.html';
                 }
 
                 // 默认有一个flow
@@ -674,8 +674,11 @@
                             vm.updateWorkflow(res.data.workflow);
                             console.log('loaded');
                         } else {
-                            console.log("用户不存在，请注册！");
-                            window.location.href = 'login.html';
+                            //console.log("用户不存在，请注册！");
+                            //window.location.href = 'login.html';
+                            // todo
+                            // 新建默认工作流
+                            vm.addWorkflow();
                         }
                     }
                 });
@@ -1198,6 +1201,27 @@
                 }
             },
 
+            cleanCache: function () {
+                $.ajax({
+                    url: api_map.cache_clean,
+                    type: 'POST',
+                    data: {
+                        token: workflow.token
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            console.log('缓存清除成功');
+                            window.location.href = 'login.html';
+                        } else {
+                            alert(res.msg);
+                        }
+                    },
+                    error: function (res) {
+                        alert('缓存清除失败！');
+                    }
+                });
+            },
             debug: function () {
 
             }

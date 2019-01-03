@@ -1,42 +1,20 @@
 {
   "display": {
-    "zh": "stl",
-    "en": "outlier detection"
+    "zh": "matrix-profile",
+    "en": "compute mp for timeseries"
   },
   "in": 1,
   "out": 1,
   "params": [
     {
-      "name": "maxanoms",
+      "name": "min_length_of_subsequence",
       "label": {
-        "zh": "最大异常",
-        "en": "max anoms"
+        "zh": "查询序列最小长度(4<minl<datasize/50)",
+        "en": "min_length_of_subsequence"
       },
       "type": "number",
-      "default": 0.02,
+      "min": 4,
       "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "day",
-      "label": {
-        "zh": "日期",
-        "en": "day"
-      },
-      "type": "text",
-      "default": "day",
-      "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "variable",
-      "label": {
-        "zh": "变量名称",
-        "en": "variable name"
-      },
-      "type": "text",
-      "default": "",
-      "enable": false,
       "configurable": true
     },
     {
@@ -63,5 +41,5 @@
     }
   ],
   "description": "",
-  "category": "process/outlier"
+  "category": "process/motif"
 }

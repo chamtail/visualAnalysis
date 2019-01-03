@@ -457,7 +457,7 @@ function lineEnded() {
             });
     }
 
-    if(endNode == null){
+    if(endNode == -1){
         return;
     }
     // 重构代码
@@ -746,6 +746,7 @@ function onPathDelete(id) {
 function loadWorkflow(workflowFile) {
     $.getJSON('../config/'+workflowFile+'.json', function (data) {
         workflow = data;
+        vm.updateWorkflow(workflow);
         // 重构代码
         console.log(workflow);
         showNodesByFlow(1);

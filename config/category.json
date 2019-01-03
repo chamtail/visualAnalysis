@@ -46,5 +46,17 @@
       "zh": " 聚类模块",
       "en": "clustering module"
     }
+  },
+  "motif":{
+    "display": {
+      "zh": " motif挖掘模块",
+      "en": "motif module"
+    }
+  },
+  "coefficient":{
+    "display": {
+      "zh": " 相关系数模块",
+      "en": "coefficient module"
+    }
   }
 }

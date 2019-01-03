@@ -7,8 +7,13 @@
   "fsh": "enable",
   "data-save": "enable",
   "model-save": "enable",
-  "sax-classify": "enable",
+  "seql": "enable",
   "elis": "enable",
   "mpsegment": "enable",
-  "kshape":"enable"
+  "kshape":"enable",
+  "hime":"enable",
+  "rshash":"enable",
+  "jocor":"enable",
+  "matrix-profile":"enable",
+  "lts":"enable"
 }
