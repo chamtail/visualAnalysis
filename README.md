@@ -6,6 +6,8 @@
 #### Software Architecture
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1123/100828_73209334_2141312.jpeg "实验室时间序列可视化分析平台.jpg")
 
+#### Sequence Diagram
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1229/151602_136bf791_2141312.png "workflow时序图.png")
 #### Installation
 
 1. [下载安装XAMPP服务器](http://note.youdao.com/noteshare?id=611a754774eb730c5f730cc3bcbadb32)
@@ -30,7 +32,7 @@
 4. 将代码push到主分支上：$git push origin master
 5. 合并完之后记得切换回自己到分支工作区再继续写哟～
 
-#### 节点配置说明
+#### 项目文档
 详见[wiki](https://gitee.com/DSM_fudan/visualAnalysis/wikis/%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E?sort_id=1037802)。
 
 未完待续。。。

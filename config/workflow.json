@@ -1,118 +1,99 @@
 {
-  "verCode": "admin",
-  "flows": {
+  "token": "12345678",
+  "task": {
     "1": {
       "id": 1,
-      "type": "tab",
+      "type": "flow",
       "label": "Flow 1",
       "disabled": false,
-      "info": "这是一个新flow"
-    }
-  },
-  "nodes": {
-    "1": {
-      "1544756286579": {
-        "id": 1544756286579,
-        "status": "7",
-        "type": "data-upload",
-        "x": 60.5,
-        "y": 79,
-        "z": 1,
-        "text": "上传数据   ",
-        "path": "Gun_Point_TRAIN.csv",
-        "name": "训练数据",
-        "variable": "a",
-        "inputs": 0,
-        "outputs": 1
-      },
-      "1544756288066": {
-        "id": 1544756288066,
-        "status": "7",
-        "type": "data-upload",
-        "x": 116.5,
-        "y": 197,
-        "z": 1,
-        "text": "上传数据   ",
-        "path": "Gun_Point_TEST.csv",
-        "name": "测试数据",
-        "variable": "b",
-        "inputs": 0,
-        "outputs": 1
-      },
-      "1544756291042": {
-        "id": 1544756291042,
-        "status": "7",
-        "type": "sax-classify",
-        "x": 327.5,
-        "y": 80,
-        "z": 1,
-        "text": "SAX分类   ",
-        "length_of_window": "64",
-        "length_of_word": "16",
-        "size_of_alphabet": "4",
-        "inputs": 1,
-        "outputs": 1
-      },
-      "1544756294325": {
-        "id": 1544756294325,
-        "status": "7",
-        "type": "fsh",
-        "x": 346.5,
-        "y": 129,
-        "z": 1,
-        "text": "Shapelet分类   ",
-        "number_of_class": "2",
-        "number_of_instance": "50",
-        "max_length": "150",
-        "min_length": "10",
-        "step": "1",
-        "random_projection": "10",
-        "top_k_candidates": "10",
-        "number_of_class_test": "2",
-        "number_of_instance_test": "150",
-        "inputs": 1,
-        "outputs": 1
-      },
-      "1544756296763": {
-        "id": 1544756296763,
-        "status": "7",
-        "type": "elis",
-        "x": 374.5,
-        "y": 192,
-        "z": 1,
-        "text": "ELIS分类   ",
-        "Regulation": "0.01",
-        "Iteration": "7500",
-        "Learning_Rate": "0.01",
-        "Data_Generation": "",
-        "inputs": 1,
-        "outputs": 1
-      }
+      "description": "这是一个新flow",
+      "nodes": [
+        "1544772485370",
+        "1544772489104",
+        "1544772490512",
+        "1544772782611"
+      ]
+    },
+    "1544772485370": {
+      "id": 1544772485370,
+      "type": "data-upload",
+      "status": 4,
+      "links": [
+        "1544772489104",
+        "1544772782611"
+      ],
+      "show": true,
+      "x": 35.5,
+      "y": 25,
+      "z": "1",
+      "label": "上传数据   ",
+      "path": "stl.csv",
+      "name": "测试",
+      "description": "",
+      "variable": "a",
+      "size": "100*2",
+      "inputs": 0,
+      "outputs": 1
+    },
+    "1544772489104": {
+      "id": 1544772489104,
+      "type": "prehandle",
+      "status": 4,
+      "links": [
+        "1544772490512"
+      ],
+      "show": true,
+      "x": 213.5,
+      "y": 65,
+      "z": "1",
+      "label": "标准化   ",
+      "strategy": "zscore",
+      "description": "",
+      "variable": "b",
+      "size": "100*2",
+      "inputs": 1,
+      "outputs": 1
+    },
+    "1544772490512": {
+      "id": 1544772490512,
+      "type": "stl",
+      "status": 4,
+      "links": [],
+      "show": true,
+      "x": 284.5,
+      "y": 158,
+      "z": "1",
+      "label": "异常检测   ",
+      "maxanoms": 0.02,
+      "day": "day",
+      "description": "",
+      "variable": "c",
+      "size": "100*1",
+      "inputs": 1,
+      "outputs": 1
+    },
+    "1544772782611": {
+      "id": 1544772782611,
+      "type": "prehandle",
+      "status": 4,
+      "links": [],
+      "show": false,
+      "x": 52,
+      "y": 196,
+      "z": "1",
+      "label": "标准化   ",
+      "strategy": "zscore",
+      "description": "",
+      "variable": "d",
+      "size": "100*2",
+      "inputs": 1,
+      "outputs": 1
     }
   },
   "used": {
-    "data-upload": 2,
-    "sax-classify": 1,
-    "fsh": 1,
-    "elis": 1
-  },
-  "links": {
-    "1544756286579": [
-      "1544756291042",
-      "1544756294325",
-      "1544756296763"
-    ],
-    "1544756288066": [
-      "1544756291042",
-      "1544756294325",
-      "1544756296763"
-    ]
-  },
-  "nodeFlowMap": {
-    "1544756286579": 1,
-    "1544756288066": 1,
-    "1544756291042": 1,
-    "1544756294325": 1,
-    "1544756296763": 1
+    "flow": 1,
+    "data-upload": 1,
+    "prehandle": 2,
+    "stl": 1
   }
 }

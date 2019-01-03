@@ -2,7 +2,7 @@
     border-bottom: 1px solid #ccc
 }
 
-.node-header {
+.component-header {
     position: relative;
     background: #f3f3f3;
     cursor: pointer;
@@ -14,7 +14,7 @@
 }
 
 
-.node-header > i {
+.component-header > i {
     position: absolute;
     left: 11px;
     top: 12px;
@@ -27,14 +27,19 @@
 }
 
 
-.node-header i.expanded {
+.component-header i.expanded {
     -webkit-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg)
 }
 
-.node-header span {
+.component-header span {
     clear: both
+}
+
+.component-content {
+    background: #fff;
+    padding: 1px;
 }
 
 .node-sub-header{
@@ -207,10 +212,6 @@
     left: 0;
     padding: 0;
     overflow-y: auto;
-}
-.node-content {
-    background: #fff;
-    padding: 1px;
 }
 
 #node-footer {

@@ -1,0 +1,64 @@
+{
+  "display": {
+    "zh": "工作流配置",
+    "en": "workflow configuration"
+  },
+  "params": [
+    {
+      "name": "id",
+      "label": {
+        "zh": "ID",
+        "en": "ID"
+      },
+      "type": "text",
+      "default": "",
+      "enable": true,
+      "configurable": false
+    },
+    {
+      "name": "type",
+      "label": {
+        "zh": "类型",
+        "en": "type"
+      },
+      "type": "text",
+      "default": "flow",
+      "enable": true,
+      "configurable": false
+    },
+    {
+      "name": "label",
+      "label": {
+        "zh": "标签",
+        "en": "label"
+      },
+      "type": "text",
+      "default": "",
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "disabled",
+      "label": {
+        "zh": "disabled",
+        "en": "disabled"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "description",
+      "label": {
+        "zh": "描述",
+        "en": "description"
+      },
+      "type": "richtext",
+      "default": "这是一个工作流",
+      "enable": true,
+      "configurable": true
+    }
+  ],
+  "description" : "这是一个工作流"
+}

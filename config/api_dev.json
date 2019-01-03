@@ -3,49 +3,49 @@
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8000,
-    "api": "/workflowUser/login"
+    "api": "/user/login"
   },
   "user_logout": {
   "protocol": "http",
   "host": "10.131.247.51",
   "port": 8000,
-  "api": "/workflowUser/logout"
+  "api": "/user/logout"
 },
   "user_register": {
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8000,
-    "api": "/workflowUser/register"
+    "api": "/user/register"
   },
   "user_verify": {
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8000,
-    "api": "/workflowUser/getVerify"
+    "api": "/user/getVerify"
   },
   "user_check_verify": {
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8000,
-    "api": "/workflowUser/checkVerify"
+    "api": "/user/checkVerify"
   },
   "user_forget_password": {
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8000,
-    "api": "/workflowUser/forgetPassword"
+    "api": "/user/forgetPassword"
   },
   "user_change_password": {
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8000,
-    "api": "/workflowUser/changePassword"
+    "api": "/user/changePassword"
   },
-  "workflow_init": {
+  "workflow_load": {
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8000,
-    "api": "/workflow/init"
+    "api": "/workflow/load"
   },
   "workflow_deploy": {
     "protocol": "http",
