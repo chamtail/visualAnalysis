@@ -13,7 +13,7 @@
         "en": "min_length_of_subsequence"
       },
       "type": "number",
-      "min": 1,
+      "default": 10,
       "enable": true,
       "configurable": true
     },
@@ -24,7 +24,7 @@
         "en": "skipped_step"
       },
       "type": "number",
-      "min": 1,
+      "default": 1,
       "enable": true,
       "configurable": true
     },

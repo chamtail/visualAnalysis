@@ -18,10 +18,10 @@
       "configurable": true
     },
     {
-      "name": "day",
+      "name": "time",
       "label": {
-        "zh": "日期",
-        "en": "day"
+        "zh": "时间粒度",
+        "en": "time"
       },
       "type": "text",
       "default": "day",
