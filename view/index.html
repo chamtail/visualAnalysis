@@ -533,7 +533,7 @@
 </body>
 </html>
 <script>
-    var env = 'debug';
+    var env = 'dev';
 </script>
 
 <script src="../config/config.min.js"></script>
@@ -637,34 +637,32 @@
                 vm.initFinish = true;
             }
 
-            if (vm.workflowChanged) {
-                console.log('update now!');
-                vm.updateWorkflow(workflow);
+//            if (vm.workflowChanged) {
+//                console.log('update now!');
+//                vm.updateWorkflow(workflow);
+//                vm.workflowChanged = false;
+//            }
 
-                // 绑定节点列表事件
-                $('.component-header').unbind().click(function () {
-                    var id = $(this).attr('id');
-                    var nextId = $(this).next().attr('id');
-                    var el_i = $('#' + id + ' >i');
-                    el_i.toggleClass('expanded');
-                    var nextEl = $('#' + nextId);
-                    nextEl.slideToggle(500);
-                });
-                $('#node-collapse-all').unbind().click(function (e) {
-                    var container = $('#node-container');
-                    container.find('.component-header > i').removeClass('expanded');
-                    container.find('.component-content').slideUp(500);
-                });
+            // 绑定节点列表事件
+            $('.component-header').unbind().click(function () {
+                var id = $(this).attr('id');
+                var nextId = $(this).next().attr('id');
+                var el_i = $('#' + id + ' >i');
+                el_i.toggleClass('expanded');
+                var nextEl = $('#' + nextId);
+                nextEl.slideToggle(500);
+            });
+            $('#node-collapse-all').unbind().click(function (e) {
+                var container = $('#node-container');
+                container.find('.component-header > i').removeClass('expanded');
+                container.find('.component-content').slideUp(500);
+            });
 
-                $('#node-expand-all').unbind().click(function (e) {
-                    var container = $('#node-container');
-                    container.find('.component-header > i').addClass('expanded');
-                    container.find('.component-content').slideDown(500);
-                });
-
-                vm.workflowChanged = false;
-            }
-            
+            $('#node-expand-all').unbind().click(function (e) {
+                var container = $('#node-container');
+                container.find('.component-header > i').addClass('expanded');
+                container.find('.component-content').slideDown(500);
+            });
         },
         methods: {
             // 加载工作流
@@ -719,7 +717,6 @@
                     },
                     complete: function () {
                         console.log('deploy complete');
-                        vm.enableA('#btn-deploy');
                     },
                     error: function (res) {
                         alert('啊哦，服务器连接失败了～');
@@ -753,43 +750,43 @@
                     if(!vm.checkNodeStatus(nodeId)){
                         return false;
                     }
+                    vm.onNodeRun(nodeId);
                 }
 
-                if(vm.checkUploadFile()){
-                    $.ajax({
-                        url: api_map.workflow_run,
-                        type: 'POST',
-                        data: {
-                            token: workflow.token,
-                            flowId: vm.currentFlow
-                        },
-                        dataType: 'json',
-                        beforeSend: function () {
-                            for (let nodeId in vm.flows[vm.currentFlow].nodes) {
-                                vm.onNodeRun(nodeId);
+                // 检查是否需要上传文件
+                vm.checkUploadFile();
+
+                // 运行节点
+                $.ajax({
+                    url: api_map.workflow_run,
+                    type: 'POST',
+                    data: {
+                        token: workflow.token,
+                        flowId: vm.currentFlow
+                    },
+                    dataType: 'json',
+                    beforeSend: function () {
+                        vm.disabledA('#btn-run');
+                    },
+                    success: function (res) {
+                        if (res.code == 0) {
+                            console.log("节点们正在运行。。。");
+                            vm.saveWorkflow();
+                            return true;
+                        } else {
+                            alert(res.msg);
+                            let nodeStatus = {};
+                            for (let nodeId in vm.routers) {
+                                nodeStatus[nodeId] = res.code;
                             }
-                            vm.disabledA('#btn-run');
-                        },
-                        success: function (res) {
-                            if (res.code == 0) {
-                                console.log("节点们正在运行。。。");
-                                vm.saveWorkflow();
-                                return true;
-                            } else {
-                                alert(res.msg);
-                                let nodeStatus = {};
-                                for (let nodeId in vm.routers) {
-                                    nodeStatus[nodeId] = res.code;
-                                }
-                                updateNodeStatus(nodeStatus);
-                                return false;
-                            }
-                        },
-                        complete: function () {
-                            vm.enableA('#btn-run');
+                            updateNodeStatus(nodeStatus);
+                            return false;
                         }
-                    });
-                }
+                    },
+                    complete: function () {
+                        vm.enableA('#btn-run');
+                    }
+                });
             },
             addWorkflow: function () {
                 if (!workflow.used.flow) {
@@ -881,15 +878,21 @@
                 }
 
                 console.log(vm.variableSpace);
-
-                // 显示第一个任务栏
-                for (let flowId in vm.flows) {
-                    vm.currentFlow = parseInt(flowId);
-                    hideNodesByFlow(flowId);
-                    showNodesByFlow(flowId);
+                if(vm.currentFlow == 0){
+                    // 显示第一个任务栏
+                    for (let flowId in vm.flows) {
+                        vm.currentFlow = parseInt(flowId);
+                        hideNodesByFlow(flowId);
+                        showNodesByFlow(flowId);
+                        vm.component = getComponent(vm.currentFlow, 'flow', vm.lang);
+                        break;
+                    }
+                } else{
+                    hideNodesByFlow(vm.currentFlow);
+                    showNodesByFlow(vm.currentFlow);
                     vm.component = getComponent(vm.currentFlow, 'flow', vm.lang);
-                    break;
                 }
+
             },
 
             runNode: function (nodeId) {
@@ -899,26 +902,31 @@
                 }
                 // 显示启动
                 this.onNodeRun(nodeId);
-                // 发送请求
-                $.ajax({
-                    url: api_map.node_run,
-                    type: 'POST',
-                    data: {
-                        token: workflow.token,
-                        nodeId: nodeId
-                    },
-                    dataType: 'json',
-                    success: function (res) {
-                        if (res.code == 0) {
-                            vm.saveWorkflow();
-                        } else {
-                            alert(res.msg);
-                            let nodeStatus = {};
-                            nodeStatus[nodeId] = res.code;
-                            updateNodeStatus(nodeStatus);
+                // 如果是上传文件
+                if(workflow.task[nodeId].type == "flow"){
+                    vm.upload(nodeId);
+                } else{
+                    // 发送请求
+                    $.ajax({
+                        url: api_map.node_run,
+                        type: 'POST',
+                        data: {
+                            token: workflow.token,
+                            nodeId: nodeId
+                        },
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.code == 0) {
+                                vm.saveWorkflow();
+                            } else {
+                                alert(res.msg);
+                                let nodeStatus = {};
+                                nodeStatus[nodeId] = res.code;
+                                updateNodeStatus(nodeStatus);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             },
             stopNode: function (nodeId) {
                 this.onNodeStop(nodeId);
@@ -1000,38 +1008,43 @@
                             && workflow.task[nodeId].path
                             && (workflow.task[nodeId].status == 1
                             || workflow.task[nodeId].status == 7)){
-                        var formData = new FormData();
-                        formData.append('token', workflow.token);
-                        formData.append('flowId', vm.currentFlow);
-                        formData.append('nodeId', nodeId);
-                        formData.append('file', workflow.task[nodeId].path);
-                        JSON.stringify(formData);
-                        $.ajax({
-                            url: api_map.upload,
-                            type: 'POST',
-                            data: formData,
-                            cache: false,       //上传文件不需缓存
-                            processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
-                            contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
-                            beforeSend: function () {
-                                vm.onNodeRun(nodeId);
-                            },
-                            success: function (res) {
-                                if (res.code == 0) {
-                                    updateNodeStatus(res.data.status);
-                                } else {
-                                    alert(res.msg);
-                                }
-                            },
-                            complete: function () {
-                                vm.onNodeStop(nodeId);
-                            }
-                        });
+                        uploadFile(nodeId);
                     }
                 }
-                return true;
+                return false;
             },
-            
+
+            upload: function (nodeId) {
+                var formData = new FormData();
+                formData.append('token', workflow.token);
+                formData.append('flowId', vm.currentFlow);
+                formData.append('nodeId', nodeId);
+                formData.append('file', workflow.task[nodeId].path);
+                JSON.stringify(formData);
+                $.ajax({
+                    url: api_map.upload,
+                    type: 'POST',
+                    data: formData,
+                    cache: false,       //上传文件不需缓存
+                    processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
+                    contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
+                    beforeSend: function () {
+                        vm.onNodeRun(nodeId);
+                    },
+                    success: function (res) {
+                        if (res.code == 0) {
+                            updateNodeStatus(res.data.status);
+                            return true;
+                        } else {
+                            alert(res.msg);
+                            return false;
+                        }
+                    },
+                    complete: function () {
+                        vm.onNodeReRun(nodeId);
+                    }
+                });
+            },
             updateVariableSpace: function () {
                 vm.flows = {};
                 vm.nodes = {};
