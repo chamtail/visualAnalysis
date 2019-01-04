@@ -20,7 +20,7 @@
     {
       "name": "time",
       "label": {
-        "zh": "日期",
+        "zh": "时间粒度",
         "en": "time"
       },
       "type": "text",

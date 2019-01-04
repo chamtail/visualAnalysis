@@ -14,7 +14,7 @@
       },
       "type": "number",
       "min": 1,
-      "default": 1,
+      "default": 30,
       "enable": true,
       "configurable": true
     },
