@@ -27,7 +27,7 @@ $(function(){
     // keydown 按下任意键触发
 
     // 获取键盘输入 (keydown 与 keypress 获取的 keyCode 值不一样, 其中keydown不区分大小写)
-    $(document).keypress(function(e) {
+    $('#cmd-shell').keypress(function(e) {
         // jQuery 标准化了 event.keyCode(IE) event.which(W3C) event.charCode(事件为keypress下除IE)
         // console.log(e.which);
         // console.log(String.fromCharCode(e.which));
@@ -41,7 +41,7 @@ $(function(){
     });
 
     // 功能键
-    $(document).keydown(function(e) {
+    $('#cmd-shell').keydown(function(e) {
         // console.log(e.which);
 
         if (e.which === 13) {           // enter

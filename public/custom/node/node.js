@@ -1,25 +1,33 @@
 /**
  * Created by Jeremy on 2018/11/11.
  */
-/**
- * Created by Jeremy on 2018/11/6.
- */
 
 // 全局变量
-let startNode = -1;  // 开始节点
-let endNode = -1;  // 结束节点
+let startNode = null;   // 开始节点
+let endNode = null;     // 结束节点
+let activeLine = null;  // 当前line
+let points = [];
+let translate = null;
+let drawLine = false;
+
+let cableR = 5;
+let dx = 0;
+let dy = 0;
+let dragElem = null;
 
 let workflow = {
-    token: -1,  //校验码
-    task: {},  // 所有节点记录
-    used: {},  // 节点使用记录
+    token: null,    // 校验码
+    currentFlowId: null, // 当前flowId
+    task: {},   // 任务：flow+node
+    used: {},   // 使用日志
 };
 
-// 初始化，初始化各种事件
+// 初始化
 function init() {
+    // 初始化svg
     let svg = d3.select('#workflow svg')
         .on('click', function () {
-            onComponentDetail(vm.currentFlow, 'flow');
+            onComponentDetail(workflow.currentFlowId, 'flow');
         });
 
     // 画网格
@@ -45,7 +53,7 @@ function init() {
                 show: true,
                 x: ui.position.left - 180,
                 y: ui.position.top - 50,
-                z: vm.currentFlow,
+                z: workflow.currentFlowId,
                 label: ui.helper.text(),
                 variable: "",
                 size: ""
@@ -59,11 +67,7 @@ function init() {
             if (g == null) {
                 return;
             }
-
-            // 使能部署按钮
-            vm.enableA('#btn-deploy');
-
-            // 重构代码
+            // 判断id是否重复
             if (workflow.task[node.id]){
                 console.error("节点id重复！");
                 return;
@@ -71,14 +75,14 @@ function init() {
             // 记录节点
             workflow.task[node.id] = node;
             // 当前flow下记录该节点
-            workflow.task[vm.currentFlow].nodes.push(node.id.toString());
-            // 计算节点使用情况
+            workflow.task[workflow.currentFlowId].nodes.push(node.id.toString());
+            // 计录节点使用情况
             if (!workflow.used[node.type]) {
                 workflow.used[node.type] = 0;
             }
             workflow.used[node.type] += 1;
-            // 重构代码
-            vm.workflowChanged = true;
+            // 更新workflow
+            vm.updateWorkflow(workflow, node.id);
         }
     });
 }
@@ -230,10 +234,6 @@ function addNode(svg, node) {
     return g;
 }
 
-let cableR = 5;
-let dx = 0;
-let dy = 0;
-let dragElem = null;
 // 开始拖拽事件
 function dragStarted() {
     let translate = getTranslate(d3.select(this));
@@ -298,18 +298,23 @@ function updateNodeStatus(status) {
         if(!node_status_map[statusNow]){
             statusNow = 5;
         }
-        d3.selectAll('g[id="' + nodeId + '"]')
-            .attr('class', 'node ' + node_status_map[statusNow])
-            .attr('status', statusNow);
-
-        // 重构代码
         workflow.task[nodeId].status = parseInt(statusNow);
-        // 重构代码
-        if (statusNow == 4 || statusNow == "4"){
-            vm.onNodeReRun(nodeId);
-        }
-        if (statusNow == 5 || statusNow == "5"){
-            vm.onNodeStop(nodeId);
+
+        // 如果节点在当前flow，则更新
+        if(workflow.task[nodeId].z == workflow.currentFlowId){
+            d3.selectAll('g[id="' + nodeId + '"]')
+                .attr('class', 'node ' + node_status_map[statusNow])
+                .attr('status', statusNow);
+
+            if (statusNow == 1 || statusNow == "1"){
+                vm.onNodeStop(nodeId);
+            }
+            if (statusNow == 4 || statusNow == "4"){
+                vm.onNodeReRun(nodeId);
+            }
+            if (statusNow == 5 || statusNow == "5"){
+                vm.onNodeStop(nodeId);
+            }
         }
     }
 }
@@ -334,8 +339,6 @@ function showNodesByFlow(flowId) {
     let svg = d3.select('#workflow svg');
     // 显示节点
     let links = {};
-    let status = {};
-    // 重构代码
     let nodesList = workflow.task[flowId].nodes;
     for(let i=0, len=nodesList.length; i<len; i++){
         let nodeId = nodesList[i];
@@ -345,18 +348,10 @@ function showNodesByFlow(flowId) {
         if(g == null){
             console.error(node);
         }
-        status[nodeId] = node.status;
         if(node.links){
             links[nodeId] = node.links;
-            status[nodeId] = node.status;
-            for(let i=0, len=links[nodeId].length; i<len; i++){
-                let id = links[nodeId][i];
-                status[id] = workflow.task[id].status;
-            }
         }
     }
-    // 重构代码
-    
     // 显示连线
     for (let nodeId in links) {
         let sNode = d3.select('g[id="' + nodeId + '"]');
@@ -392,15 +387,13 @@ function showNodesByFlow(flowId) {
                     onPathClick(pathId);
                     d3.event.stopPropagation();
                 });
-            activeLine = null;
-            points.length = 0;
-            translate = null;
+            // 重置参数
+            resetPathParams();
         }
     }
-
-    updateNodeStatus(status);
+    // 更新当前flowId
+    workflow.currentFlowId = flowId;
 }
-
 /**
  * 节点相关 End
  */
@@ -408,10 +401,7 @@ function showNodesByFlow(flowId) {
 /**
  * 连线相关 Start
  */
-let activeLine = null;
-let points = [];
-let translate = null;
-let drawLine = false;
+// 连线开始事件
 function lineStarted() {
     drawLine = false;
     // 当前选中的节点
@@ -431,43 +421,54 @@ function lineStarted() {
         .attr('output', d3.select(this).attr('output'));
 }
 
+// 连线拖拽事件
 function lineDragged() {
     drawLine = true;
     points[1] = [d3.event.x + translate[0] - cableR, d3.event.y + translate[1]];
     activeLine.attr('d', getBezier(points));
 }
 
+// 连线结束事件
 function lineEnded() {
+    let errorFlag = false;
     drawLine = false;
     let anchor = d3.selectAll('circle.end');
     if (anchor.empty()) {
-        activeLine.remove();
+        console.error('anchor is empty');
+        errorFlag = true;
     } else {
         let eNode = d3.select(anchor.node().parentNode);
         endNode = eNode.attr('id');
-        let input = eNode.node().getBoundingClientRect().height / (+anchor.attr('input') + 1);
-        anchor.classed('end', false);
-        let id = startNode + '_' + endNode;
-        activeLine.attr('to', eNode.attr('id'))
-            .attr('input', endNode)
-            .attr('end', '0, ' + input)
-            .attr('id', id)
-            .on('click', function () {
-                onPathClick(id);
-                d3.event.stopPropagation();
-            });
+        // 如果没有连接至目标节点，或自连接则返回
+        if(endNode == null || endNode == startNode){
+            console.error('没有连接至目标节点，或自连接');
+            errorFlag = true;
+        } else {
+            let input = eNode.node().getBoundingClientRect().height / (+anchor.attr('input') + 1);
+            anchor.classed('end', false);
+            let id = startNode + '_' + endNode;
+            activeLine.attr('to', eNode.attr('id'))
+                .attr('input', endNode)
+                .attr('end', '0, ' + input)
+                .attr('id', id)
+                .on('click', function () {
+                    onPathClick(id);
+                    d3.event.stopPropagation();
+                });
+        }
     }
 
-    if(endNode == -1){
+    // 如果有错误，则返回
+    if(errorFlag){
+        activeLine.remove();
+        resetPathParams();
         return;
     }
-    // 重构代码
     // 记录下该连接信息
     if (!workflow.task[startNode].links) {
         workflow.task[startNode].links = [];
     }
     workflow.task[startNode].links.push(endNode);
-    // 重构代码
     // 重置参数
     resetPathParams();
 }
@@ -536,7 +537,6 @@ function resetPathParams() {
     translate = null;
     startNode = null;
     endNode = null;
-    vm.enableA('#btn-deploy');
 }
 /**
  * 连线相关 End
@@ -554,7 +554,7 @@ function onComponentDetail(id, type, force=false){
         return;
     }
     // 更新状态
-    update();
+    vm.update();
     // 更新组件信息
     vm.component = getComponent(id, type, vm.lang);
     if(type == 'flow'){
@@ -562,8 +562,6 @@ function onComponentDetail(id, type, force=false){
     }
     let node = $('#' + id);
     node.addClass('active');
-    let nodeType = node.attr("data-template-name");
-    vm.node = getComponent(id, nodeType);
     console.log('显示节点细节&显示节点可视化');
     // 如果该节点状态为已运行, 则进行可视化
     let status = node.attr('status');
@@ -598,9 +596,8 @@ function onComponentConfig() {
 // 删除组件
 function onComponentDelete(id, type) {
     console.log("删除" + type + "#" + id);
+    let updateId = null;
     if(type == 'flow'){
-        // 先隐藏该工作流上的节点
-        hideNodesByFlow(id);
         // 删除工作流下的所有节点
         let nodesList = workflow.task[id].nodes;
         for(let i=0, len=nodesList.length; i<len; i++) {
@@ -608,6 +605,7 @@ function onComponentDelete(id, type) {
             workflow.used[workflow.task[nodeId].type] -= 1;
             delete workflow.task[nodeId];
         }
+        workflow.currentFlowId = null;
     } else{
         // 删除与之相连的路径
         d3.selectAll('path[from="' + id + '"]').remove();
@@ -627,6 +625,8 @@ function onComponentDelete(id, type) {
                 workflow.task[nodeId].links.splice(index, 1);
             }
         }
+
+        updateId = id;
     }
     // 删除该组件
     delete workflow.task[id];
@@ -635,14 +635,17 @@ function onComponentDelete(id, type) {
         workflow.used[type] -= 1;
     }
     // 更新workflow
-    vm.workflowChanged = true;
-    //vm.updateWorkflow(workflow);
+    vm.updateWorkflow(workflow, workflow.currentFlowId);
     $('#configModal').modal('hide');
 }
 
 // 保存组件配置
-function onComponentConfigSave() {
-    updateComponentParams();
+function onComponentConfigSave(component) {
+    updateComponentParams(component);
+    if(component.type == 'data-upload'){
+        vm.upload(component.id);
+    }
+    $('#configModal').modal('hide');
 }
 
 // 获取组件参数
@@ -656,35 +659,44 @@ function getComponentParams(id, type) {
     for (let key in currentParams) {
         keyList[key] = 1;
     }
-    let params = [];
+    let params = {};
     let attrInfo = component_config[type]['params'];
-
+    // 遍历配置
     for (let i = 0, len = attrInfo.length; i < len; i++) {
+        // 更新可配置的参数
         if (attrInfo[i]['configurable']) {
-            for (let key in keyList) {
-                if (attrInfo[i]['name'] == key) {
-                    attrInfo[i]['default'] = currentParams[key];
-                }
-                // if (attrInfo[i]['type'] == 'file') {
-                //     vm.uploadFile = true;
-                //     onUploadFileChange();
-                // }
-            }
-            params.push(attrInfo[i]);
+            let currentKey = attrInfo[i]['name'];
+            attrInfo[i]['default'] = currentParams[currentKey];
+            params[currentKey] = attrInfo[i];
         }
     }
     return params;
 }
 
 // 更新组件参数
-function updateComponentParams() {
-    let id = vm.component.id;
+function updateComponentParams(component) {
+    let id = component.id;
     if (!workflow.task[id]) {
         return;
     }
-    let newParams = vm.component.params;
-    for (let i = 0, len = newParams.length; i < len; i++) {
-        workflow.task[id][newParams[i].name] = newParams[i].default;
+    // 计数器, 记录参数改变的个数
+    let changeCount = 0;
+    // 遍历并更新参数值
+    let paramsUpdate = component.params;
+    for (let paramName in paramsUpdate) {
+        console.log(workflow.task[id][paramName], paramsUpdate[paramName].default);
+        if (workflow.task[id][paramName] != paramsUpdate[paramName].default){
+            workflow.task[id][paramName] = paramsUpdate[paramName].default;
+            changeCount++;
+        }
+    }
+    // 如果参数改变个数不为空，则代表workflow已改变
+    if(changeCount != 0){
+        console.log('参数改变');
+        if(workflow.task[id].status == 4){
+            workflow.task[id].status = 1;
+        }
+        vm.updateWorkflow(workflow, id);
     }
 }
 
@@ -726,7 +738,7 @@ function onPathClick(id) {
         return;
     }
     // 更新状态
-    update();
+    vm.update();
     d3.selectAll('path[id="' + id + '"]').attr('class', 'cable active');
     vm.path.from = d3.select('path[id="' + id + '"]').attr('from');
     vm.path.to = d3.select('path[id="' + id + '"]').attr('to');
@@ -744,7 +756,7 @@ function onPathDelete(id) {
     if (index > -1) {
         workflow.task[sId].links.splice(index, 1);
     }
-    vm.workflowChanged = true;
+    vm.updateWorkflow(workflow, workflow.currentFlowId);
 }
 
 // 加载工作流
@@ -757,4 +769,43 @@ function loadWorkflow(workflowFile) {
         showNodesByFlow(1);
         // 重构代码
     });
+}
+
+// 可视化
+function visualize(data) {
+    $('.visual-chart').attr('style', 'display:none');
+    var op = data.op;
+    console.log(data);
+    switch (op) {
+        case "data-upload":
+        case "data-load":
+        case "prehandle":
+            console.log("data-load");
+            $('#data-load').attr('style', 'display:block');
+            showGraph(data.result);
+            break;
+        case "stl":
+            console.log("stl");
+            $('#abnormalChart').attr('style', 'display:block');
+            abnormalVisual(data.result);
+            break;
+        case "motif":
+            console.log("motif");
+            $('#motifArea').attr('style', 'display:block');
+            var motifData = generateMotifData(5);
+            motifAreaVisual(motifData);
+            break;
+        case "cluster":
+        case "seql":
+        case "fsh":
+        case "elis":
+        case "kshape":
+            console.log("cluster");
+            $('#cluster').attr('style', 'display:block');
+            initCluster(data.result);
+            break;
+        default:
+            console.log('default');
+            break;
+    }
 }

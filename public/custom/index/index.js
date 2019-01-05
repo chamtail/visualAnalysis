@@ -318,3 +318,13 @@ function generateRouters(workflow) {
     }
     return routers;
 }
+
+// 上传文件
+function onUploadFileChange() {
+    $(".file-upload").on("change", "input[type='file']", function () {
+        var filePath = $(this).val();
+        var arr = filePath.split('\\');
+        var fileName = arr[arr.length - 1];
+        $(".file-upload-path").html(fileName);
+    });
+}

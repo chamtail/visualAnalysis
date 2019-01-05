@@ -60,25 +60,23 @@ li {
     margin: 0;
     cursor: pointer;
 }
-#btn-deploy {
+.opt-button {
+    background: #8C101C;
+    color: #eee !important;
     padding: 4px 12px;
 }
-#btn-deploy.disabled {
+.opt-button.disabled {
     cursor: default;
     background: #444;
     color: #999 !important;
 }
-.deploy-button {
-    background: #8C101C;
-    color: #eee !important;
-}
-#btn-deploy.disabled .deploy-button-content>img {
+.opt-button.disabled .opt-button-content>img {
     opacity: 0.3;
 }
-#btn-deploy .deploy-button-content>img {
+.opt-button .opt-button-content>img {
     margin-right: 8px;
 }
-.run-button {
+#btn-run {
     background: #1aad19 !important;
     color: #eee !important;
 }

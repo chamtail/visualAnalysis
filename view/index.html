@@ -40,51 +40,51 @@
                 </a>
             </li>
             <li>
-                <span class="deploy-button-group button-group">
-                    <a id="btn-deploy" class="deploy-button" @click="deployWorkflow">
-                        <span class="deploy-button-content" style="opacity: 1;">
+                <span class="opt-button-group button-group">
+                    <a id="btn-deploy" class="opt-button" @click="deployWorkflow">
+                        <span class="opt-button-content" style="opacity: 1;">
                             <img id="btn-deploy-icon" src="./public/deploy-full-o.png">
                             <span>Deploy</span>
                         </span>
-                        <span class="deploy-button-spinner hide" style="display: none;">
+                        <span class="opt-button-spinner hide" style="display: none;">
                             <img src="./public/spin.svg">
                         </span>
                     </a>
                 </span>
             </li>
             <li>
-                <span class="deploy-button-group button-group">
-                    <a id="btn-run" class="run-button" @click="runWorkflow">
-                        <span class="deploy-button-content" style="opacity: 1;">
+                <span class="opt-button-group button-group">
+                    <a id="btn-run" class="opt-button" @click="runWorkflow">
+                        <span class="opt-button-content" style="opacity: 1;">
                             <i class="fa fa-play-circle" aria-hidden="true"></i>
                             <span>Run</span>
                         </span>
-                        <span class="deploy-button-spinner hide" style="display: none;">
+                        <span class="opt-button-spinner hide" style="display: none;">
                             <img src="./public/spin.svg"></span>
                     </a>
                 </span>
             </li>
             <li>
-                <span class="deploy-button-group button-group">
-                    <a id="btn-logout" class="run-button" @click="logout">
-                        <span class="deploy-button-content" style="opacity: 1;">
+                <span class="opt-button-group button-group">
+                    <a id="btn-logout" class="opt-button" @click="logout">
+                        <span class="opt-button-content" style="opacity: 1;">
                             <i class="fa fa-play-circle" aria-hidden="true"></i>
                             <span>logout</span>
                         </span>
-                        <span class="deploy-button-spinner hide" style="display: none;">
+                        <span class="opt-button-spinner hide" style="display: none;">
                             <img src="./public/spin.svg"></span>
                     </a>
                 </span>
             </li>
 
             <li>
-                <span class="deploy-button-group button-group">
-                    <a id="btn-refresh" class="run-button" @click="cleanCache">
-                        <span class="deploy-button-content" style="opacity: 1;">
+                <span class="opt-button-group button-group">
+                    <a id="btn-refresh" class="opt-button" @click="cleanCache">
+                        <span class="opt-button-content" style="opacity: 1;">
                             <i class="fa fa-play-circle" aria-hidden="true"></i>
                             <span>refresh</span>
                         </span>
-                        <span class="deploy-button-spinner hide" style="display: none;">
+                        <span class="opt-button-spinner hide" style="display: none;">
                             <img src="./public/spin.svg"></span>
                     </a>
                 </span>
@@ -192,7 +192,7 @@
                     <div class="red-ui-tabs-scroll-container">
                         <ul id="workspace-tabs" style="width: 100%;" class="">
                             <template v-for="(flow, index) in flows">
-                                <li :class="['red-ui-tab ui-draggable', flow.id==currentFlow ? 'active' : '']"
+                                <li :class="['red-ui-tab ui-draggable', flow.id==currentFlowId ? 'active' : '']"
                                     :id="'red-ui-tab-'+flow.id" style="width: 100%;">
                                     <a href="#" class="red-ui-tab-label" :title="flow.label"
                                        @click="changeWorkflow(flow.id)" @dblclick="configComponent(flow.id, flow.type)">
@@ -292,7 +292,7 @@
                         </button>
                     </div>
                 </div>
-                <div id="cmd-shell">
+                <div id="cmd-shell" tabindex="-1">
                     <div class="shell-view">
                         <span class="prompt">$</span>
                         <span class="input">
@@ -368,18 +368,11 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <template v-if="component.params.length != 0">
-                                                <template v-for="(model, index) in component.params">
-                                                    <tr class="node-info-node-row">
-                                                        <td>{{model.label[lang]}}</td>
-                                                        <template v-if="model.type=='file'">
-                                                            <td>{{model.default.name}}</td>
-                                                        </template>
-                                                        <template v-else>
-                                                            <td>{{model.default}}</td>
-                                                        </template>
-                                                    </tr>
-                                                </template>
+                                            <template v-for="(model, index) in component.params">
+                                                <tr class="node-info-node-row">
+                                                    <td>{{model.label[lang]}}</td>
+                                                    <td>{{model.default}}</td>
+                                                </tr>
                                             </template>
                                             </tbody>
                                         </table>
@@ -405,7 +398,6 @@
                 </div>
                 <div style="height: 100%; display: none;">
                     <div class="sidebar-variable-space">
-                        <!--<template v-if="flow.id != ''">-->
                         <template v-for="(flow, index) in variableSpace">
                             <div class="component-header" :id="'variable-header-'+index">
                                 <i class="fa fa-angle-down expanded"></i>
@@ -422,10 +414,10 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <template v-for="n in flow">
-                                            <tr :class="['node-info-node-row', node.id == n.id ? 'active' : '']">
-                                                <td>{{n.name}}</td>
-                                                <td>{{n.size}}</td>
+                                        <template v-for="node in flow">
+                                            <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']">
+                                                <td>{{node.name}}</td>
+                                                <td>{{node.size}}</td>
                                             </tr>
                                         </template>
                                         </tbody>
@@ -433,7 +425,6 @@
                                 </div>
                             </div>
                         </template>
-                        <!--</template>-->
                     </div>
                 </div>
             </div>
@@ -497,12 +488,12 @@
                                             <a href="javascript:;" class="file-upload">
                                                 <span v-if="model.default==''">选择文件</span>
                                                 <span v-else>更改文件</span>
-                                                <input :id="'file_'+node.id" :type="model.type" class="col-sm-8"
+                                                <input :id="'file_'+component.id" :type="model.type" class="col-sm-8"
                                                        :name="model.name"
                                                        :placeholder="model.default"
-                                                       accept="text/csv" @change="getFile($event)">
+                                                       accept="text/csv" @change="getFile($event)" multiple>
                                             </a>
-                                            <span class="file-upload-path">{{model.default.name}}</span>
+                                            <span class="file-upload-path">{{model.default}}</span>
                                         </template>
                                         <template v-else>
                                             <input :type="model.type" class="col-sm-8" :name="model.name"
@@ -532,10 +523,8 @@
 </div>
 </body>
 </html>
-<script>
-    var env = 'dev';
-</script>
 
+<script src="../public/custom/debug/debug.js"></script>
 <script src="../config/config.min.js"></script>
 <!--<script src="../config/config.js"></script>-->
 <script src="../public/custom/node/node.js"></script>
@@ -552,10 +541,11 @@
         el: '#vm',
         data: {
             initFinish: false,
-            workflowChanged: false,
             nodeCategory: {},
+            workflowChanged: false,
+            currentFlowId: 0,
             flows: {},
-            nodes:{},
+            variableSpace: {},
             component: {
                 id: "",
                 name: "",
@@ -563,28 +553,14 @@
                 params: [],
                 description: "",
             },
-            node: {
-                id: "",
-                name: "",
-                type: "",
-                params: [],
-                description: "",
-            },
-            flow: {
-                id: "",
-                label: "",
-                disabled: null,
-                description: "",
-            },
             path: {
                 id: "",
                 from: "",
                 to: ""
             },
-            currentFlow: 0,
             routers: {},
-            variableSpace: {},
             uploadFile: false,
+            uploadFilePaths: null,
             lang: getCookieValue("lang"),
         },
         mounted: function () {
@@ -593,12 +569,9 @@
                 // 获取token
                 workflow.token = getCookieValue("token");
                 console.log("token: ", workflow.token);
-                if (workflow.token == "" || workflow.token == undefined) {
+                if (workflow.token == "" || workflow.token == undefined || workflow.token == null) {
                     //window.location.href = 'login.html';
                 }
-
-                // 默认有一个flow
-                vm.loadWorkflow();
 
                 // 初始化左侧组件栏
                 vm.nodeCategory = node_category;
@@ -613,21 +586,20 @@
                     var oEvent = window.event;
                     if (oEvent.keyCode === 46) {
                         //逻辑处理
-                        if (vm.component.id != "") {
-                            onComponentDelete(vm.component.id, vm.component.type);
-                            vm.enableA('#btn-deploy');
-                            update();
-                        }
                         if (vm.path.id != "") {
                             onPathDelete(vm.path.id);
-                            vm.enableA('#btn-deploy');
-                            update();
+                        }
+                        if (vm.component.id != "") {
+                            onComponentDelete(vm.component.id, vm.component.type);
                         }
                     }
                 };
 
                 // separator事件
                 separator();
+
+                // 默认有一个flow
+                vm.loadWorkflow();
             });
         },
         updated: function () {
@@ -636,12 +608,6 @@
                 init();
                 vm.initFinish = true;
             }
-
-//            if (vm.workflowChanged) {
-//                console.log('update now!');
-//                vm.updateWorkflow(workflow);
-//                vm.workflowChanged = false;
-//            }
 
             // 绑定节点列表事件
             $('.component-header').unbind().click(function () {
@@ -678,13 +644,12 @@
                     success: function (res) {
                         if (res.code == 0) {
                             // 更新工作流
-                            vm.updateWorkflow(res.data.workflow);
-                            console.log('loaded');
+                            console.log('存在工作流');
+                            workflow = res.data.workflow;
+                            vm.updateWorkflow(workflow);
                         } else {
-                            //console.log("用户不存在，请注册！");
-                            //window.location.href = 'login.html';
-                            // todo
                             // 新建默认工作流
+                            console.log('新建默认工作流');
                             vm.addWorkflow();
                         }
                     }
@@ -692,7 +657,7 @@
             },
             deployWorkflow: function () {
                 // 工作流无节点，返回false
-                if (vm.flows[vm.currentFlow].nodes.length == 0) {
+                if (vm.flows[vm.currentFlowId].nodes.length == 0) {
                     alert("工作流无节点！");
                     return false;
                 }
@@ -713,6 +678,7 @@
                             updateNodeStatus(res.data.status);
                         } else {
                             alert(res.msg);
+                            vm.enableA('#btn-deploy');
                         }
                     },
                     complete: function () {
@@ -740,29 +706,28 @@
             },
             runWorkflow: function () {
                 // 如果无节点，返回false
-                if (vm.flows[vm.currentFlow].nodes.length == 0) {
+                if (vm.flows[vm.currentFlowId].nodes.length == 0) {
                     alert("工作流无节点！");
                     return false;
                 }
 
-                for (let nodeId in vm.flows[vm.currentFlow].nodes) {
+                for (let index in vm.flows[vm.currentFlowId].nodes) {
+                    let nodeId = vm.flows[vm.currentFlowId].nodes[index];
+                    vm.onNodeRun(nodeId);
                     // 如果状态正确，显示启动
                     if(!vm.checkNodeStatus(nodeId)){
                         return false;
                     }
-                    vm.onNodeRun(nodeId);
                 }
 
-                // 检查是否需要上传文件
-                vm.checkUploadFile();
-
+                console.log('运行节点');
                 // 运行节点
                 $.ajax({
                     url: api_map.workflow_run,
                     type: 'POST',
                     data: {
                         token: workflow.token,
-                        flowId: vm.currentFlow
+                        flowId: vm.currentFlowId
                     },
                     dataType: 'json',
                     beforeSend: function () {
@@ -771,33 +736,31 @@
                     success: function (res) {
                         if (res.code == 0) {
                             console.log("节点们正在运行。。。");
-                            vm.saveWorkflow();
-                            return true;
                         } else {
                             alert(res.msg);
                             let nodeStatus = {};
-                            for (let nodeId in vm.routers) {
+                            for (let index in workflow.task[vm.currentFlowId].nodes) {
+                                let nodeId = workflow.task[vm.currentFlowId].nodes[index];
                                 nodeStatus[nodeId] = res.code;
                             }
                             updateNodeStatus(nodeStatus);
-                            return false;
                         }
                     },
                     complete: function () {
                         vm.enableA('#btn-run');
                     }
                 });
+
             },
             addWorkflow: function () {
                 if (!workflow.used.flow) {
                     workflow.used.flow = 0;
                 }
                 let flowId = parseInt(workflow.used.flow) + 1;  // 暂时使用自增
-                // 重构代码
                 workflow.used.flow += 1;
-                if (workflow.task[flowId]) {
+                while (workflow.task[flowId]) {
                     console.error("工作流id重复！");
-                    return;
+                    flowId += 1;
                 }
                 workflow.task[flowId] = {
                     id: flowId,
@@ -807,94 +770,143 @@
                     description: "这是一个新flow",
                     nodes: []
                 };
-                // 重构代码
-                vm.flows[flowId] = workflow.task[flowId];
-
                 // 切换工作流
-                vm.changeWorkflow(flowId, true);
-
-                // 保存工作流
-                //vm.saveWorkflow();
+                workflow.currentFlowId = flowId;
+                vm.updateWorkflow(workflow);
             },
             changeWorkflow: function (flowId, force = false) {
                 // 记录上一flow
-                let lastFlowId = vm.currentFlow;
+                let lastFlowId = vm.currentFlowId;
                 // 如果点击同一个flow，忽略该事件
                 if (lastFlowId == flowId && !force) {
                     console.log("重复点击，该操作无效");
                     return;
                 }
                 // 更新当前flow
-                vm.currentFlow = parseInt(flowId);
-                update();
+                vm.currentFlowId = parseInt(flowId);
+                workflow.currentFlowId = parseInt(flowId);
                 // 清除上一flow的节点
                 hideNodesByFlow(lastFlowId);
                 // 添加当前flow的节点
                 showNodesByFlow(flowId);
-                // todo
-                // 记录每个workflow的状态，根据状态进行部署
-                vm.enableA('#btn-deploy');
+                // 更新vue值
+                vm.update();
             },
-            updateWorkflow: function (data) {
+            updateWorkflow: function (workflow, id=null) {
                 // 如果工作流为空，则增加默认的工作流任务栏
-                if (data == "" || data == null || JSON.stringify(data) == "{}") {
-                    vm.addWorkflow();
-                    return;
-                }
-                vm.flows = {};
-                vm.nodes = {};
-                vm.variableSpace = {};
-
-                // 更新工作流
-                workflow = data;
-                console.log(workflow);
-
-                if (JSON.stringify(workflow.task) == '{}') {
+                if (workflow == "" || workflow == null
+                        || JSON.stringify(workflow) == "{}"
+                        || JSON.stringify(workflow.task) == '{}') {
                     vm.addWorkflow();
                     return;
                 }
 
-                // 获取任务栏即变量空间
-                for(let id in workflow.task){
-                    console.log(id);
-                    if(!workflow.task[id]){
-                        continue;
-                    }
-                    if(workflow.task[id].type == "flow"){
+                // 更新对象
+                let task = {};
+                // ID不为空，代表修改的是某组件的属性，不需要全部刷新
+                if (id != null){
+                    // 代表是该flow发生了变化
+                    if(vm.flows[id]){
                         vm.flows[id] = workflow.task[id];
-                        vm.variableSpace[id] = {};
-                    } else{
-                        vm.nodes[id] = workflow.task[id];
-                        var flowId = vm.nodes[id].z;
-                        if (workflow.task[id].variable == "") {
-                            continue;
-                        }
+                        task[id] = workflow.task[id];
+                    }
+                    // 代表是flow下的节点发生了变化
+                    else if(workflow.task[id]){
+                        let flowId = workflow.task[id].z;
                         vm.variableSpace[flowId][id] = {
                             id: id,
                             name: workflow.task[id].variable,
                             size: workflow.task[id].size
                         };
+                        vm.update();
+                        return;
+                    }
+                } else{
+                    // 更新工作流
+                    task = workflow.task;
+                    vm.flows = {};
+                    vm.variableSpace = {};
+                }
+
+                // 获取任务栏即变量空间
+                for(let id in task){
+                    console.log(id);
+                    if(!task[id]){
+                        continue;
+                    }
+                    if(task[id].type == "flow"){
+                        vm.flows[id] = task[id];
+                        vm.variableSpace[id] = {};
+                    } else{
+                        var flowId = task[id].z;
+                        if (task[id].variable == "") {
+                            continue;
+                        }
+                        vm.variableSpace[flowId][id] = {
+                            id: id,
+                            name: task[id].variable,
+                            size: task[id].size
+                        };
                     }
                 }
 
-                console.log(vm.variableSpace);
-                if(vm.currentFlow == 0){
+                // 切换当前工作流
+                if(workflow.currentFlowId == null){
+                    console.log('默认工作流为空');
                     // 显示第一个任务栏
                     for (let flowId in vm.flows) {
-                        vm.currentFlow = parseInt(flowId);
-                        hideNodesByFlow(flowId);
-                        showNodesByFlow(flowId);
-                        vm.component = getComponent(vm.currentFlow, 'flow', vm.lang);
+                        vm.changeWorkflow(flowId, true);
                         break;
                     }
                 } else{
-                    hideNodesByFlow(vm.currentFlow);
-                    showNodesByFlow(vm.currentFlow);
-                    vm.component = getComponent(vm.currentFlow, 'flow', vm.lang);
+                    console.log('默认工作流为#flow:' + workflow.currentFlowId);
+                    vm.changeWorkflow(workflow.currentFlowId , true);
                 }
-
             },
 
+            upload: function (nodeId) {
+                console.log('上传文件' , nodeId);
+                //vm.uploadFilePaths = vm.uploadFilePaths || getCookieValue(nodeId);
+                if(vm.uploadFilePaths == null){
+                    console.error('文件为空');
+                    return;
+                }
+                JSON.stringify('文件', vm.uploadFilePaths.name);
+                var formData = new FormData();
+                formData.append('token', workflow.token);
+                formData.append('flowId', vm.currentFlowId);
+                formData.append('nodeId', nodeId);
+                formData.append('file', vm.uploadFilePaths);
+                JSON.stringify(formData);
+                $.ajax({
+                    url: api_map.upload,
+                    type: 'POST',
+                    data: formData,
+                    cache: false,       //上传文件不需缓存
+                    processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
+                    contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
+                    beforeSend: function () {
+                        vm.onNodeRun(nodeId);
+                    },
+                    success: function (res) {
+                        if (res.code == 0) {
+                            updateNodeStatus(res.data.status);
+                            return true;
+                        } else {
+                            alert(res.msg);
+                            vm.onNodeStop(nodeId);
+                            return false;
+                        }
+                    },
+                    error: function () {
+                        vm.onNodeStop(nodeId);
+                    },
+                    complete: function () {
+                        vm.uploadFilePaths = null;
+                        vm.uploadFile = false;
+                    }
+                });
+            },
             runNode: function (nodeId) {
                 // 检查状态
                 if (!vm.checkNodeStatus(nodeId)) {
@@ -903,7 +915,7 @@
                 // 显示启动
                 this.onNodeRun(nodeId);
                 // 如果是上传文件
-                if(workflow.task[nodeId].type == "flow"){
+                if(workflow.task[nodeId].type == "data-upload"){
                     vm.upload(nodeId);
                 } else{
                     // 发送请求
@@ -917,7 +929,7 @@
                         dataType: 'json',
                         success: function (res) {
                             if (res.code == 0) {
-                                vm.saveWorkflow();
+                                console.log('节点运行中...');
                             } else {
                                 alert(res.msg);
                                 let nodeStatus = {};
@@ -950,7 +962,6 @@
                         .text('\uf021');
             },
 
-
             runCmd: function (cmd) {
                 console.log(cmd);
                 $.ajax({
@@ -958,7 +969,7 @@
                     type: 'POST',
                     data: {
                         token: workflow.token,
-                        flowId: vm.currentFlow,
+                        flowId: vm.currentFlowId,
                         cmd: cmd,
                     },
                     dataType: "json",
@@ -979,8 +990,7 @@
             },
             saveComponentConfig: function () {
                 console.log('save config');
-                $('#configModal').modal('hide');
-                onComponentConfigSave();
+                onComponentConfigSave(vm.component);
             },
             deleteComponent: function () {
                 onComponentDelete(vm.component.id, vm.component.type);
@@ -1000,79 +1010,20 @@
                 return true;
             },
 
-            checkUploadFile: function () {
-                let nodes = vm.flows[vm.currentFlow].nodes;
+            checkUploadFile: function (callback) {
+                let nodes = vm.flows[vm.currentFlowId].nodes;
                 for(let i=0, len=nodes.length; i<len; i++){
                     let nodeId = nodes[i];
                     if(workflow.task[nodeId].type == 'data-upload'
                             && workflow.task[nodeId].path
                             && (workflow.task[nodeId].status == 1
                             || workflow.task[nodeId].status == 7)){
-                        uploadFile(nodeId);
+                        vm.upload(nodeId);
                     }
                 }
-                return false;
+                callback();
             },
 
-            upload: function (nodeId) {
-                var formData = new FormData();
-                formData.append('token', workflow.token);
-                formData.append('flowId', vm.currentFlow);
-                formData.append('nodeId', nodeId);
-                formData.append('file', workflow.task[nodeId].path);
-                JSON.stringify(formData);
-                $.ajax({
-                    url: api_map.upload,
-                    type: 'POST',
-                    data: formData,
-                    cache: false,       //上传文件不需缓存
-                    processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
-                    contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
-                    beforeSend: function () {
-                        vm.onNodeRun(nodeId);
-                    },
-                    success: function (res) {
-                        if (res.code == 0) {
-                            updateNodeStatus(res.data.status);
-                            return true;
-                        } else {
-                            alert(res.msg);
-                            return false;
-                        }
-                    },
-                    complete: function () {
-                        vm.onNodeReRun(nodeId);
-                    }
-                });
-            },
-            updateVariableSpace: function () {
-                vm.flows = {};
-                vm.nodes = {};
-                vm.variableSpace = {};
-
-                // 获取任务栏即变量空间
-                for(let id in workflow.task){
-                    console.log(id);
-                    if(!workflow.task[id]){
-                        continue;
-                    }
-                    if(workflow.task[id].type == "flow"){
-                        vm.flows[id] = workflow.task[id];
-                        vm.variableSpace[id] = {};
-                    } else{
-                        vm.nodes[id] = workflow.task[id];
-                        var flowId = vm.nodes[id].z;
-                        if (workflow.task[id].variable == "") {
-                            continue;
-                        }
-                        vm.variableSpace[flowId][id] = {
-                            id: id,
-                            name: workflow.task[id].variable,
-                            size: workflow.task[id].size
-                        };
-                    }
-                }
-            },
             changeTab: function (tab) {
                 $('.red-ui-tab-link-buttons a').removeClass('active selected');
                 $('#sidebar-content > div').css({display: 'none'});
@@ -1101,16 +1052,15 @@
                 window.location.href = 'login.html';
             },
 
-            getFile(event) {
-                let file = event.target.files[0];
-                console.log(file);
-                for (let i = 0, len = vm.component.params.length; i < len; i++) {
-                    if(vm.component.params[i].name == 'path'){
-                        vm.component.params[i].default = file;
-                        $(".file-upload-path").html(file.name);
-                        break;
-                    }
-                }
+            getFile: function (event) {
+                vm.uploadFile = true;
+                console.log(event.target.files);
+                // 获取文件对象
+                vm.uploadFilePaths = event.target.files[0];
+                // 将文件保存至cookie
+                // setCookie(vm.component.id, vm.uploadFilePaths, 2);
+                console.log(vm.uploadFilePaths.name);
+                vm.component.params.path.default = vm.uploadFilePaths.name;
             },
 
             cleanCache: function () {
@@ -1134,6 +1084,41 @@
                     }
                 });
             },
+
+            update: function () {
+                // 先重置各状态
+                d3.selectAll('svg .node').attr('class', 'node');
+                d3.selectAll('svg .cable').attr('class', 'cable');
+                vm.enableA('#btn-deploy');
+                vm.component = {
+                    id: "",
+                    name: "",
+                    type: "",
+                    params: [],
+                    description: ""
+                };
+                vm.path = {
+                    id: "",
+                    from: "",
+                    to: ""
+                };
+                vm.uploadFile = false;
+
+                // 判断flowId是否存在
+                if(!workflow.task[workflow.currentFlowId]){
+                    return;
+                }
+                // 更新组件
+                vm.component = getComponent(workflow.currentFlowId, 'flow', vm.lang);
+                // 更新各节点状态
+                let status = {};
+                let nodesList = workflow.task[workflow.currentFlowId].nodes;
+                for(let i=0, len=nodesList.length; i<len; i++){
+                    let nodeId = nodesList[i];
+                    status[nodeId] = workflow.task[nodeId].status;
+                }
+                updateNodeStatus(status);
+            },
             debug: function () {
 
             }
@@ -1148,104 +1133,6 @@
             vm.lang = 'en';
         }
         setCookie('lang', vm.lang, 24, "/");
-    }
-
-    // 更新参数
-    function update() {
-        // 先重置各状态
-        d3.selectAll('svg .node').attr('class', 'node');
-        d3.selectAll('svg .cable').attr('class', 'cable');
-        vm.component = {
-            id: "",
-            name: "",
-            type: "",
-            params: [],
-            description: ""
-        };
-        vm.flow = {
-            id: "",
-            label: "",
-            disabled: null,
-            params: [],
-            description: "",
-        };
-        vm.node = {
-            id: "",
-            name: "",
-            type: "",
-            params: [],
-            description: ""
-        };
-        vm.path = {
-            id: "",
-            from: "",
-            to: ""
-        };
-        vm.uploadFile = false;
-
-        if(!workflow.task[vm.currentFlow]){
-            console.error('flow' + vm.currentFlow + '不存在！');
-            return;
-        }
-
-        // 更新组件
-        vm.component = getComponent(vm.currentFlow, 'flow', vm.lang);
-        // 更新各节点状态
-        let nodesList = workflow.task[vm.currentFlow].nodes;
-        for(let i=0, len=nodesList.length; i<len; i++){
-            let nodeId = nodesList[i];
-            d3.selectAll('g[id="' + nodeId + '"]')
-                    .attr('class', 'node ' + node_status_map[workflow.task[nodeId].status]);
-        }
-    }
-
-    // 可视化
-    function visualize(data) {
-        $('.visual-chart').attr('style', 'display:none');
-        var op = data.op;
-        console.log(data);
-        switch (op) {
-            case "data-upload":
-            case "data-load":
-            case "prehandle":
-                console.log("data-load");
-                $('#data-load').attr('style', 'display:block');
-                showGraph(data.result);
-                break;
-            case "stl":
-                console.log("stl");
-                $('#abnormalChart').attr('style', 'display:block');
-                abnormalVisual(data.result);
-                break;
-            case "motif":
-                console.log("motif");
-                $('#motifArea').attr('style', 'display:block');
-                var motifData = generateMotifData(5);
-                motifAreaVisual(motifData);
-                break;
-            case "cluster":
-            case "sax-classify":
-            case "fsh":
-            case "elis":
-            case "kshape":
-                console.log("cluster");
-                $('#cluster').attr('style', 'display:block');
-                initCluster(data.result);
-                break;
-            default:
-                console.log('default');
-                break;
-        }
-    }
-
-    // 上传文件
-    function onUploadFileChange() {
-        $(".file-upload").on("change", "input[type='file']", function () {
-            var filePath = $(this).val();
-            var arr = filePath.split('\\');
-            var fileName = arr[arr.length - 1];
-            $(".file-upload-path").html(fileName);
-        });
     }
 </script>
 <script src="../public/js/echarts/echarts.js"></script>

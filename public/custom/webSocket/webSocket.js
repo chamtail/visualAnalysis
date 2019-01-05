@@ -76,6 +76,7 @@ function initEventHandle() {
                 status[nodeId] = nodeStatus;
                 vm.onNodeReRun(nodeId);
                 updateNodeStatus(status);
+                vm.saveWorkflow();
             }
         }
     }
