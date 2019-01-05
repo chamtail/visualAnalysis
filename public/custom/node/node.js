@@ -801,7 +801,11 @@ function visualize(data) {
         case "elis":
         case "kshape":
             console.log("cluster");
-            $('#cluster').attr('style', 'display:block');
+            const cluster = $('#cluster');
+            cluster.resize(function() {
+                refreshCluster()
+            });
+            cluster.attr('style', 'display:block');
             initCluster(data.result);
             break;
         default:

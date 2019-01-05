@@ -21,7 +21,10 @@ let imageCount = [];
 
 let imageIndex = [];
 
+let currentData;
+
 function clickPagePrev(i,data) {
+    currentData = data;
     const index = imageIndex[i];
     if (index === 0) {
         return;
@@ -31,6 +34,7 @@ function clickPagePrev(i,data) {
 }
 
 function clickPageNext(i,data) {
+    currentData = data;
     const index = imageIndex[i];
     if (index + pageSize >= imageCount[i]) {
         return;
@@ -39,7 +43,15 @@ function clickPageNext(i,data) {
     showCluster(data);
 }
 
+function refreshCluster() {
+    if (currentData == null) {
+        return;
+    }
+    showCluster(currentData);
+}
+
 function initCluster(data) {
+    currentData = data;
     const clusterNum = data.Num;
     const seriesInfo = data.Series;
     imageCount = [];
@@ -52,6 +64,7 @@ function initCluster(data) {
 }
 
 function showCluster(data) {
+    currentData = data;
     var dom = document.getElementById("cluster");
     while (dom.firstChild) {
         dom.removeChild(dom.firstChild);
@@ -109,7 +122,7 @@ function showCluster(data) {
             })[0];
             myChart.setOption(option = {
                 title: {
-                    text: j === 0 ? "分类中心" + " " + (i + 1) : "序列" + j,
+                    text: j === 0 ? "分类中心" + " " + (i + 1) : "序列 " + j + " / " + (seriesInfo[i].length - 1),
                     x: 'center',
                     align: 'right'
                 },
