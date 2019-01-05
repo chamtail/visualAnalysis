@@ -1134,59 +1134,6 @@
         }
         setCookie('lang', vm.lang, 24, "/");
     }
-    // 可视化
-    function visualize(data) {
-        $('.visual-chart').attr('style', 'display:none');
-        var op = data.op;
-        console.log(data);
-        switch (op) {
-            case "data-upload":
-            case "data-load":
-            case "prehandle":
-                console.log("data-load");
-                $('#data-load').attr('style', 'display:block');
-                showGraph(data.result);
-                break;
-            case "stl":
-                console.log("stl");
-                $('#abnormalChart').attr('style', 'display:block');
-                abnormalVisual(data.result);
-                break;
-            case "motif":
-                console.log("motif");
-                $('#motifArea').attr('style', 'display:block');
-                var motifData = generateMotifData(5);
-                motifAreaVisual(motifData);
-                break;
-            case "cluster":
-            case "sax-classify":
-            case "fsh":
-            case "elis":
-            case "kshape":
-                console.log("cluster");
-                const cluster = $('#cluster');
-                cluster.resize(function() {
-                    refreshCluster()
-                });
-                cluster.attr('style', 'display:block');
-                initCluster(data.result);
-                break;
-            default:
-                console.log('default');
-                break;
-        }
-    }
-
-    // 上传文件
-    function onUploadFileChange() {
-        $(".file-upload").on("change", "input[type='file']", function () {
-            var filePath = $(this).val();
-            var arr = filePath.split('\\');
-            var fileName = arr[arr.length - 1];
-            $(".file-upload-path").html(fileName);
-        });
-    }
->>>>>>> origin/wj2
 </script>
 <script src="../public/js/echarts/echarts.js"></script>
 <script src="../public/js/underscore-1.8.2.min.js"></script>
