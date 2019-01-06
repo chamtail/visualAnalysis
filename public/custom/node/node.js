@@ -775,22 +775,21 @@ function loadWorkflow(workflowFile) {
 function visualize(data) {
     $('.visual-chart').attr('style', 'display:none');
     var op = data.op;
-    console.log(data);
+    console.log(op);
     switch (op) {
         case "data-upload":
         case "data-load":
         case "prehandle":
-            console.log("data-load");
             $('#data-load').attr('style', 'display:block');
             showGraph(data.result);
             break;
         case "stl":
-            console.log("stl");
+        case "rshash":
             $('#abnormalChart').attr('style', 'display:block');
             abnormalVisual(data.result);
             break;
-        case "motif":
-            console.log("motif");
+        case "hime":
+        case "matrix-profile":
             $('#motifArea').attr('style', 'display:block');
             var motifData = generateMotifData(5);
             motifAreaVisual(motifData);
@@ -799,8 +798,8 @@ function visualize(data) {
         case "seql":
         case "fsh":
         case "elis":
+        case "lts":
         case "kshape":
-            console.log("cluster");
             const cluster = $('#cluster');
             cluster.resize(function() {
                 refreshCluster()
