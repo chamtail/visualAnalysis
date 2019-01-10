@@ -659,6 +659,6 @@ var node_status_map = {
     "3": "running",
     "4": "run_success",
     "5": "run_error",
-    "6": "active",
+    "6": "modified",
     "7": "deactivate"
 };
