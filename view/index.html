@@ -57,7 +57,19 @@
                     <a id="btn-run" class="opt-button" @click="runWorkflow">
                         <span class="opt-button-content" style="opacity: 1;">
                             <i class="fa fa-play-circle" aria-hidden="true"></i>
-                            <span>Run</span>
+                            <span>Run on docker</span>
+                        </span>
+                        <span class="opt-button-spinner hide" style="display: none;">
+                            <img src="./public/spin.svg"></span>
+                    </a>
+                </span>
+            </li>
+            <li>
+                <span class="opt-button-group button-group">
+                    <a id="btn-run2" class="opt-button" @click="runWorkflow2">
+                        <span class="opt-button-content" style="opacity: 1;">
+                            <i class="fa fa-play-circle" aria-hidden="true"></i>
+                            <span>Run on k8s</span>
                         </span>
                         <span class="opt-button-spinner hide" style="display: none;">
                             <img src="./public/spin.svg"></span>
@@ -663,7 +675,7 @@
                 }
                 // 发送工作流
                 $.ajax({
-                    url: api_map.workflow_deploy + "?type=0",
+                    url: api_map.workflow_deploy + "?type=1",
                     type: 'POST',
                     data: JSON.stringify(workflow),
                     contentType: 'application/json',
@@ -690,6 +702,7 @@
                 });
             },
             saveWorkflow: function () {
+                console.log('保存工作流');
                 $.ajax({
                     url: api_map.workflow_save,
                     type: 'POST',
@@ -724,6 +737,54 @@
                 // 运行节点
                 $.ajax({
                     url: api_map.workflow_run,
+                    type: 'POST',
+                    data: {
+                        token: workflow.token,
+                        flowId: vm.currentFlowId
+                    },
+                    dataType: 'json',
+                    beforeSend: function () {
+                        vm.disabledA('#btn-run');
+                    },
+                    success: function (res) {
+                        if (res.code == 0) {
+                            console.log("节点们正在运行。。。");
+                        } else {
+                            alert(res.msg);
+                            let nodeStatus = {};
+                            for (let index in workflow.task[vm.currentFlowId].nodes) {
+                                let nodeId = workflow.task[vm.currentFlowId].nodes[index];
+                                nodeStatus[nodeId] = res.code;
+                            }
+                            updateNodeStatus(nodeStatus);
+                        }
+                    },
+                    complete: function () {
+                        vm.enableA('#btn-run');
+                    }
+                });
+
+            },
+            runWorkflow2: function () {
+                // 如果无节点，返回false
+                if (vm.flows[vm.currentFlowId].nodes.length == 0) {
+                    alert("工作流无节点！");
+                    return false;
+                }
+
+                for (let index in vm.flows[vm.currentFlowId].nodes) {
+                    let nodeId = vm.flows[vm.currentFlowId].nodes[index];
+                    vm.onNodeRun(nodeId);
+                    // 如果状态正确，显示启动
+                    if(!vm.checkNodeStatus(nodeId)){
+                        return false;
+                    }
+                }
+
+                console.log('运行节点');
+                // 运行节点
+                $.ajax({
+                    url: 'http://10.131.247.51:8000/workflow/runAll',
                     type: 'POST',
                     data: {
                         token: workflow.token,

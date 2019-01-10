@@ -293,6 +293,7 @@ function updateNode(id, translate) {
 // 更新节点状态
 function updateNodeStatus(status) {
     for (let nodeId in status) {
+        console.log('更新节点', nodeId);
         let s = $('#' + nodeId).attr('status');
         let statusNow = status[nodeId];
         if(!node_status_map[statusNow]){
@@ -693,9 +694,7 @@ function updateComponentParams(component) {
     // 如果参数改变个数不为空，则代表workflow已改变
     if(changeCount != 0){
         console.log('参数改变');
-        if(workflow.task[id].status == 4){
-            workflow.task[id].status = 1;
-        }
+        workflow.task[id].status = 6;
         vm.updateWorkflow(workflow, id);
     }
 }
@@ -764,10 +763,6 @@ function loadWorkflow(workflowFile) {
     $.getJSON('../config/'+workflowFile+'.json', function (data) {
         workflow = data;
         vm.updateWorkflow(workflow);
-        // 重构代码
-        console.log(workflow);
-        showNodesByFlow(1);
-        // 重构代码
     });
 }
 
