@@ -55,7 +55,7 @@
         "en": "description"
       },
       "type": "richtext",
-      "default": "这是一个工作流",
+      "default": "",
       "enable": true,
       "configurable": true
     }

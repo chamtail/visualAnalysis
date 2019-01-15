@@ -555,7 +555,7 @@ function onComponentDetail(id, type, force=false){
         return;
     }
     // 更新状态
-    vm.update();
+    //vm.update();
     // 更新组件信息
     vm.component = getComponent(id, type, vm.lang);
     if(type == 'flow'){
@@ -597,7 +597,6 @@ function onComponentConfig() {
 // 删除组件
 function onComponentDelete(id, type) {
     console.log("删除" + type + "#" + id);
-    let updateId = null;
     if(type == 'flow'){
         // 删除工作流下的所有节点
         let nodesList = workflow.task[id].nodes;
@@ -606,6 +605,8 @@ function onComponentDelete(id, type) {
             workflow.used[workflow.task[nodeId].type] -= 1;
             delete workflow.task[nodeId];
         }
+        // 清除上一flow的节点
+        hideNodesByFlow(id);
         workflow.currentFlowId = null;
     } else{
         // 删除与之相连的路径
@@ -626,8 +627,6 @@ function onComponentDelete(id, type) {
                 workflow.task[nodeId].links.splice(index, 1);
             }
         }
-
-        updateId = id;
     }
     // 删除该组件
     delete workflow.task[id];
@@ -636,7 +635,8 @@ function onComponentDelete(id, type) {
         workflow.used[type] -= 1;
     }
     // 更新workflow
-    vm.updateWorkflow(workflow, workflow.currentFlowId);
+    console.log(workflow.currentFlowId);
+    vm.updateWorkflow(workflow);
     $('#configModal').modal('hide');
 }
 
@@ -694,8 +694,11 @@ function updateComponentParams(component) {
     // 如果参数改变个数不为空，则代表workflow已改变
     if(changeCount != 0){
         console.log('参数改变');
-        workflow.task[id].status = 6;
         vm.updateWorkflow(workflow, id);
+        let status = {};
+        status[id] = 6;
+        updateNodeStatus(status);
+        onComponentDetail(id, component.type, true);
     }
 }
 
