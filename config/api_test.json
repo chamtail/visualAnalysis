@@ -117,7 +117,7 @@
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8088,
-    "api": "/workflow/cache/clean"
+    "api": "/dataset/cache/clean"
   },
   "webSocket": {
     "protocol": "ws",

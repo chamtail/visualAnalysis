@@ -13,11 +13,20 @@
         "en": "data set"
       },
       "type": "list",
-      "list": [
-        "ECG",
-        "TEK"
-      ],
+      "list": [],
       "default": 0,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "field_info",
+      "label": {
+        "zh": "字段信息",
+        "en": "field info"
+      },
+      "type": "multi-list",
+      "list": [],
+      "default": "all",
       "enable": true,
       "configurable": true
     },
@@ -41,6 +50,17 @@
       "type": "text",
       "default": "",
       "enable": false,
+      "configurable": true
+    },
+    {
+      "name": "description",
+      "label": {
+        "zh": "数据集描述",
+        "en": "dataset description"
+      },
+      "type": "richtext",
+      "default": "",
+      "enable": true,
       "configurable": true
     },
     {
