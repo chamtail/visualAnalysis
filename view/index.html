@@ -21,6 +21,7 @@
     <script src="../public/js/d3-transform.min.js"></script>
     <script src="../public/js/vue.min.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../public/js/multiple-select/multiple-select.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/index/index.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/node/node.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/charts/cluster.css">
@@ -427,10 +428,12 @@
                                         </thead>
                                         <tbody>
                                         <template v-for="node in flow">
-                                            <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']">
-                                                <td>{{node.name}}</td>
-                                                <td>{{node.size}}</td>
-                                            </tr>
+                                            <template v-if="node.name != ''">
+                                                <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']">
+                                                    <td>{{node.name}}</td>
+                                                    <td>{{node.size}}</td>
+                                                </tr>
+                                            </template>
                                         </template>
                                         </tbody>
                                     </table>
@@ -477,44 +480,88 @@
                     <div class="modal-body">
                         <form method="post" id="main-form">
                             <template v-if="component.params.length != 0">
-                                <template v-for="(model, index) in component.params">
-                                    <div class="form-group">
-                                        <label :for="model.name" class="col-sm-3">{{model.label[lang]}}</label>
-                                        <template v-if="model.type == 'list'">
-                                            <select :name="model.name" class="col-sm-8" v-model="model.default">
-                                                <option value="">全部</option>
-                                                <template v-for="(option, id) in model.list">
-                                                    <option :value="option"
-                                                            :selected="model.default == id || model.default == option">
-                                                        {{option}}
-                                                    </option>
+                                <template v-if="component.type == 'data-load'">
+                                    <template v-for="(model, index) in component.params">
+                                        <div class="form-group row">
+                                            <label :for="model.name" class="col-sm-3 col-form-label">{{model.label[lang]}}</label>
+                                            <div class="col-sm-8">
+                                                <template v-if="model.type == 'list'">
+                                                    <select class="form-control" :name="model.name" v-model="model.default" @change="onDataSetChanged">
+                                                        <!--<option value="-1">全部</option>-->
+                                                        <template v-for="(option, id) in datasets">
+                                                            <option :value="id"
+                                                                    :selected="model.default == id || model.default == option.name">
+                                                                {{option.name}}
+                                                            </option>
+                                                        </template>
+                                                    </select>
                                                 </template>
-                                            </select>
-                                        </template>
-                                        <template v-else-if="model.type == 'richtext'">
-                                        <textarea :type="model.type" class="col-sm-8" :name="model.name"
-                                                  :placeholder="model.default"
-                                                  v-model="model.default">{{model.default}}</textarea>
-                                        </template>
-                                        <template v-else-if="model.type == 'file'">
-                                            <a href="javascript:;" class="file-upload">
-                                                <span v-if="model.default==''">选择文件</span>
-                                                <span v-else>更改文件</span>
-                                                <input :id="'file_'+component.id" :type="model.type" class="col-sm-8"
-                                                       :name="model.name"
-                                                       :placeholder="model.default"
-                                                       accept="text/csv" @change="getFile($event)" multiple>
-                                            </a>
-                                            <span class="file-upload-path">{{model.default}}</span>
-                                        </template>
-                                        <template v-else>
-                                            <input :type="model.type" class="col-sm-8" :name="model.name"
-                                                   :placeholder="model.default" :value="model.default"
-                                                   v-model="model.default">
-                                        </template>
-                                    </div>
+                                                <template v-else-if="model.type == 'multi-list'">
+                                                    <select class="multiple form-control" multiple="multiple" :name="model.name" v-model="model.default">
+                                                        <!--<option value="-1">全部</option>-->
+                                                        <template v-for="(fieldName, id) in dataset.fieldName">
+                                                            <option :value="fieldName"
+                                                                    :selected="model.default == id || model.default == fieldName">
+                                                                {{fieldName}}({{dataset.fieldType[id]}})
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                </template>
+                                                <template v-else-if="model.type == 'richtext'">
+                                                    <textarea class="form-control" :type="model.type" :name="model.name"
+                                                              :placeholder="model.default" :disabled="model.configurable"
+                                                              v-model="model.default">{{dataset.description}}</textarea>
+                                                </template>
+                                                <template v-else>
+                                                    <input class="form-control" :type="model.type" :name="model.name"
+                                                           :placeholder="model.default" :value="model.default"
+                                                           v-model="model.default">
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
                                 </template>
-
+                                <template v-else>
+                                    <template v-for="(model, index) in component.params">
+                                        <div class="form-group row">
+                                            <label :for="model.name" class="col-sm-3 col-form-label">{{model.label[lang]}}</label>
+                                            <div class="col-sm-8">
+                                                <template v-if="model.type == 'list'">
+                                                    <select class="form-control" :name="model.name" v-model="model.default">
+                                                        <option value="">全部</option>
+                                                        <template v-for="(option, id) in model.list">
+                                                            <option :value="option"
+                                                                    :selected="model.default == id || model.default == option">
+                                                                {{option}}
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                </template>
+                                                <template v-else-if="model.type == 'richtext'">
+                                                    <textarea class="form-control" :type="model.type" :name="model.name"
+                                                              :placeholder="model.default" :disabled="model.configurable"
+                                                              v-model="model.default">{{model.default}}</textarea>
+                                                </template>
+                                                <template v-else-if="model.type == 'file'">
+                                                    <a href="javascript:;" class="file-upload">
+                                                        <span v-if="model.default==''">选择文件</span>
+                                                        <span v-else>更改文件</span>
+                                                        <input :id="'file_'+component.id" :type="model.type" class="col-sm-8"
+                                                               :name="model.name"
+                                                               :placeholder="model.default"
+                                                               accept="text/csv" @change="getFile($event)" multiple>
+                                                    </a>
+                                                    <span class="file-upload-path">{{model.default}}</span>
+                                                </template>
+                                                <template v-else>
+                                                    <input class="form-control" :type="model.type" :name="model.name"
+                                                           :placeholder="model.default" :value="model.default"
+                                                           v-model="model.default">
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
                             </template>
                             <template v-else>
                                 <div class="form-group">
@@ -547,6 +594,7 @@
 <script src="../public/custom/cmd/cmd.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/custom/webSocket/webSocket.js"></script>
+<script src="../public/js/multiple-select/multiple-select.js"></script>
 <script>
     //vue 绑定
     var vm = new Vue({
@@ -554,6 +602,8 @@
         data: {
             initFinish: false,
             nodeCategory: {},
+            datasets: {},
+            dataset:{},
             workflowChanged: false,
             currentFlowId: 0,
             flows: {},
@@ -582,7 +632,7 @@
                 workflow.token = getCookieValue("token");
                 console.log("token: ", workflow.token);
                 if (workflow.token == "" || workflow.token == undefined || workflow.token == null) {
-                    //window.location.href = 'login.html';
+                    window.location.href = 'login.html';
                 }
 
                 // 初始化左侧组件栏
@@ -609,6 +659,9 @@
 
                 // separator事件
                 separator();
+
+                // 加载数据集列表
+                vm.getDataSetList();
 
                 // 默认有一个flow
                 vm.loadWorkflow();
@@ -855,8 +908,10 @@
             },
             updateWorkflow: function (workflow, id=null) {
                 // 如果工作流为空，则增加默认的工作流任务栏
-                if (workflow == "" || workflow == null
-                        || JSON.stringify(workflow) == "{}"
+                if (workflow == ''
+                        || workflow == null
+                        || JSON.stringify(workflow) == '{}'
+                        || JSON.stringify(workflow.task) == undefined
                         || JSON.stringify(workflow.task) == '{}') {
                     vm.addWorkflow();
                     return;
@@ -879,7 +934,7 @@
                             name: workflow.task[id].variable,
                             size: workflow.task[id].size
                         };
-                        vm.update();
+                        console.log('更新完成');
                         return;
                     }
                 } else{
@@ -910,7 +965,7 @@
                         };
                     }
                 }
-
+                console.log(workflow);
                 // 切换当前工作流
                 if(workflow.currentFlowId == null){
                     console.log('默认工作流为空');
@@ -921,7 +976,7 @@
                     }
                 } else{
                     console.log('默认工作流为#flow:' + workflow.currentFlowId);
-                    vm.changeWorkflow(workflow.currentFlowId , true);
+                    vm.changeWorkflow(workflow.currentFlowId, true);
                 }
             },
 
@@ -1146,6 +1201,40 @@
                 });
             },
 
+            getDataSetList: function () {
+                $.ajax({
+                    url: api_map.dataset_list,
+                    type: 'POST',
+                    data: {
+                        token: workflow.token
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.code == 0) {
+                            vm.datasets = res.data;
+                            for (let id in vm.datasets){
+                                vm.dataset = vm.datasets[id];
+                                break;
+                            }
+                            console.log(vm.dataset);
+                        } else {
+                            alert(res.msg);
+                        }
+                    },
+                    error: function (res) {
+                    }
+                });
+            },
+            onDataSetChanged: function (ele) {
+                console.log(ele.target.value);
+                if (ele.target.value < 0){
+                    return;
+                }
+                vm.dataset = vm.datasets[ele.target.value];
+
+                console.log(JSON.stringify(vm.dataset));
+
+            },
             update: function () {
                 // 先重置各状态
                 d3.selectAll('svg .node').attr('class', 'node');
