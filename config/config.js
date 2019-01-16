@@ -647,9 +647,9 @@ var api_map = {
     "variable_save": "http://10.131.247.51:8000/workflow/variable/save",
     "variable_load": "http://10.131.247.51:8000/workflow/variable/load",
     "cache_clean": "http://10.131.247.51:8000/workflow/cache/clean",
-    "upload": "http://10.131.247.51:8000/file/upload",
-    "get_data": "http://10.131.247.51:8000/dataset/getData",
-    "dataset_list": "http://10.131.247.51:8000/dataset/list",
+    "data_upload": "http://10.131.247.51:8000/data/upload",
+    "data_list": "http://10.131.247.51:8000/data/list",
+    "data_info": "http://10.131.247.51:8000/data/info",
     "webSocket": "ws://10.131.247.51:8000/webSocket/admin"
 };
 

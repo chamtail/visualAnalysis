@@ -488,7 +488,7 @@
                                                 <template v-if="model.type == 'list'">
                                                     <select class="form-control" :name="model.name" v-model="model.default" @change="onDataSetChanged">
                                                         <!--<option value="-1">全部</option>-->
-                                                        <template v-for="(option, id) in datasets">
+                                                        <template v-for="(option, id) in dataSets">
                                                             <option :value="id"
                                                                     :selected="model.default == id || model.default == option.name">
                                                                 {{option.name}}
@@ -499,10 +499,10 @@
                                                 <template v-else-if="model.type == 'multi-list'">
                                                     <select class="multiple form-control" multiple="multiple" :name="model.name" v-model="model.default">
                                                         <!--<option value="-1">全部</option>-->
-                                                        <template v-for="(fieldName, id) in dataset.fieldName">
+                                                        <template v-for="(fieldName, id) in dataSet.fieldName">
                                                             <option :value="fieldName"
                                                                     :selected="model.default == id || model.default == fieldName">
-                                                                {{fieldName}}({{dataset.fieldType[id]}})
+                                                                {{fieldName}}({{dataSet.fieldType[id]}})
                                                             </option>
                                                         </template>
                                                     </select>
@@ -510,7 +510,7 @@
                                                 <template v-else-if="model.type == 'richtext'">
                                                     <textarea class="form-control" :type="model.type" :name="model.name"
                                                               :placeholder="model.default" :disabled="model.configurable"
-                                                              v-model="model.default">{{dataset.description}}</textarea>
+                                                              v-model="model.default">{{dataSet.description}}</textarea>
                                                 </template>
                                                 <template v-else>
                                                     <input class="form-control" :type="model.type" :name="model.name"
@@ -602,8 +602,8 @@
         data: {
             initFinish: false,
             nodeCategory: {},
-            datasets: {},
-            dataset:{},
+            dataSets: {},
+            dataSet:{},
             workflowChanged: false,
             currentFlowId: 0,
             flows: {},
@@ -995,7 +995,7 @@
                 formData.append('file', vm.uploadFilePaths);
                 JSON.stringify(formData);
                 $.ajax({
-                    url: api_map.upload,
+                    url: api_map.data_upload,
                     type: 'POST',
                     data: formData,
                     cache: false,       //上传文件不需缓存
@@ -1211,12 +1211,12 @@
                     dataType: 'json',
                     success: function (res) {
                         if (res.code == 0) {
-                            vm.datasets = res.data;
-                            for (let id in vm.datasets){
-                                vm.dataset = vm.datasets[id];
+                            vm.dataSets = res.data;
+                            for (let id in vm.dataSets){
+                                vm.dataSet = vm.dataSets[id];
                                 break;
                             }
-                            console.log(vm.dataset);
+                            console.log(vm.dataSet);
                         } else {
                             alert(res.msg);
                         }
@@ -1230,9 +1230,9 @@
                 if (ele.target.value < 0){
                     return;
                 }
-                vm.dataset = vm.datasets[ele.target.value];
+                vm.dataSet = vm.dataSets[ele.target.value];
 
-                console.log(JSON.stringify(vm.dataset));
+                console.log(JSON.stringify(vm.dataSet));
 
             },
             update: function () {

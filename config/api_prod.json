@@ -101,23 +101,29 @@
     "port": 8080,
     "api": "/workflow/variable/load"
   },
-  "get_data": {
-    "protocol": "http",
-    "host": "10.131.247.51",
-    "port": 8080,
-    "api": "/workflow/getData"
-  },
-  "upload": {
-    "protocol": "http",
-    "host": "10.131.247.51",
-    "port": 8080,
-    "api": "/file/upload"
-  },
   "cache_clean": {
     "protocol": "http",
     "host": "10.131.247.51",
     "port": 8080,
-    "api": "/dataset/cache/clean"
+    "api": "/workflow/cache/clean"
+  },
+  "data_upload": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8080,
+    "api": "/data/upload"
+  },
+  "data_list": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8080,
+    "api": "/data/list"
+  },
+  "data_info": {
+    "protocol": "http",
+    "host": "10.131.247.51",
+    "port": 8080,
+    "api": "/data/info"
   },
   "webSocket": {
     "protocol": "ws",

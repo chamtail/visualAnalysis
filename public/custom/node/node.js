@@ -555,7 +555,7 @@ function onComponentDetail(id, type, force=false){
         return;
     }
     // 更新状态
-    //vm.update();
+    vm.update();
     // 更新组件信息
     vm.component = getComponent(id, type, vm.lang);
     if(type == 'flow'){
@@ -569,7 +569,7 @@ function onComponentDetail(id, type, force=false){
     if (status == 4) {
         console.log("可视化");
         $.ajax({
-            url: api_map.get_data,
+            url: api_map.data_info,
             type: 'POST',
             data: {
                 token: workflow.token,
