@@ -279,15 +279,12 @@
                     <div class="visual-chart" id="data-load"></div>
                     <div class="visual-chart" id="abnormalChart"></div>
                     <div class="visual-chart" id="cluster"></div>
-                    <div class="visual-chart" id="motifArea">
-                        <div id="motifChart"></div>
-
-                        <div id="motifList" class="motifList">
-                            <table id="motifTable" style="border:2px solid #d0d8e2;"></table>
-                        </div>
-
-                        <div id="subMotifChart"></div>
+                    <div class="visual-chart" id="matrixProfile">
+                        <div id="matrixProfile1"></div>
+                        <div id="matrixProfile2"></div>
                     </div>
+
+
 
                 </div>
             </div>
@@ -591,6 +588,7 @@
 <script src="../public/custom/charts/charts.js"></script>
 <script src="../public/custom/charts/cluster.js"></script>
 <script src="../public/custom/charts/motif.js"></script>
+<script src="../public/custom/charts/matrixProfile.js"></script>
 <script src="../public/custom/cmd/cmd.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/custom/webSocket/webSocket.js"></script>
@@ -631,9 +629,9 @@
                 // 获取token
                 workflow.token = getCookieValue("token");
                 console.log("token: ", workflow.token);
-                if (workflow.token == "" || workflow.token == undefined || workflow.token == null) {
-                    window.location.href = 'login.html';
-                }
+                // if (workflow.token == "" || workflow.token == undefined || workflow.token == null) {
+                //     window.location.href = 'login.html';
+                // }
 
                 // 初始化左侧组件栏
                 vm.nodeCategory = node_category;

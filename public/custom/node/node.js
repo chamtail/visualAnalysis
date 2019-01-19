@@ -788,9 +788,8 @@ function visualize(data) {
             break;
         case "hime":
         case "matrix-profile":
-            $('#motifArea').attr('style', 'display:block');
-            var motifData = generateMotifData(5);
-            motifAreaVisual(motifData);
+            $('#matrixProfile').attr('style', 'display:block');
+            matrixProfileVisual("matrixProfile",null);
             break;
         case "cluster":
         case "seql":
