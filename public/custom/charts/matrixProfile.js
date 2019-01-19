@@ -8,8 +8,7 @@ function matrixProfileVisual(chartId,data) {
 
     var chartWidth = document.getElementById(chartId).offsetWidth;
     var chartHeight = (1/2)*(document.getElementById(chartId).offsetHeight);
-    console.log("width:",chartWidth,"height:",chartHeight);
-    console.log("youmuyou:",matrixChart1,matrixChart2);
+
     matrixChart1.setAttribute("style","width:"+chartWidth+"px;height:"+chartHeight+"px;");
     matrixChart2.setAttribute("style","width:"+chartWidth+"px;height:"+chartHeight+"px;");
 
