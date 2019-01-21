@@ -13,7 +13,7 @@
         "en": "min_length_of_subsequence"
       },
       "type": "number",
-      "default": 10,
+      "default": 20,
       "enable": true,
       "configurable": true
     },
