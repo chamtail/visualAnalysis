@@ -6,40 +6,28 @@ function himeVisual(data) {
     }
 
     var himeArea = document.getElementById("hime");
-    var himeChart1 = document.getElementById("himeChart");
-    // var himeChart1Width = himeArea.offsetWidth;
-    var himeChart1Height = (1/2)*himeArea.offsetHeight;
-    // himeChart1.setAttribute("style","width:"+himeChart1Width+"px;height:"+himeChart1Height+"px;");
-    himeChart1.setAttribute("style","height:"+himeChart1Height+"px;");
 
-    var tableWith = (2/3)*himeArea.offsetWidth;
-    var tableHeight = (1/2)*himeArea.offsetHeight;
-    //
-    var himeChart2 = document.getElementById("subHimeChart");
-    // var himeChart2Width = (1/3)*himeArea.offsetWidth;
-    var himeChart2Height = (1/2)*himeArea.offsetHeight;
-    himeChart2.setAttribute("style","height:"+himeChart2Height+"px;");
-    // himeChart2.setAttribute("style","width:"+himeChart2Width+"px;height:"+himeChart2Height+"px;");
+    var himeTable = document.getElementById("himeTableDiv");
+    var himeTableHeight = (1/2)*himeArea.offsetHeight;
+    himeTable.setAttribute("style","height:"+himeTableHeight+"px;");
 
+    // var tableWith = (2/3)*himeArea.offsetWidth;
+    // var tableHeight = (1/2)*himeArea.offsetHeight;
 
-    $("#hime").resize(function () {
-        tableWith = (2/3)*himeArea.offsetWidth;
-        tableHeight = (1/2)*himeArea.offsetHeight;
-        console.log("有没有");
-
-    });
 
     layui.use('table', function () {
         var table = layui.table;
-        console.log("youmuyou")
         table.render({
             elem: '#himeTable'
+            // , id:'testHimeTable'
             , title: '实时数据表'
-            , height: tableHeight
-            , width: tableWith
-            , page : {
-                layout: ['prev', 'page', 'next','skip','count']
-            }
+            // , height: tableHeight
+            // , width: tableWith
+            , page:true
+            , limit: 8
+            // , page : {
+            //     layout: ['prev', 'page', 'next','skip','count']
+            // }
             , data: data.list
             , cols: [[ //表头
                 {field: 'id', title: 'ID',  sort: true, fixed: 'left'}
@@ -54,6 +42,15 @@ function himeVisual(data) {
 
         //监听行单击事件（单击事件为：rowDouble）
         table.on('row(himeTable)', function(obj) {
+            var himeChart1 = document.getElementById("himeChart");
+            var himeChart1Height = (1/2)*himeArea.offsetHeight;
+            himeChart1.setAttribute("style","height:"+himeChart1Height+"px;");
+
+            var himeChart2 = document.getElementById("subHimeChart");
+            var himeChart2Height = (1/2)*himeArea.offsetHeight;
+            himeChart2.setAttribute("style","height:"+himeChart2Height+"px;");
+
+
             var id = obj.data.id;
             chartData = data.list[id];
 
@@ -70,7 +67,7 @@ function himeVisual(data) {
                 value2.push(data.value[j]);
             }
             resultChart("subHimeChart",value1,value2);
-            console.log("result:",value1,value2);
+            // console.log("result:",value1,value2);
 
 
             // layer.alert(JSON.stringify(data), {
@@ -80,7 +77,19 @@ function himeVisual(data) {
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click'); //标注选中样式
         });
 
+        $("#hime").resize(function () {
+            var himeArea = document.getElementById("hime");
+            var himeTable = document.getElementById("himeTableDiv");
+            var himeTableHeight = (1/2)*himeArea.offsetHeight;
+            himeTable.setAttribute("style","height:"+himeTableHeight+"px;");
+            table.resize("himeTable");
+        });
+
+
     });
+
+
+
 
 
 
@@ -112,7 +121,7 @@ function himeChart(chartId,value,areaList) {
         }
         highLightArea.push(area);
     }
-    console.log("highLightArea",highLightArea);
+    // console.log("highLightArea",highLightArea);
 
     option = {
         title: {
@@ -203,9 +212,7 @@ function himeChart(chartId,value,areaList) {
     $("#hime").resize(function () {
         var himeArea = document.getElementById("hime");
         var himeChart1 = document.getElementById("himeChart");
-        // var himeChart1Width = himeArea.offsetWidth;
         var himeChart1Height = (1/2)*himeArea.offsetHeight;
-        // himeChart1.setAttribute("style","width:"+himeChart1Width+"px;height:"+himeChart1Height+"px;");
         himeChart1.setAttribute("style","height:"+himeChart1Height+"px;");
 
         myChart.resize();
@@ -215,6 +222,7 @@ function himeChart(chartId,value,areaList) {
     };
 
 };
+
 function resultChart(chartId,value1,value2) {
     echarts.dispose(document.getElementById(chartId));
     var myChart = echarts.init(document.getElementById(chartId));
@@ -278,7 +286,6 @@ function resultChart(chartId,value1,value2) {
     $("#hime").resize(function () {
         var himeArea = document.getElementById("hime");
         var himeChart2 = document.getElementById("subHimeChart");
-        // var himeChart2Width = (1/3)*himeArea.offsetWidth;
         var himeChart2Height = (1/2)*himeArea.offsetHeight;
         himeChart2.setAttribute("style","height:"+himeChart2Height+"px;");
         myChart.resize();
@@ -291,6 +298,7 @@ function resultChart(chartId,value1,value2) {
 
 
 }
+
 function generateHimeData(count) {
 
     //data:
