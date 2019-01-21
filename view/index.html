@@ -721,8 +721,8 @@
                 container.find('.component-content').slideDown(500);
             });
 
+            $('.ms-parent').remove();
             if(vm.component.type == 'data-load'){
-                $('.ms-parent').remove();
                 let selector = $("select.multiple");
                 selector.multipleSelect('destroy');
                 selector.multipleSelect({

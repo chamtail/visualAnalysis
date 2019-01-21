@@ -807,7 +807,7 @@ function visualize(data) {
         case "hime":
         case "matrix-profile":
             $('#matrixProfile').attr('style', 'display:block');
-            matrixProfileVisual("matrixProfile",null);
+            matrixProfileVisual("matrixProfile",data.result);
             break;
         case "cluster":
         case "seql":
