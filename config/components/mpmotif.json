@@ -1,41 +1,19 @@
 {
   "display": {
-    "zh": "mpsegment",
-    "en": "segmentation based on matrix-profile"
+    "zh": "mpmotif",
+    "en": "compute motif based on matrix-profile"
   },
   "in": 1,
   "out": 1,
   "params": [
     {
-      "name": "topN",
+      "name": "min_length_of_subsequence",
       "label": {
-        "zh": "topN建议为100",
-        "en": "topN"
+        "zh": "查询序列最小长度(4<minl<datasize/50)",
+        "en": "min_length_of_subsequence"
       },
       "type": "number",
-      "default": 100,
-      "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "subLen",
-      "label": {
-        "zh": "子序列长度(<4 && <length(data)/2)",
-        "en": "subLen"
-      },
-      "type": "number",
-      "default": 50,
-      "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "numOfRegimes",
-      "label": {
-        "zh": "分段数",
-        "en": "numOfRegimes"
-      },
-      "type": "number",
-      "default": 3,
+      "default": 10,
       "enable": true,
       "configurable": true
     },
@@ -74,5 +52,5 @@
     }
   ],
   "description": "",
-  "category": "process/segmentation"
+  "category": "process/motif"
 }

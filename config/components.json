@@ -9,11 +9,12 @@
   "model-save": "enable",
   "seql": "enable",
   "elis": "enable",
-  "mpsegment": "enable",
   "kshape":"enable",
   "hime":"enable",
   "rshash":"enable",
   "jocor":"enable",
   "matrix-profile":"enable",
-  "lts":"enable"
+  "lts":"enable",
+  "mpmotif":"enable",
+  "mpsegment":"enable"
 }
