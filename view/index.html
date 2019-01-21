@@ -486,31 +486,59 @@
                                             <label :for="model.name" class="col-sm-3 col-form-label">{{model.label[lang]}}</label>
                                             <div class="col-sm-8">
                                                 <template v-if="model.type == 'list'">
-                                                    <select class="form-control" :name="model.name" v-model="model.default" @change="onDataSetChanged">
-                                                        <!--<option value="-1">全部</option>-->
-                                                        <template v-for="(option, id) in dataSets">
-                                                            <option :value="id"
-                                                                    :selected="model.default == id || model.default == option.name">
-                                                                {{option.name}}
-                                                            </option>
-                                                        </template>
-                                                    </select>
+                                                    <template v-if="model.name == 'data_set'">
+                                                        <select class="form-control" :name="model.name" v-model="model.default" @change="onDataSetChanged">
+                                                            <template v-for="(option, id) in dataSets">
+                                                                <option :value="id"
+                                                                        :selected="model.default == id || model.default == option.dataSet">
+                                                                    {{option.dataSet}}
+                                                                </option>
+                                                            </template>
+                                                        </select>
+                                                    </template>
+                                                    <template v-else>
+                                                        <select class="form-control" :name="model.name" v-model="model.default">
+                                                            <template v-for="(option, id) in model.list">
+                                                                <option :value="option"
+                                                                        :selected="model.default == id || model.default == option">
+                                                                    {{option}}
+                                                                </option>
+                                                            </template>
+                                                        </select>
+                                                    </template>
                                                 </template>
                                                 <template v-else-if="model.type == 'multi-list'">
-                                                    <select class="multiple form-control" multiple="multiple" :name="model.name" v-model="model.default">
-                                                        <!--<option value="-1">全部</option>-->
-                                                        <template v-for="(fieldName, id) in dataSet.fieldName">
-                                                            <option :value="fieldName"
-                                                                    :selected="model.default == id || model.default == fieldName">
-                                                                {{fieldName}}({{dataSet.fieldType[id]}})
-                                                            </option>
+                                                    <template v-if="model.name == 'field_info'">
+                                                        <select class="multiple form-control" multiple="multiple" :name="model.name" v-model="model.default">
+                                                            <template v-for="(fieldName, id) in dataSet.fieldName">
+                                                                <option :value="fieldName"
+                                                                        :selected="model.default == id || model.default == fieldName">
+                                                                    {{fieldName}}({{dataSet.fieldType[id]}})
+                                                                </option>
+                                                            </template>
+                                                        </select>
+                                                    </template>
+                                                    <template v-else-if="model.name == 'tag'">
+                                                        <template v-for="(tagMap, tagName) in dataSet.tag">
+                                                            <label>{{tagName}}</label>
+                                                            <select class="multiple form-control" multiple="multiple" :name="tagName" v-model="model.default[tagName]">
+                                                                <template v-for="(value, key) in tagMap">
+                                                                    <option :value="key"
+                                                                            :selected="model.default[tagName]">
+                                                                        {{key}}
+                                                                    </option>
+                                                                </template>
+                                                            </select>
                                                         </template>
-                                                    </select>
+                                                    </template>
                                                 </template>
                                                 <template v-else-if="model.type == 'richtext'">
                                                     <textarea class="form-control" :type="model.type" :name="model.name"
-                                                              :placeholder="model.default" :disabled="model.configurable"
+                                                              :placeholder="dataSet.description" :disabled="model.configurable ? '' : 'disabled'"
                                                               v-model="model.default">{{dataSet.description}}</textarea>
+                                                </template>
+                                                <template v-else-if="model.type == 'checkbox'">
+                                                    <input class="form-control" :type="model.type" :name="model.name" :checked="model.default ? 'checked' : ''" v-model='model.default'>
                                                 </template>
                                                 <template v-else>
                                                     <input class="form-control" :type="model.type" :name="model.name"
@@ -694,6 +722,22 @@
                 container.find('.component-header > i').addClass('expanded');
                 container.find('.component-content').slideDown(500);
             });
+
+            if(vm.component.type == 'data-load'){
+                $('.ms-parent').remove();
+                let selector = $("select.multiple");
+                selector.multipleSelect('destroy');
+                selector.multipleSelect({
+                    filter: true,
+                    multiple: true,
+                    selectAll: true,
+                    width: "100%"
+                });
+                for(let tagName in vm.dataSet.tag){
+                    let selectedList = workflow.task[vm.component.id].tag[tagName];
+                    $("select[name='"+tagName+"']").multipleSelect('setSelects', selectedList);
+                }
+            }
         },
         methods: {
             // 加载工作流
@@ -780,8 +824,8 @@
                 for (let index in vm.flows[vm.currentFlowId].nodes) {
                     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
                     vm.onNodeRun(nodeId);
-                    // 如果状态正确，显示启动
                     if(!vm.checkNodeStatus(nodeId)){
+                        vm.onNodeStop(nodeId);
                         return false;
                     }
                 }
@@ -827,9 +871,10 @@
 
                 for (let index in vm.flows[vm.currentFlowId].nodes) {
                     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
-                    vm.onNodeRun(nodeId);
                     // 如果状态正确，显示启动
+                    vm.onNodeRun(nodeId);
                     if(!vm.checkNodeStatus(nodeId)){
+                        vm.onNodeStop(nodeId);
                         return false;
                     }
                 }
@@ -1024,12 +1069,11 @@
                 });
             },
             runNode: function (nodeId) {
-                // 检查状态
-                if (!vm.checkNodeStatus(nodeId)) {
+                vm.onNodeRun(nodeId);
+                if(!vm.checkNodeStatus(nodeId)){
+                    vm.onNodeStop(nodeId);
                     return false;
                 }
-                // 显示启动
-                this.onNodeRun(nodeId);
                 // 如果是上传文件
                 if(workflow.task[nodeId].type == "data-upload"){
                     vm.upload(nodeId);
@@ -1057,7 +1101,7 @@
                 }
             },
             stopNode: function (nodeId) {
-                this.onNodeStop(nodeId);
+                vm.onNodeStop(nodeId);
             },
             onNodeRun: function (nodeId) {
                 $('#' + nodeId + ' .run')
@@ -1112,10 +1156,13 @@
                 onComponentDelete(vm.component.id, vm.component.type);
             },
 
-            checkNodeStatus: function (nodeId) {
+            checkNodeStatus: function (nodeId, callback=null) {
                 // Check: 检测节点状态是否满足要求
                 var node = $('#' + nodeId);
                 var status = node.attr('status');
+                if (status == 1 && callback != null){
+                    callback();
+                }
                 if (status == 3 || status == 7) {
                     alert('状态不正确');
                     return false;
@@ -1126,6 +1173,11 @@
                 return true;
             },
 
+            getNodeStatus: function (nodeId) {
+                var node = $('#' + nodeId);
+                var status = node.attr('status');
+                return status;
+            },
             checkUploadFile: function (callback) {
                 let nodes = vm.flows[vm.currentFlowId].nodes;
                 for(let i=0, len=nodes.length; i<len; i++){
@@ -1200,7 +1252,7 @@
                     }
                 });
             },
-    
+
             getDataSetList: function () {
                 $.ajax({
                     url: api_map.data_list,
@@ -1231,9 +1283,10 @@
                     return;
                 }
                 vm.dataSet = vm.dataSets[ele.target.value];
-
+                for(let tagName in vm.dataSet.tag){
+                    $("select[name='"+tagName+"']").multipleSelect('checkAll');
+                }
                 console.log(JSON.stringify(vm.dataSet));
-
             },
             update: function () {
                 // 先重置各状态
@@ -1270,7 +1323,6 @@
                 updateNodeStatus(status);
             },
             debug: function () {
-
             }
         }
     });

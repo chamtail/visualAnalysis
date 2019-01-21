@@ -6,13 +6,12 @@
     display: inline-block;
     position: relative;
     vertical-align: middle;
-    width: 100%;
 }
 
 .ms-choice {
     display: block;
     width: 100%;
-    height: 34px;
+    height: 26px;
     padding: 0;
     overflow: hidden;
     cursor: pointer;
@@ -184,8 +183,8 @@
 }
 
 .ms-drop input[type="checkbox"] {
-    vertical-align: top;
-    margin-right: 5px;
+    vertical-align: middle;
+    margin: 5px;
 }
 
 .ms-drop .ms-no-results {

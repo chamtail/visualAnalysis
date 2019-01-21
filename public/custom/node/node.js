@@ -83,6 +83,7 @@ function init() {
             workflow.used[node.type] += 1;
             // 更新workflow
             vm.updateWorkflow(workflow, node.id);
+            vm.enableA('#btn-deploy');
         }
     });
 }
@@ -643,8 +644,9 @@ function onComponentDelete(id, type) {
 // 保存组件配置
 function onComponentConfigSave(component) {
     updateComponentParams(component);
+    let id = component.id;
     if(component.type == 'data-upload'){
-        vm.upload(component.id);
+        vm.upload(id);
     }
     $('#configModal').modal('hide');
 }
@@ -690,6 +692,22 @@ function updateComponentParams(component) {
             workflow.task[id][paramName] = paramsUpdate[paramName].default;
             changeCount++;
         }
+    }
+    if(component.type == 'data-load'){
+        workflow.task[id].data_id = vm.dataSets[workflow.task[id].data_set].id;
+        workflow.task[id].field_info = $("select[name='field_info']").multipleSelect('getSelects');
+        workflow.task[id].tag = {};
+        for(let tagName in vm.dataSet.tag){
+            workflow.task[id].tag[tagName] = [];
+            let selectedList = $("select[name='"+tagName+"']").multipleSelect('getSelects');
+            console.log(selectedList);
+            workflow.task[id].tag[tagName] = selectedList;
+            // for (let i=0, len=selectedList.length; i<len; i++){
+            //     let s = selectedList[i];
+            //     workflow.task[id].tag[tagName].push(vm.dataSet.tag[tagName][s]);
+            // }
+        }
+        paramsUpdate['tag'].default = workflow.task[id].tag;
     }
     // 如果参数改变个数不为空，则代表workflow已改变
     if(changeCount != 0){
