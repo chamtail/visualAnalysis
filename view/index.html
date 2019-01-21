@@ -26,6 +26,7 @@
     <link rel="stylesheet" type="text/css" href="../public/custom/node/node.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/charts/cluster.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/cmd/cmd.css">
+    <link rel="stylesheet" href="../public/layui/css/layui.css">
 </head>
 <body>
 <div id="vm">
@@ -282,6 +283,13 @@
                     <div class="visual-chart" id="matrixProfile">
                         <div id="matrixProfile1"></div>
                         <div id="matrixProfile2"></div>
+                    </div>
+                    <div class="visual-chart" id="hime">
+                        <div id ="himeChart" class="layui-col-md12"></div>
+                        <div class="layui-col-md8">
+                            <table id="himeTable" lay-filter="himeTable"></table>
+                        </div>
+                        <div id ="subHimeChart" class="layui-col-md4"></div>
                     </div>
 
 
@@ -617,6 +625,7 @@
 <script src="../public/custom/charts/cluster.js"></script>
 <script src="../public/custom/charts/motif.js"></script>
 <script src="../public/custom/charts/matrixProfile.js"></script>
+<script src="../public/custom/charts/hime.js"></script>
 <script src="../public/custom/cmd/cmd.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/custom/webSocket/webSocket.js"></script>
@@ -1337,3 +1346,4 @@
 </script>
 <script src="../public/js/echarts/echarts.js"></script>
 <script src="../public/js/underscore-1.8.2.min.js"></script>
+<script src="../public/layui/layui.js"></script>

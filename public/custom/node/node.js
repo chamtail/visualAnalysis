@@ -805,6 +805,9 @@ function visualize(data) {
             abnormalVisual(data.result);
             break;
         case "hime":
+            $('#hime').attr('style', 'display:block');
+            himeVisual(null);
+            break;
         case "matrix-profile":
             $('#matrixProfile').attr('style', 'display:block');
             matrixProfileVisual("matrixProfile",data.result);

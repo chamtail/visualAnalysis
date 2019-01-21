@@ -99,12 +99,19 @@ function matrixProfileVisual(chartId,data) {
 
 
 
-    $("#matrixProfile1").resize(function () {
+    $("#matrixProfile").resize(function () {
+        var matrixChart1 = document.getElementById(chartId+'1');
+        var matrixChart2 = document.getElementById(chartId+'2');
+
+        var chartWidth = document.getElementById(chartId).offsetWidth;
+        var chartHeight = (1/2)*(document.getElementById(chartId).offsetHeight);
+
+        matrixChart1.setAttribute("style","width:"+chartWidth+"px;height:"+chartHeight+"px;");
+        matrixChart2.setAttribute("style","width:"+chartWidth+"px;height:"+chartHeight+"px;");
         myChart1.resize();
-    });
-    $("#matrixProfile2").resize(function () {
         myChart2.resize();
     });
+
 
 
 };
