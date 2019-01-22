@@ -118,7 +118,7 @@
             <div id="node-search" class="node-search">
                 <div class="searchBox-container">
                     <i class="fa fa-search"></i>
-                    <input type="text" data-i18n="[placeholder]node.filter" placeholder="filter nodes">
+                    <input type="text" data-i18n="[placeholder]node.filter" placeholder="filter nodes" v-model="nodeFilter">
                     <a href="#"><i class="fa fa-times"></i></a>
                     <span class="searchBox-resultCount hide"></span>
                 </div>
@@ -633,7 +633,9 @@
         el: '#vm',
         data: {
             initFinish: false,
+            nodeFilter: "",
             nodeCategory: {},
+            nodeCategoryCopy: {},
             dataSets: {},
             dataSet:{},
             workflowChanged: false,
@@ -669,6 +671,7 @@
 
                 // 初始化左侧组件栏
                 vm.nodeCategory = node_category;
+                vm.nodeCategoryCopy = node_category;
 
                 // 初始化系统语言
                 if (vm.lang == "") {
@@ -1331,6 +1334,41 @@
                 onComponentDetail(id, type, true);
             },
             debug: function () {
+            }
+        },
+        watch:{
+            nodeFilter(filter){
+                let nodeCategoryAll = deepClone(this.nodeCategoryCopy);
+                for (let module in nodeCategoryAll){
+                    if(nodeCategoryAll[module].sub_modules){
+                        let subModules = nodeCategoryAll[module].sub_modules;
+                        for(let subModule in subModules){
+                            for(let node in subModules[subModule].nodes){
+                                let nodeName = subModules[subModule].nodes[node][this.lang];
+                                if(nodeName.indexOf(filter) == -1){
+                                    delete subModules[subModule].nodes[node];
+                                }
+                            }
+                            if(JSON.stringify(subModules[subModule].nodes) == "{}"){
+                                delete subModules[subModule];
+                            }
+                        }
+                        if(JSON.stringify(subModules) == "{}"){
+                            delete nodeCategoryAll[module];
+                        }
+                    } else{
+                        for(let node in nodeCategoryAll[module].nodes){
+                            let nodeName = nodeCategoryAll[module].nodes[node][this.lang];
+                            if(nodeName.indexOf(filter) == -1){
+                                delete nodeCategoryAll[module].nodes[node];
+                            }
+                        }
+                        if(JSON.stringify(nodeCategoryAll[module].nodes) == "{}"){
+                            delete nodeCategoryAll[module];
+                        }
+                    }
+                }
+                this.nodeCategory = nodeCategoryAll;
             }
         }
     });
