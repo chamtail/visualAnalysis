@@ -25,7 +25,7 @@
         "en": "minimum length"
       },
       "type": "number",
-      "default": 300,
+      "default": 100,
       "enable": true,
       "configurable": true
     },

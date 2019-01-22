@@ -122,15 +122,15 @@ function separator() {
 // 最小化
 function minScreen(workspace) {
     exitFullscreen('#'+workspace);
-    $('#'+workspace+' .min').hide();
-    $('#'+workspace+' .max').show();
+    // $('#'+workspace+' .min').hide();
+    // $('#'+workspace+' .max').show();
 }
 
 // 最大化
 function maxScreen(workspace) {
     requestFullScreen('#'+workspace);
-    $('#'+workspace+' .max').hide();
-    $('#'+workspace+' .min').show();
+    // $('#'+workspace+' .max').hide();
+    // $('#'+workspace+' .min').show();
 }
 
 //进入全屏
@@ -327,4 +327,23 @@ function onUploadFileChange() {
         var fileName = arr[arr.length - 1];
         $(".file-upload-path").html(fileName);
     });
+}
+
+// 深拷贝
+function deepClone(obj){
+    let objClone = Array.isArray(obj)?[]:{};
+    if(obj && typeof obj==="object"){
+        for(key in obj){
+            if(obj.hasOwnProperty(key)){
+                //判断ojb子元素是否为对象，如果是，递归复制
+                if(obj[key]&&typeof obj[key] ==="object"){
+                    objClone[key] = deepClone(obj[key]);
+                }else{
+                    //如果不是，简单复制
+                    objClone[key] = obj[key];
+                }
+            }
+        }
+    }
+    return objClone;
 }
