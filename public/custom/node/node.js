@@ -567,7 +567,7 @@ function onComponentDetail(id, type, force=false){
     console.log('显示节点细节&显示节点可视化');
     // 如果该节点状态为已运行, 则进行可视化
     let status = node.attr('status');
-    if (status == 4) {
+    if (status == 4 && vm.variableSpace[workflow.currentFlowId][id].size != "1*1") {
         console.log("可视化");
         $.ajax({
             url: api_map.data_info,

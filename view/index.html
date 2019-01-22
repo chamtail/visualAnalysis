@@ -431,7 +431,7 @@
                                         <tbody>
                                         <template v-for="node in flow">
                                             <template v-if="node.name != ''">
-                                                <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']">
+                                                <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']" @click="onRowSelected(node.id)">
                                                     <td>{{node.name}}</td>
                                                     <td>{{node.size}}</td>
                                                 </tr>
@@ -1325,6 +1325,10 @@
                     status[nodeId] = workflow.task[nodeId].status;
                 }
                 updateNodeStatus(status);
+            },
+            onRowSelected: function (id) {
+                let type = workflow.task[id].type;
+                onComponentDetail(id, type, true);
             },
             debug: function () {
             }
