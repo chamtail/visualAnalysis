@@ -26,6 +26,7 @@
     <link rel="stylesheet" type="text/css" href="../public/custom/node/node.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/charts/cluster.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/cmd/cmd.css">
+    <link rel="stylesheet" href="../public/layui/css/layui.css">
 </head>
 <body>
 <div id="vm">
@@ -117,7 +118,7 @@
             <div id="node-search" class="node-search">
                 <div class="searchBox-container">
                     <i class="fa fa-search"></i>
-                    <input type="text" data-i18n="[placeholder]node.filter" placeholder="filter nodes">
+                    <input type="text" data-i18n="[placeholder]node.filter" placeholder="filter nodes" v-model="nodeFilter">
                     <a href="#"><i class="fa fa-times"></i></a>
                     <span class="searchBox-resultCount hide"></span>
                 </div>
@@ -283,9 +284,13 @@
                         <div id="matrixProfile1"></div>
                         <div id="matrixProfile2"></div>
                     </div>
-
-
-
+                    <div class="visual-chart" id="hime">
+                        <div id ="himeChart" class="layui-col-md12"></div>
+                        <div id = "himeTableDiv" class="layui-col-md8">
+                            <table id="himeTable" lay-filter="himeTable"></table>
+                        </div>
+                        <div id ="subHimeChart" class="layui-col-md4"></div>
+                    </div>
                 </div>
             </div>
 
@@ -426,7 +431,7 @@
                                         <tbody>
                                         <template v-for="node in flow">
                                             <template v-if="node.name != ''">
-                                                <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']">
+                                                <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']" @click="onRowSelected(node.id)">
                                                     <td>{{node.name}}</td>
                                                     <td>{{node.size}}</td>
                                                 </tr>
@@ -483,31 +488,59 @@
                                             <label :for="model.name" class="col-sm-3 col-form-label">{{model.label[lang]}}</label>
                                             <div class="col-sm-8">
                                                 <template v-if="model.type == 'list'">
-                                                    <select class="form-control" :name="model.name" v-model="model.default" @change="onDataSetChanged">
-                                                        <!--<option value="-1">全部</option>-->
-                                                        <template v-for="(option, id) in dataSets">
-                                                            <option :value="id"
-                                                                    :selected="model.default == id || model.default == option.name">
-                                                                {{option.name}}
-                                                            </option>
-                                                        </template>
-                                                    </select>
+                                                    <template v-if="model.name == 'data_set'">
+                                                        <select class="form-control" :name="model.name" v-model="model.default" @change="onDataSetChanged">
+                                                            <template v-for="(option, id) in dataSets">
+                                                                <option :value="id"
+                                                                        :selected="model.default == id || model.default == option.dataSet">
+                                                                    {{option.dataSet}}
+                                                                </option>
+                                                            </template>
+                                                        </select>
+                                                    </template>
+                                                    <template v-else>
+                                                        <select class="form-control" :name="model.name" v-model="model.default">
+                                                            <template v-for="(option, id) in model.list">
+                                                                <option :value="option"
+                                                                        :selected="model.default == id || model.default == option">
+                                                                    {{option}}
+                                                                </option>
+                                                            </template>
+                                                        </select>
+                                                    </template>
                                                 </template>
                                                 <template v-else-if="model.type == 'multi-list'">
-                                                    <select class="multiple form-control" multiple="multiple" :name="model.name" v-model="model.default">
-                                                        <!--<option value="-1">全部</option>-->
-                                                        <template v-for="(fieldName, id) in dataSet.fieldName">
-                                                            <option :value="fieldName"
-                                                                    :selected="model.default == id || model.default == fieldName">
-                                                                {{fieldName}}({{dataSet.fieldType[id]}})
-                                                            </option>
+                                                    <template v-if="model.name == 'field_info'">
+                                                        <select class="multiple form-control" multiple="multiple" :name="model.name" v-model="model.default">
+                                                            <template v-for="(fieldName, id) in dataSet.fieldName">
+                                                                <option :value="fieldName"
+                                                                        :selected="model.default == id || model.default == fieldName">
+                                                                    {{fieldName}}({{dataSet.fieldType[id]}})
+                                                                </option>
+                                                            </template>
+                                                        </select>
+                                                    </template>
+                                                    <template v-else-if="model.name == 'tag'">
+                                                        <template v-for="(tagMap, tagName) in dataSet.tag">
+                                                            <label>{{tagName}}</label>
+                                                            <select class="multiple form-control" multiple="multiple" :name="tagName" v-model="model.default[tagName]">
+                                                                <template v-for="(value, key) in tagMap">
+                                                                    <option :value="key"
+                                                                            :selected="model.default[tagName]">
+                                                                        {{key}}
+                                                                    </option>
+                                                                </template>
+                                                            </select>
                                                         </template>
-                                                    </select>
+                                                    </template>
                                                 </template>
                                                 <template v-else-if="model.type == 'richtext'">
                                                     <textarea class="form-control" :type="model.type" :name="model.name"
-                                                              :placeholder="model.default" :disabled="model.configurable"
+                                                              :placeholder="dataSet.description" :disabled="model.configurable ? '' : 'disabled'"
                                                               v-model="model.default">{{dataSet.description}}</textarea>
+                                                </template>
+                                                <template v-else-if="model.type == 'checkbox'">
+                                                    <input class="form-control" :type="model.type" :name="model.name" :checked="model.default ? 'checked' : ''" v-model='model.default'>
                                                 </template>
                                                 <template v-else>
                                                     <input class="form-control" :type="model.type" :name="model.name"
@@ -589,6 +622,7 @@
 <script src="../public/custom/charts/cluster.js"></script>
 <script src="../public/custom/charts/motif.js"></script>
 <script src="../public/custom/charts/matrixProfile.js"></script>
+<script src="../public/custom/charts/hime.js"></script>
 <script src="../public/custom/cmd/cmd.js"></script>
 <script src="../public/js/cookie.js"></script>
 <script src="../public/custom/webSocket/webSocket.js"></script>
@@ -599,7 +633,9 @@
         el: '#vm',
         data: {
             initFinish: false,
+            nodeFilter: "",
             nodeCategory: {},
+            nodeCategoryCopy: {},
             dataSets: {},
             dataSet:{},
             workflowChanged: false,
@@ -635,6 +671,7 @@
 
                 // 初始化左侧组件栏
                 vm.nodeCategory = node_category;
+                vm.nodeCategoryCopy = node_category;
 
                 // 初始化系统语言
                 if (vm.lang == "") {
@@ -692,6 +729,22 @@
                 container.find('.component-header > i').addClass('expanded');
                 container.find('.component-content').slideDown(500);
             });
+
+            $('.ms-parent').remove();
+            if(vm.component.type == 'data-load'){
+                let selector = $("select.multiple");
+                selector.multipleSelect('destroy');
+                selector.multipleSelect({
+                    filter: true,
+                    multiple: true,
+                    selectAll: true,
+                    width: "100%"
+                });
+                for(let tagName in vm.dataSet.tag){
+                    let selectedList = workflow.task[vm.component.id].tag[tagName];
+                    $("select[name='"+tagName+"']").multipleSelect('setSelects', selectedList);
+                }
+            }
         },
         methods: {
             // 加载工作流
@@ -778,8 +831,8 @@
                 for (let index in vm.flows[vm.currentFlowId].nodes) {
                     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
                     vm.onNodeRun(nodeId);
-                    // 如果状态正确，显示启动
                     if(!vm.checkNodeStatus(nodeId)){
+                        vm.onNodeStop(nodeId);
                         return false;
                     }
                 }
@@ -825,9 +878,10 @@
 
                 for (let index in vm.flows[vm.currentFlowId].nodes) {
                     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
-                    vm.onNodeRun(nodeId);
                     // 如果状态正确，显示启动
+                    vm.onNodeRun(nodeId);
                     if(!vm.checkNodeStatus(nodeId)){
+                        vm.onNodeStop(nodeId);
                         return false;
                     }
                 }
@@ -1022,12 +1076,11 @@
                 });
             },
             runNode: function (nodeId) {
-                // 检查状态
-                if (!vm.checkNodeStatus(nodeId)) {
+                vm.onNodeRun(nodeId);
+                if(!vm.checkNodeStatus(nodeId)){
+                    vm.onNodeStop(nodeId);
                     return false;
                 }
-                // 显示启动
-                this.onNodeRun(nodeId);
                 // 如果是上传文件
                 if(workflow.task[nodeId].type == "data-upload"){
                     vm.upload(nodeId);
@@ -1055,7 +1108,7 @@
                 }
             },
             stopNode: function (nodeId) {
-                this.onNodeStop(nodeId);
+                vm.onNodeStop(nodeId);
             },
             onNodeRun: function (nodeId) {
                 $('#' + nodeId + ' .run')
@@ -1110,10 +1163,13 @@
                 onComponentDelete(vm.component.id, vm.component.type);
             },
 
-            checkNodeStatus: function (nodeId) {
+            checkNodeStatus: function (nodeId, callback=null) {
                 // Check: 检测节点状态是否满足要求
                 var node = $('#' + nodeId);
                 var status = node.attr('status');
+                if (status == 1 && callback != null){
+                    callback();
+                }
                 if (status == 3 || status == 7) {
                     alert('状态不正确');
                     return false;
@@ -1124,6 +1180,11 @@
                 return true;
             },
 
+            getNodeStatus: function (nodeId) {
+                var node = $('#' + nodeId);
+                var status = node.attr('status');
+                return status;
+            },
             checkUploadFile: function (callback) {
                 let nodes = vm.flows[vm.currentFlowId].nodes;
                 for(let i=0, len=nodes.length; i<len; i++){
@@ -1198,7 +1259,7 @@
                     }
                 });
             },
-    
+
             getDataSetList: function () {
                 $.ajax({
                     url: api_map.data_list,
@@ -1229,9 +1290,10 @@
                     return;
                 }
                 vm.dataSet = vm.dataSets[ele.target.value];
-
+                for(let tagName in vm.dataSet.tag){
+                    $("select[name='"+tagName+"']").multipleSelect('checkAll');
+                }
                 console.log(JSON.stringify(vm.dataSet));
-
             },
             update: function () {
                 // 先重置各状态
@@ -1267,8 +1329,46 @@
                 }
                 updateNodeStatus(status);
             },
+            onRowSelected: function (id) {
+                let type = workflow.task[id].type;
+                onComponentDetail(id, type, true);
+            },
             debug: function () {
-
+            }
+        },
+        watch:{
+            nodeFilter(filter){
+                let nodeCategoryAll = deepClone(this.nodeCategoryCopy);
+                for (let module in nodeCategoryAll){
+                    if(nodeCategoryAll[module].sub_modules){
+                        let subModules = nodeCategoryAll[module].sub_modules;
+                        for(let subModule in subModules){
+                            for(let node in subModules[subModule].nodes){
+                                let nodeName = subModules[subModule].nodes[node][this.lang];
+                                if(nodeName.indexOf(filter) == -1){
+                                    delete subModules[subModule].nodes[node];
+                                }
+                            }
+                            if(JSON.stringify(subModules[subModule].nodes) == "{}"){
+                                delete subModules[subModule];
+                            }
+                        }
+                        if(JSON.stringify(subModules) == "{}"){
+                            delete nodeCategoryAll[module];
+                        }
+                    } else{
+                        for(let node in nodeCategoryAll[module].nodes){
+                            let nodeName = nodeCategoryAll[module].nodes[node][this.lang];
+                            if(nodeName.indexOf(filter) == -1){
+                                delete nodeCategoryAll[module].nodes[node];
+                            }
+                        }
+                        if(JSON.stringify(nodeCategoryAll[module].nodes) == "{}"){
+                            delete nodeCategoryAll[module];
+                        }
+                    }
+                }
+                this.nodeCategory = nodeCategoryAll;
             }
         }
     });
@@ -1285,3 +1385,4 @@
 </script>
 <script src="../public/js/echarts/echarts.js"></script>
 <script src="../public/js/underscore-1.8.2.min.js"></script>
+<script src="../public/layui/layui.js"></script>

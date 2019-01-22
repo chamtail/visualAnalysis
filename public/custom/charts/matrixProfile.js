@@ -12,13 +12,18 @@ function matrixProfileVisual(chartId,data) {
     matrixChart1.setAttribute("style","width:"+chartWidth+"px;height:"+chartHeight+"px;");
     matrixChart2.setAttribute("style","width:"+chartWidth+"px;height:"+chartHeight+"px;");
 
-    var myChart1 = echarts.init(matrixChart1);
-    var myChart2 = echarts.init(matrixChart2);
-
-    xdata = data.timestamp;
+    var myChart1 = echarts.getInstanceByDom(matrixChart1) || echarts.init(matrixChart1);
+    var myChart2 = echarts.getInstanceByDom(matrixChart2) || echarts.init(matrixChart2);
+    
     y1 = data.startXs;
     y2 = data.similarities;
-
+    xdata = data.timestamp;
+    if(xdata == null || xdata == undefined){
+        xdata = []; 
+        for (var i = 0; i <= y1.length; i++) {
+            xdata.push(i);
+        }
+    }
     option1 = {
         title: {
             text: 'matrixProfile检测结果'
@@ -97,14 +102,19 @@ function matrixProfileVisual(chartId,data) {
     option2.series[0].data = y2;
     myChart2.setOption(option2);
 
+    $("#matrixProfile").resize(function () {
+        var matrixChart1 = document.getElementById(chartId+'1');
+        var matrixChart2 = document.getElementById(chartId+'2');
 
+        var chartWidth = document.getElementById(chartId).offsetWidth;
+        var chartHeight = (1/2)*(document.getElementById(chartId).offsetHeight);
 
-    $("#matrixProfile1").resize(function () {
+        matrixChart1.setAttribute("style","width:"+chartWidth+"px;height:"+chartHeight+"px;");
+        matrixChart2.setAttribute("style","width:"+chartWidth+"px;height:"+chartHeight+"px;");
         myChart1.resize();
-    });
-    $("#matrixProfile2").resize(function () {
         myChart2.resize();
     });
+
 
 
 };
@@ -135,7 +145,6 @@ function generateMatrixData(count) {
         timestamp.push(i);
         value.push(next(i).toFixed(2));
         similarities.push(Math.random());
-
     }
     data.timestamp=timestamp;
     data.startXs = value;

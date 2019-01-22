@@ -7,6 +7,17 @@
   "out": 1,
   "params": [
     {
+      "name": "data_id",
+      "label": {
+        "zh": "数据集id",
+        "en": "data set id"
+      },
+      "type": "text",
+      "default": "",
+      "enable": true,
+      "configurable": false
+    },
+    {
       "name": "data_set",
       "label": {
         "zh": "数据集",
@@ -26,7 +37,76 @@
       },
       "type": "multi-list",
       "list": [],
-      "default": "all",
+      "default": {},
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "tag",
+      "label": {
+        "zh": "标签信息",
+        "en": "tag info"
+      },
+      "type": "multi-list",
+      "list": {},
+      "default": {},
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "row_column",
+      "label": {
+        "zh": "存储方式",
+        "en": "row or column"
+      },
+      "type": "list",
+      "list": ["行存储", "列存储"],
+      "default": "行存储",
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "with_label",
+      "label": {
+        "zh": "是否带标签",
+        "en": "with label"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "with_header",
+      "label": {
+        "zh": "是否带表头",
+        "en": "with header"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "with_timestamp",
+      "label": {
+        "zh": "是否带时间戳",
+        "en": "with timestamp"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "timestamp_format",
+      "label": {
+        "zh": "带时间戳格式",
+        "en": "timestamp format"
+      },
+      "type": "list",
+      "list": ["Long", "yyyy-MM-dd HH:mm:ss"],
+      "default": "Long",
       "enable": true,
       "configurable": true
     },
