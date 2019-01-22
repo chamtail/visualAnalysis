@@ -122,15 +122,15 @@ function separator() {
 // 最小化
 function minScreen(workspace) {
     exitFullscreen('#'+workspace);
-    $('#'+workspace+' .min').hide();
-    $('#'+workspace+' .max').show();
+    // $('#'+workspace+' .min').hide();
+    // $('#'+workspace+' .max').show();
 }
 
 // 最大化
 function maxScreen(workspace) {
     requestFullScreen('#'+workspace);
-    $('#'+workspace+' .max').hide();
-    $('#'+workspace+' .min').show();
+    // $('#'+workspace+' .max').hide();
+    // $('#'+workspace+' .min').show();
 }
 
 //进入全屏

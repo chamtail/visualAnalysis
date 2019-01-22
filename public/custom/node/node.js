@@ -806,11 +806,11 @@ function visualize(data) {
             break;
         case "hime":
             $('#hime').attr('style', 'display:block');
-            himeVisual(null);
+            himeVisual(data.result);
             break;
         case "matrix-profile":
             $('#matrixProfile').attr('style', 'display:block');
-            matrixProfileVisual("matrixProfile",data.result);
+            matrixProfileVisual("matrixProfile", data.result);
             break;
         case "cluster":
         case "seql":
