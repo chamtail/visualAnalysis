@@ -806,6 +806,7 @@ function visualize(data) {
             abnormalVisual(data.result);
             break;
         case "hime":
+
         case "mpmotif":
             $('#hime').attr('style', 'display:block');
             himeVisual(data.result, op);
@@ -814,6 +815,11 @@ function visualize(data) {
             $('#matrixProfile').attr('style', 'display:block');
             matrixProfileVisual("matrixProfile", data.result);
             break;
+        case "mpsegment":
+            $('#segment').attr('style', 'display:block');
+            segmentationVisual(null);
+            break;
+
         case "cluster":
         case "seql":
         case "fsh":
