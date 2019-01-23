@@ -294,7 +294,7 @@ function updateNode(id, translate) {
 // 更新节点状态
 function updateNodeStatus(status) {
     for (let nodeId in status) {
-        console.log('更新节点', nodeId);
+        //console.log('更新节点', nodeId);
         let s = $('#' + nodeId).attr('status');
         let statusNow = status[nodeId];
         if(!node_status_map[statusNow]){
@@ -567,8 +567,10 @@ function onComponentDetail(id, type, force=false){
     console.log('显示节点细节&显示节点可视化');
     // 如果该节点状态为已运行, 则进行可视化
     let status = node.attr('status');
-    //&& vm.variableSpace[workflow.currentFlowId][id].size != "1*1"
     if (status == 4 ) {
+        if(vm.variableSpace[workflow.currentFlowId][id] && vm.variableSpace[workflow.currentFlowId][id].size == "1*1"){
+            return;
+        }
         console.log("可视化");
         $.ajax({
             url: api_map.data_info,
@@ -594,6 +596,23 @@ function onComponentDetail(id, type, force=false){
 // 配置组件
 function onComponentConfig() {
     $('#configModal').modal('show');
+}
+
+// 保存组件配置
+function onComponentConfigSave(component) {
+    updateComponentParams(component, {
+        error: function () {
+            vm.repeatVariable = true;
+        },
+        success: function () {
+            let id = component.id;
+            if(component.type == 'data-upload'){
+                vm.upload(id);
+            }
+            vm.repeatVariable = false;
+            $('#configModal').modal('hide');
+        }
+    });
 }
 
 // 删除组件
@@ -640,16 +659,7 @@ function onComponentDelete(id, type) {
     console.log(workflow.currentFlowId);
     vm.updateWorkflow(workflow);
     $('#configModal').modal('hide');
-}
-
-// 保存组件配置
-function onComponentConfigSave(component) {
-    updateComponentParams(component);
-    let id = component.id;
-    if(component.type == 'data-upload'){
-        vm.upload(id);
-    }
-    $('#configModal').modal('hide');
+    vm.configFlag = false;
 }
 
 // 获取组件参数
@@ -678,7 +688,7 @@ function getComponentParams(id, type) {
 }
 
 // 更新组件参数
-function updateComponentParams(component) {
+function updateComponentParams(component, callback) {
     let id = component.id;
     if (!workflow.task[id]) {
         return;
@@ -689,6 +699,15 @@ function updateComponentParams(component) {
     let paramsUpdate = component.params;
     for (let paramName in paramsUpdate) {
         console.log(workflow.task[id][paramName], paramsUpdate[paramName].default);
+        if (paramName == 'variable'){
+            let v = vm.variableSpaceMap[workflow.currentFlowId][paramsUpdate[paramName].default];
+            console.log(v);
+            if(v != undefined && v != id){
+                callback.error();
+                return;
+            }
+            vm.variableSpaceMap[workflow.currentFlowId][paramsUpdate[paramName].default] = id;
+        }
         if (workflow.task[id][paramName] != paramsUpdate[paramName].default){
             workflow.task[id][paramName] = paramsUpdate[paramName].default;
             changeCount++;
@@ -703,10 +722,6 @@ function updateComponentParams(component) {
             let selectedList = $("select[name='"+tagName+"']").multipleSelect('getSelects');
             console.log(selectedList);
             workflow.task[id].tag[tagName] = selectedList;
-            // for (let i=0, len=selectedList.length; i<len; i++){
-            //     let s = selectedList[i];
-            //     workflow.task[id].tag[tagName].push(vm.dataSet.tag[tagName][s]);
-            // }
         }
         paramsUpdate['tag'].default = workflow.task[id].tag;
     }
@@ -719,6 +734,7 @@ function updateComponentParams(component) {
         updateNodeStatus(status);
         onComponentDetail(id, component.type, true);
     }
+    callback.success();
 }
 
 // 获取组件信息

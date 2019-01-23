@@ -1,133 +1,133 @@
 {
   "user_login": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/user/login"
   },
   "user_logout": {
   "protocol": "http",
-  "host": "10.131.247.51",
+  "host": "10.141.212.70",
   "port": 8080,
   "api": "/user/logout"
 },
   "user_register": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/user/register"
   },
   "user_verify": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/user/getVerify"
   },
   "user_check_verify": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/user/checkVerify"
   },
   "user_forget_password": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/user/forgetPassword"
   },
   "user_change_password": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/user/changePassword"
   },
   "workflow_load": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/load"
   },
   "workflow_deploy": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/deploy"
   },
   "workflow_save": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/save"
   },
   "workflow_run": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/runAll"
   },
   "workflow_stop": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/stopAll"
   },
   "node_run": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/runOne"
   },
   "node_stop": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/stopOne"
   },
   "cmd_run": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/runCmd"
   },
   "variable_save" : {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/variable/save"
   },
   "variable_load" : {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/variable/load"
   },
   "cache_clean": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/workflow/cache/clean"
   },
   "data_upload": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/data/upload"
   },
   "data_list": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/data/list"
   },
   "data_info": {
     "protocol": "http",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/data/info"
   },
   "webSocket": {
     "protocol": "ws",
-    "host": "10.131.247.51",
+    "host": "10.141.212.70",
     "port": 8080,
     "api": "/webSocket"
   }

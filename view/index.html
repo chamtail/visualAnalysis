@@ -469,7 +469,7 @@
         <div id="sidebar-separator" class="ui-draggable"></div>
     </div>
     <div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalHeader"
-         aria-hidden="true">
+         aria-hidden="true" data-backdrop='static'>
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <template v-if="component.id != ''">
@@ -492,8 +492,8 @@
                                                         <select class="form-control" :name="model.name" v-model="model.default" @change="onDataSetChanged">
                                                             <template v-for="(option, id) in dataSets">
                                                                 <option :value="id"
-                                                                        :selected="model.default == id || model.default == option.dataSet">
-                                                                    {{option.dataSet}}
+                                                                        :selected="model.default == id || model.default == option.subDataSet">
+                                                                    {{option.subDataSet}}
                                                                 </option>
                                                             </template>
                                                         </select>
@@ -543,9 +543,19 @@
                                                     <input class="form-control" :type="model.type" :name="model.name" :checked="model.default ? 'checked' : ''" v-model='model.default'>
                                                 </template>
                                                 <template v-else>
-                                                    <input class="form-control" :type="model.type" :name="model.name"
-                                                           :placeholder="model.default" :value="model.default"
-                                                           v-model="model.default">
+                                                    <template v-if="model.name == 'variable'">
+                                                        <input :class="['form-control', repeatVariable ? 'has-error' : '']" :type="model.type" :name="model.name"
+                                                               :placeholder="model.default" :value="model.default"
+                                                               v-model="model.default">
+                                                        <template v-if="repeatVariable">
+                                                            <div class="help-block">变量名重复</div>
+                                                        </template>
+                                                    </template>
+                                                    <template v-else>
+                                                        <input class="form-control" :type="model.type" :name="model.name"
+                                                               :placeholder="model.default" :value="model.default"
+                                                               v-model="model.default">
+                                                    </template>
                                                 </template>
                                             </div>
                                         </div>
@@ -584,9 +594,19 @@
                                                     <span class="file-upload-path">{{model.default}}</span>
                                                 </template>
                                                 <template v-else>
-                                                    <input class="form-control" :type="model.type" :name="model.name"
-                                                           :placeholder="model.default" :value="model.default"
-                                                           v-model="model.default">
+                                                    <template v-if="model.name == 'variable'">
+                                                        <input :class="['form-control', repeatVariable ? 'has-error' : '']" :type="model.type" :name="model.name"
+                                                               :placeholder="model.default" :value="model.default"
+                                                               v-model="model.default">
+                                                        <template v-if="repeatVariable">
+                                                            <div class="help-block">变量名重复</div>
+                                                        </template>
+                                                    </template>
+                                                    <template v-else>
+                                                        <input class="form-control" :type="model.type" :name="model.name"
+                                                               :placeholder="model.default" :value="model.default"
+                                                               v-model="model.default">
+                                                    </template>
                                                 </template>
                                             </div>
                                         </div>
@@ -639,9 +659,14 @@
             dataSets: {},
             dataSet:{},
             workflowChanged: false,
+            dataLoadConfigLock: false,
+            dataLoadConfig: false,
+            configFlag: false,
             currentFlowId: 0,
             flows: {},
             variableSpace: {},
+            variableSpaceMap: {},
+            repeatVariable: false,
             component: {
                 id: "",
                 name: "",
@@ -665,9 +690,9 @@
                 // 获取token
                 workflow.token = getCookieValue("token");
                 console.log("token: ", workflow.token);
-                // if (workflow.token == "" || workflow.token == undefined || workflow.token == null) {
-                //     window.location.href = 'login.html';
-                // }
+                if (workflow.token == "" || workflow.token == undefined || workflow.token == null) {
+                    window.location.href = 'login.html';
+                }
 
                 // 初始化左侧组件栏
                 vm.nodeCategory = node_category;
@@ -706,6 +731,16 @@
             // 初始化node拖拽
             if (!vm.initFinish) {  // 确保只初始化一次
                 init();
+                let modal = $('#configModal');
+                modal.on('shown.bs.modal', function () {
+                    console.log('shown');
+                    vm.configFlag = true;
+                    vm.dataLoadConfigLock = (vm.component.type == "data-load");
+                });
+                modal.on('hidden.bs.modal', function () {
+                    console.log('hidden');
+                    vm.configFlag = false;
+                });
                 vm.initFinish = true;
             }
 
@@ -730,8 +765,9 @@
                 container.find('.component-content').slideDown(500);
             });
 
-            $('.ms-parent').remove();
-            if(vm.component.type == 'data-load'){
+            // 如果配置
+            if(!vm.dataLoadConfigLock && vm.configFlag){
+                $('.ms-parent').remove();
                 let selector = $("select.multiple");
                 selector.multipleSelect('destroy');
                 selector.multipleSelect({
@@ -744,6 +780,7 @@
                     let selectedList = workflow.task[vm.component.id].tag[tagName];
                     $("select[name='"+tagName+"']").multipleSelect('setSelects', selectedList);
                 }
+                vm.dataLoadConfigLock = true;
             }
         },
         methods: {
@@ -994,6 +1031,7 @@
                     task = workflow.task;
                     vm.flows = {};
                     vm.variableSpace = {};
+                    vm.variableSpaceMap = {};
                 }
 
                 // 获取任务栏即变量空间
@@ -1005,6 +1043,7 @@
                     if(task[id].type == "flow"){
                         vm.flows[id] = task[id];
                         vm.variableSpace[id] = {};
+                        vm.variableSpaceMap[id] = {};
                     } else{
                         var flowId = task[id].z;
                         if (task[id].variable == "") {
@@ -1015,6 +1054,7 @@
                             name: task[id].variable,
                             size: task[id].size
                         };
+                        vm.variableSpaceMap[flowId][task[id].variable] = id;
                     }
                 }
                 console.log(workflow);
@@ -1275,7 +1315,6 @@
                                 vm.dataSet = vm.dataSets[id];
                                 break;
                             }
-                            console.log(vm.dataSet);
                         } else {
                             alert(res.msg);
                         }
@@ -1285,15 +1324,15 @@
                 });
             },
             onDataSetChanged: function (ele) {
-                console.log(ele.target.value);
                 if (ele.target.value < 0){
                     return;
                 }
+                vm.dataLoadConfigLock = false;
                 vm.dataSet = vm.dataSets[ele.target.value];
-                for(let tagName in vm.dataSet.tag){
-                    $("select[name='"+tagName+"']").multipleSelect('checkAll');
-                }
-                console.log(JSON.stringify(vm.dataSet));
+            },
+            onRowSelected: function (id) {
+                let type = workflow.task[id].type;
+                onComponentDetail(id, type, true);
             },
             update: function () {
                 // 先重置各状态
@@ -1320,6 +1359,8 @@
                 }
                 // 更新组件
                 vm.component = getComponent(workflow.currentFlowId, 'flow', vm.lang);
+                // 清空可视化区域
+                $('.visual-chart').attr('style', 'display:none');
                 // 更新各节点状态
                 let status = {};
                 let nodesList = workflow.task[workflow.currentFlowId].nodes;
@@ -1328,10 +1369,6 @@
                     status[nodeId] = workflow.task[nodeId].status;
                 }
                 updateNodeStatus(status);
-            },
-            onRowSelected: function (id) {
-                let type = workflow.task[id].type;
-                onComponentDetail(id, type, true);
             },
             debug: function () {
             }
@@ -1369,6 +1406,12 @@
                     }
                 }
                 this.nodeCategory = nodeCategoryAll;
+            },
+            configFlag(flag){
+                console.log("正在配置", flag);
+                if(!flag){
+                    $('.ms-parent').remove();
+                }
             }
         }
     });

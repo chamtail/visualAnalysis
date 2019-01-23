@@ -68,7 +68,7 @@
     {
       "name": "with_label",
       "label": {
-        "zh": "是否带标签",
+        "zh": "是否带类别",
         "en": "with label"
       },
       "type": "checkbox",
@@ -105,7 +105,7 @@
         "en": "timestamp format"
       },
       "type": "list",
-      "list": ["Long", "yyyy-MM-dd HH:mm:ss"],
+      "list": ["Long", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH", "yyyy-MM-dd"],
       "default": "Long",
       "enable": true,
       "configurable": true
@@ -117,7 +117,7 @@
         "en": "read number"
       },
       "type": "number",
-      "default": 0,
+      "default": 10000,
       "enable": true,
       "configurable": true
     },

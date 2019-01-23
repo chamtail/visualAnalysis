@@ -1,13 +1,15 @@
 @charset "utf-8";
-html{
+html {
     line-height: 20px;
 }
-body{
+
+body {
     font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
     padding-top: 100px;
     background: #f3f3f3;
-    font-size:12px;
+    font-size: 12px;
 }
+
 #header {
     position: absolute;
     top: 0;
@@ -19,6 +21,7 @@ body{
     padding: 0 0 0 20px;
     color: #C7C7C7;
 }
+
 #header-shade, #sidebar-shade {
     position: absolute;
     top: 0;
@@ -28,28 +31,33 @@ body{
     background: rgba(160, 160, 160, 0.5);
     z-index: 2;
 }
+
 .header-toolbar {
     padding: 0;
     margin: 0;
     list-style: none;
     float: right;
 }
+
 .header-toolbar > li {
     display: inline-block;
     padding: 0;
     margin: 0;
     position: relative;
 }
+
 li {
     line-height: 20px;
 }
+
 #header .button-group {
     display: inline-block;
     margin: auto 15px;
     vertical-align: middle;
     clear: both;
 }
-#header .button-group>a {
+
+#header .button-group > a {
     display: inline-block;
     position: relative;
     float: left;
@@ -60,47 +68,57 @@ li {
     margin: 0;
     cursor: pointer;
 }
+
 .opt-button {
     background: #8C101C;
     color: #eee !important;
     padding: 4px 12px;
 }
+
 .opt-button.disabled {
     cursor: default;
     background: #444;
     color: #999 !important;
 }
-.opt-button.disabled .opt-button-content>img {
+
+.opt-button.disabled .opt-button-content > img {
     opacity: 0.3;
 }
-.opt-button .opt-button-content>img {
+
+.opt-button .opt-button-content > img {
     margin-right: 8px;
 }
+
 #btn-run {
     background: #1aad19 !important;
     color: #eee !important;
 }
+
 img {
-    width: auto\9;
+    width: auto \9;
     height: auto;
     max-width: 100%;
     vertical-align: middle;
     border: 0;
     -ms-interpolation-mode: bicubic;
 }
+
 a {
     color: #0088cc;
     text-decoration: none;
 }
+
 span.logo {
     float: left;
     margin-top: 5px;
     line-height: 30px;
     text-decoration: none;
 }
+
 span.logo span {
     vertical-align: middle;
 }
+
 #main-container {
     position: absolute;
     top: 40px;
@@ -109,10 +127,11 @@ span.logo span {
     right: 0;
     overflow: hidden;
 }
+
 .left-wrapper {
     width: 180px;
     position: absolute;
-    top:0;
+    top: 0;
     bottom: 0;
     left: 0;
     background: #f0f0f0;
@@ -126,6 +145,7 @@ span.logo span {
     box-sizing: border-box;
     transition: width 0.2s ease-in-out
 }
+
 .middle-wrapper {
     position: absolute;
     margin: 0;
@@ -138,6 +158,7 @@ span.logo span {
     box-sizing: border-box;
     transition: left 0.2s ease-in-out;
 }
+
 .right-wrapper {
     position: absolute;
     width: 250px;
@@ -147,6 +168,7 @@ span.logo span {
     background: #f5f5f5;
     border-left: solid 1px #e7e7e7;
 }
+
 .middle-wrapper h4,
 .right-wrapper h4 {
     height: 40px;
@@ -154,12 +176,14 @@ span.logo span {
     text-align: center;
     line-height: 40px
 }
-.workflow{
+
+.workflow {
     /* overflow: auto; */
     background-color: #e3e3e3;
     cursor: crosshair;
 }
-#workflow-editor, #chart{
+
+#workflow-editor, #chart {
     overflow: auto;
     background: #f3f3f3;
     position: absolute;
@@ -171,9 +195,11 @@ span.logo span {
     box-sizing: border-box;
     transition: right 0.2s cubic-bezier(0.25, 0.1, 0.51, -0.12);
 }
-#workflow-editor{
+
+#workflow-editor {
     bottom: 25px;
 }
+
 .red-ui-tabs {
     position: relative;
     background: #fff;
@@ -551,6 +577,7 @@ span.logo span {
 .red-ui-tab-link-buttons a.red-ui-tab-link-button-menu {
     border-color: white
 }
+
 .red-ui-tab-scroll {
     width: 21px;
     top: 0
@@ -648,43 +675,50 @@ i.red-ui-tab-icon {
     background: #ddd !important;
     opacity: 1
 }
-.workflow, .visual, .command{
+
+.workflow, .visual, .command {
     background-color: #e3e3e3;
     z-index: 1;
 }
 
-.workflow button, #visual button, #command button{
+.workflow button, #visual button, #command button {
     cursor: pointer;
     background-color: transparent;
     opacity: 80;
     z-index: 0;
 }
-.workflow .node rect{
-    width:120px;
-    height:30px;
+
+.workflow .node rect {
+    width: 120px;
+    height: 30px;
     cursor: move;
     stroke: #333;
-    stroke-width:1;
+    stroke-width: 1;
     fill: #fff;
 }
-.workflow .node text{
+
+.workflow .node text {
     cursor: move;
 }
+
 .workflow .node circle {
     stroke: #333;
     stroke-width: 1px;
     fill: #fff;
     cursor: crosshair;
 }
+
 .workflow .node circle.end {
     fill: orange;
 }
+
 .workflow .cable {
     stroke: #888;
     stroke-width: 2;
     fill: none;
     cursor: move;
 }
+
 .workflow .cable.active {
     stroke: #ff7f0e !important;
     stroke-width: 2;
@@ -692,76 +726,90 @@ i.red-ui-tab-icon {
     cursor: move;
     background-color: #eee;
 }
+
 .workflow .node.active rect,
 .workflow .node.active circle {
     stroke: #ff7f0e !important;
     fill: #fff;
 }
+
 .workflow .node.deactivate rect,
 .workflow .node.deactivate circle {
     fill: #eee;
 }
-.workflow .node.init_success rect{
-    fill: #fff;
-}
-.workflow .node.init_error rect{
-    fill: #f3f3f3;
-}
-.workflow .node.run_success rect{
-    fill: springgreen;
-}
-.workflow .node.run_error rect{
-    fill: #ffff00;
-}
-.workflow .node.running rect{
+
+.workflow .node.init_success rect {
     fill: #fff;
 }
 
-.workflow .node.running rect:before,.workflow .node.running rect:after{
+.workflow .node.init_error rect {
+    fill: #f3f3f3;
+}
+
+.workflow .node.run_success rect {
+    fill: springgreen;
+}
+
+.workflow .node.run_error rect {
+    fill: #ffff00;
+}
+
+.workflow .node.running rect {
+    fill: #fff;
+}
+
+.workflow .node.running rect:before, .workflow .node.running rect:after {
     content: " ";
     display: block;
     position: absolute;
-    width:220px;
-    height:220px;
+    width: 220px;
+    height: 220px;
     top: -10px;
     left: -10px;
-    border:2px solid #00FF00;
-    z-index:1000;
+    border: 2px solid #00FF00;
+    z-index: 1000;
     box-sizing: border-box;
     -webkit-animation: clipAni 4s infinite linear;
 }
-.workflow .node.running rect:before{
+
+.workflow .node.running rect:before {
     -webkit-animation-delay: -2s;
 }
-@keyframes  clipAni{
-    0%,100%{
-        clip:rect(0px,220px,220px,217px);
+
+@keyframes clipAni {
+    0%, 100% {
+        clip: rect(0px, 220px, 220px, 217px);
     }
-    25%{
-        clip:rect(0px,220px,3px,0px);
+    25% {
+        clip: rect(0px, 220px, 3px, 0px);
     }
-    50%{
-        clip:rect(0px,3px,220px,0px);
+    50% {
+        clip: rect(0px, 3px, 220px, 0px);
     }
-    75%{
-        clip:rect(217px,220px,220px,0px);
+    75% {
+        clip: rect(217px, 220px, 220px, 0px);
     }
 }
-.workflow .node .run{
+
+.workflow .node .run {
     cursor: pointer;
     fill: #1aad19 !important;
 }
-.workflow .node .run:hover{
+
+.workflow .node .run:hover {
     font-size: 15px;
 }
+
 .workflow .node.init_error .run,
-.workflow .node.deactivate .run{
+.workflow .node.deactivate .run {
     fill: #999 !important;
 }
-.workflow .node.running .run{
+
+.workflow .node.running .run {
     /*fill: #f00 !important;*/
 }
-.separator{
+
+.separator {
     position: absolute;
     top: 0;
     right: 0;
@@ -772,6 +820,7 @@ i.red-ui-tab-icon {
     z-index: 10;
     border: 1px solid #bbb;
 }
+
 #sidebar-content {
     position: absolute;
     top: 30px;
@@ -780,10 +829,12 @@ i.red-ui-tab-icon {
     left: 0;
     overflow-y: auto
 }
+
 #sidebar.closing {
     background: #eee;
     border: 1px #900 dashed;
 }
+
 #sidebar-separator {
     position: absolute;
     top: 0;
@@ -793,6 +844,7 @@ i.red-ui-tab-icon {
     background: #f3f3f3 url(../../images/grip.png) no-repeat 50% 50%;
     cursor: col-resize;
 }
+
 #workflow-separator {
     position: absolute;
     top: 45%;
@@ -1055,7 +1107,6 @@ i.red-ui-tab-icon {
     width: auto;
     padding: 0 5px
 }
-
 
 #sidebar-footer {
     border-top: 1px solid #bbb;
@@ -1534,6 +1585,7 @@ i.red-ui-tab-icon {
     border-radius: 2px;
     padding: 0 5px
 }
+
 table.node-info {
     margin: 0 0 10px;
     width: 100%
@@ -1636,7 +1688,7 @@ div.node-info {
     margin: 5px
 }
 
-table.node-info tr.active, table.node-info tr.active td:first-child{
+table.node-info tr.active, table.node-info tr.active td:first-child {
     background-color: mintcream;
 }
 
@@ -1652,6 +1704,7 @@ table.node-info tr.active, table.node-info tr.active td:first-child{
     text-indent: 0;
     line-height: 20px;
 }
+
 .file-upload input {
     position: absolute;
     font-size: 100px;
@@ -1659,24 +1712,47 @@ table.node-info tr.active, table.node-info tr.active td:first-child{
     top: 0;
     opacity: 0;
 }
+
 .file-upload:hover {
     background: #AADFFD;
     border-color: #78C3F3;
     color: #004974;
     text-decoration: none;
 }
-.file-upload-path{
+
+.file-upload-path {
     padding-left: 5px;
     color: #1E88C7;
 }
-.visual-chart{
+
+.visual-chart {
     height: 100%;
     display: none;
 }
 
-.tab-title{
+.tab-title {
     position: absolute;
     padding: 10px;
     left: 10px;
     font-weight: 900;
+}
+
+.has-error{
+    border-color: #a94442;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075)
+}
+
+.has-error:focus {
+    border-color: #843534;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483
+}
+
+.help-block {
+    display: block;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
 }
