@@ -108,18 +108,30 @@ function segmentChart(segmentData,originalValue) {
     // }
 
     var segmentPieces = new Array();
-    for(var i =0; i<status; i++)
+    if(status==0)
     {
-        var statusPiece = segmentData[i].area;
-        var statusColor = color[i];
-        for(var j in statusPiece)
+        var piece = new Object();
+        piece.gt = 0;
+        piece.lte = len;
+        piece.color = '#999';
+        segmentPieces.push(piece);
+    }
+    else
+    {
+        for(var i =0; i<status; i++)
         {
-            var piece = new Object();
-            piece.gt = statusPiece[j][0];
-            piece.lte = statusPiece[j][1];
-            piece.color = statusColor;
-            segmentPieces.push(piece);
+            var statusPiece = segmentData[i].area;
+            var statusColor = color[i];
+            for(var j in statusPiece)
+            {
+                var piece = new Object();
+                piece.gt = statusPiece[j][0];
+                piece.lte = statusPiece[j][1];
+                piece.color = statusColor;
+                segmentPieces.push(piece);
+            }
         }
+
     }
     console.log("pieces:",segmentPieces);
 
