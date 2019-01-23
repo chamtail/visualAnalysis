@@ -640,6 +640,7 @@ var api_map = {
     "workflow_deploy": "http://10.131.247.51:8000/workflow/deploy",
     "workflow_save": "http://10.131.247.51:8000/workflow/save",
     "workflow_run": "http://10.131.247.51:8000/workflow/runAll",
+    "workflow_run2": "http://10.131.247.51:8000/workflow/runAll2",
     "workflow_stop": "http://10.131.247.51:8000/workflow/stopAll",
     "node_run": "http://10.131.247.51:8000/workflow/runOne",
     "node_stop": "http://10.131.247.51:8000/workflow/stopOne",

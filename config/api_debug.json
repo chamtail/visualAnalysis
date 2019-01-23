@@ -65,6 +65,12 @@
     "port": 8000,
     "api": "/workflow/runAll"
   },
+  "workflow_run2": {
+    "protocol": "http",
+    "host": "localhost",
+    "port": 8000,
+    "api": "/workflow/runAll2"
+  },
   "workflow_stop": {
     "protocol": "http",
     "host": "localhost",

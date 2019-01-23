@@ -833,7 +833,7 @@ function visualize(data) {
             break;
         case "mpsegment":
             $('#segment').attr('style', 'display:block');
-            segmentationVisual(null);
+            segmentationVisual(data.result);
             break;
 
         case "cluster":
