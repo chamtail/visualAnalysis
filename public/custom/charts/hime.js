@@ -1,4 +1,4 @@
-function himeVisual(data) {
+function himeVisual(data, algorithmName) {
     if(data == null)
     {
         data = generateHimeData(14);
@@ -55,7 +55,7 @@ function himeVisual(data) {
             chartData = data.list[id];
 
             var areaList = [[chartData.begin1, chartData.end1], [chartData.begin2, chartData.end2]];
-            himeChart("himeChart", data.value, areaList);
+            himeChart("himeChart", data.value, areaList, algorithmName);
 
             var value1 = new Array();
             var value2 = new Array();
@@ -98,7 +98,7 @@ function himeVisual(data) {
 
 }
 
-function himeChart(chartId,value,areaList) {
+function himeChart(chartId,value,areaList, algorithmName) {
 
     echarts.dispose(document.getElementById(chartId));
     var myChart = echarts.init(document.getElementById(chartId));
@@ -125,7 +125,7 @@ function himeChart(chartId,value,areaList) {
 
     option = {
         title: {
-            text: 'hime结果'
+            text: algorithmName + '结果'
             // subtext: '纯属虚构'
         },
         animation: false,

@@ -35,7 +35,7 @@
         "en": "numOfRegimes"
       },
       "type": "number",
-      "default": 3,
+      "default": 2,
       "enable": true,
       "configurable": true
     },
