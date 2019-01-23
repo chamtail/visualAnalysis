@@ -41,8 +41,8 @@ function segmentationVisual(data) {
         table.on('checkbox(segmentTable)', function(obj){
             // console.log("obj:",obj);
             var selectedData = layui.table.checkStatus('segmentTable').data;
-            console.log("check:",selectedData);
-            segmentChart(selectedData[0],data.value);
+            console.log("selectedData:",selectedData);
+            segmentChart(selectedData,data.value);
 
             // himeChart("segmentChart",chartData);     //chart's id
             //标注选中样式
@@ -68,72 +68,60 @@ function segmentChart(segmentData,originalValue) {
 
     ydata = originalValue;
 
-    // pointlabel = abnomalData.pointlabel;
-    arealabel = segmentData.area;
-
-    //数据格式：
-    //abnormalPoints = [{xAxis:"00:00",yAxis:300},{xAxis:'01:15',yAxis:280}];
-    //abnormalArea = [ [{xAxis: '07:30'}, {xAxis: '10:00'}],[]]
-    //pieces = [{gt:2,lte: 3,color: 'red'}
+    var status = segmentData.length;
+    var color = [
+        '#ff7f50',
+        '#87cefa',
+        '#da70d6',
+        '#32cd32',
+        '#6495ed',
+        '#ff69b4',
+        '#ff69b4'
+    ]
 
     /*-------------数据预处理------------*/
 
-    // var abnormalPoints = new Array();
-    // var piecesData = new Array();
-    var abnormalArea = new Array();
-
-    /*--------处理异常点数据，标记红色空心圆--------*/
-    // for(var i in pointlabel)
+    // var segmentArea = new Array();
+    //
+    // for(var i =0; i<status;i++)
     // {
-    //     var point = new Object();
-    //     point.xAxis = xdata[pointlabel[i]];
-    //     point.yAxis = ydata[pointlabel[i]];
-    //     abnormalPoints.push(point);
+    //     var statusColor = color[i];
+    //     for(var k in segmentData[i].area)
+    //     {
+    //         var area = new Array();
+    //         var areaList = segmentData[i].area[k];
+    //
+    //         for(var j in areaList)
+    //         {
+    //             var point = new Object();
+    //             point.xAxis = areaList[j];
+    //             if(j==0) {
+    //                 point.name = 'status'+i;
+    //                 point.itemStyle = { normal: { color: statusColor} }
+    //             }
+    //             area.push(point);
+    //         }
+    //         segmentArea.push(area);
+    //     }
+    //     console.log("segmentArea",segmentArea)
+    //
     // }
-    // //console.log(abnormalPoints);
 
-    /*--------处理异常区域显示数据，区域标记红色--------*/
-    for(var i in arealabel)
+    var segmentPieces = new Array();
+    for(var i =0; i<status; i++)
     {
-        var area = new Array();
-
-        for(var j in arealabel[i])
+        var statusPiece = segmentData[i].area;
+        var statusColor = color[i];
+        for(var j in statusPiece)
         {
-            var point = new Object();
-            point.xAxis = xdata[arealabel[i][j]];
-            area.push(point);
+            var piece = new Object();
+            piece.gt = statusPiece[j][0];
+            piece.lte = statusPiece[j][1];
+            piece.color = statusColor;
+            segmentPieces.push(piece);
         }
-        abnormalArea.push(area);
     }
-    //console.log("abnormalArea:",abnormalArea);
-
-
-    /*--------处理异常区域显示数据，线段标记红色--------*/
-    // var st=0;
-    // for(var i in arealabel)
-    // {
-    //
-    //     var normalPiece = new Object();
-    //     var abnormalPiece = new Object();
-    //
-    //     normalPiece.gt = st;
-    //     normalPiece.lte = arealabel[i][0];
-    //     normalPiece.color = 'green';
-    //
-    //     abnormalPiece.gt = arealabel[i][0];
-    //     abnormalPiece.lte = arealabel[i][1];
-    //     abnormalPiece.color = 'red';
-    //
-    //     piecesData.push(normalPiece);
-    //     piecesData.push(abnormalPiece);
-    //
-    //     st = arealabel[i][1];
-    // }
-    // var endPiece = new Object();
-    // endPiece.gt = st;
-    // endPiece.lte = xdata.length;
-    // endPiece.color = 'green';
-    // piecesData.push(endPiece);
+    console.log("pieces:",segmentPieces);
 
 
     /*---------设置图标显示的牌配置项------------*/
@@ -177,6 +165,14 @@ function segmentChart(segmentData,originalValue) {
         yAxis: {
             type: 'value',
         },
+        visualMap: {
+            show: false,
+            dimension: 0,
+            pieces:segmentPieces,
+            outOfRange: {
+                color: '#999'
+            }
+        },
         series: [
             {
                 large:true, //测试开启后显示大数据时间上有没有优化
@@ -189,18 +185,19 @@ function segmentChart(segmentData,originalValue) {
                     }
                 },
                 data: ydata,
-                markArea: {
-                    itemStyle: {
-                        normal: {
-                            color: "pink"
-                        }
-                    },
-                    data: abnormalArea
-                    // [ [{xAxis: '07:30'}, {xAxis: '10:00'}]]
-                }
+                // markArea: {
+                //     // itemStyle: {
+                //     //     normal: {
+                //     //         color: ["pink","blue"]
+                //     //     }
+                //     // },
+                //     data: segmentArea
+                //     // [ [{xAxis: '07:30'}, {xAxis: '10:00'}]]
+                // }
             }
         ]
     };
+
 
     $("#segment").resize(function () {
         var himeArea = document.getElementById("segment");
