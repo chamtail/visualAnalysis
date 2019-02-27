@@ -1,0 +1,239 @@
+{
+  "code": 0,
+  "msg": "成功",
+  "data": [
+    {
+      "id": "5c7557b100340b00e494e0ac",
+      "dataSet": "test",
+      "subDataSet": "matrix-profile_demo",
+      "description": "matrix-profile_demo",
+      "tag": {},
+      "fieldName": [
+        "auto_field0"
+      ],
+      "fieldType": [
+        "Long"
+      ],
+      "columns": 1,
+      "rows": [],
+      "dbType": 1,
+      "dbName": "test",
+      "table": "matrix-profile_demo"
+    },
+    {
+      "id": "5c7557ee00340b41685854f2",
+      "dataSet": "test",
+      "subDataSet": "classify_demo",
+      "description": "classify_demo",
+      "tag": {
+        "type": {
+          "train": "TRAIN",
+          "test": "TEST"
+        },
+        "label": {
+          "label1": "1",
+          "label2": "2"
+        },
+        "series": {
+          "series1": "series1",
+          "series2": "series2",
+          "series3": "series3",
+          "series4": "series4",
+          "series5": "series5",
+          "series6": "series6",
+          "series7": "series7",
+          "series8": "series8",
+          "series9": "series9",
+          "series10": "series10",
+          "series11": "series11",
+          "series12": "series12",
+          "series13": "series13",
+          "series14": "series14",
+          "series15": "series15",
+          "series16": "series16",
+          "series17": "series17",
+          "series18": "series18",
+          "series19": "series19",
+          "series20": "series20",
+          "series21": "series21",
+          "series22": "series22",
+          "series23": "series23",
+          "series24": "series24",
+          "series25": "series25",
+          "series26": "series26",
+          "series27": "series27",
+          "series28": "series28",
+          "series29": "series29",
+          "series30": "series30",
+          "series31": "series31",
+          "series32": "series32",
+          "series33": "series33",
+          "series34": "series34",
+          "series35": "series35",
+          "series36": "series36",
+          "series37": "series37",
+          "series38": "series38",
+          "series39": "series39",
+          "series40": "series40",
+          "series41": "series41",
+          "series42": "series42",
+          "series43": "series43",
+          "series44": "series44",
+          "series45": "series45",
+          "series46": "series46",
+          "series47": "series47",
+          "series48": "series48",
+          "series49": "series49",
+          "series50": "series50"
+        }
+      },
+      "fieldName": [
+        "value"
+      ],
+      "fieldType": [
+        "Double"
+      ],
+      "columns": 1,
+      "rows": [],
+      "dbType": 1,
+      "dbName": "test",
+      "table": "classify_demo"
+    },
+    {
+      "id": "5c75580300340b294ce51208",
+      "dataSet": "test",
+      "subDataSet": "motif_demo",
+      "description": "motif_demo",
+      "tag": {},
+      "fieldName": [
+        "auto_field0"
+      ],
+      "fieldType": [
+        "Long"
+      ],
+      "columns": 1,
+      "rows": [],
+      "dbType": 1,
+      "dbName": "test",
+      "table": "motif_demo"
+    },
+    {
+      "id": "5c75581200340b1cc04f8825",
+      "dataSet": "test",
+      "subDataSet": "segment_small_demo",
+      "description": "segment_small_demo",
+      "tag": {},
+      "fieldName": [
+        "auto_field0"
+      ],
+      "fieldType": [
+        "Double"
+      ],
+      "columns": 1,
+      "rows": [],
+      "dbType": 1,
+      "dbName": "test",
+      "table": "segment_small_demo"
+    },
+    {
+      "id": "5c75581c00340b25d4cde582",
+      "dataSet": "test",
+      "subDataSet": "stl_demo",
+      "description": "stl_demo",
+      "tag": {},
+      "fieldName": [
+        "auto_field1"
+      ],
+      "fieldType": [
+        "Double"
+      ],
+      "columns": 1,
+      "rows": [],
+      "dbType": 1,
+      "dbName": "test",
+      "table": "stl_demo"
+    },
+    {
+      "id": "5c75581200340b1cc04f8828",
+      "dataSet": "test",
+      "subDataSet": "iot-demo",
+      "description": "iot-demo",
+      "tagName": ["type", "label", "series"],
+      "tag": {
+        "type": {
+          "train": "TRAIN",
+          "test": "TEST"
+        },
+        "label": {
+          "label1": "1",
+          "label2": "2"
+        },
+        "series": {
+          "series1": "series1",
+          "series2": "series2",
+          "series3": "series3",
+          "series4": "series4",
+          "series5": "series5",
+          "series6": "series6",
+          "series7": "series7",
+          "series8": "series8",
+          "series9": "series9",
+          "series10": "series10",
+          "series11": "series11",
+          "series12": "series12",
+          "series13": "series13",
+          "series14": "series14",
+          "series15": "series15",
+          "series16": "series16",
+          "series17": "series17",
+          "series18": "series18",
+          "series19": "series19",
+          "series20": "series20",
+          "series21": "series21",
+          "series22": "series22",
+          "series23": "series23",
+          "series24": "series24",
+          "series25": "series25",
+          "series26": "series26",
+          "series27": "series27",
+          "series28": "series28",
+          "series29": "series29",
+          "series30": "series30",
+          "series31": "series31",
+          "series32": "series32",
+          "series33": "series33",
+          "series34": "series34",
+          "series35": "series35",
+          "series36": "series36",
+          "series37": "series37",
+          "series38": "series38",
+          "series39": "series39",
+          "series40": "series40",
+          "series41": "series41",
+          "series42": "series42",
+          "series43": "series43",
+          "series44": "series44",
+          "series45": "series45",
+          "series46": "series46",
+          "series47": "series47",
+          "series48": "series48",
+          "series49": "series49",
+          "series50": "series50"
+        }
+      },
+      "fieldName": [
+        "value"
+      ],
+      "fieldType": [
+        "Double"
+      ],
+      "columns": 4,
+      "rows": [
+        24
+      ],
+      "dbType" : 2,
+      "dbName": "test",
+      "table": "iot_demo"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "id": "1544772485370",
+  "token": "admin",
+  "auth": 2,
+  "dataSet": "分类数据集",
+  "subDataSet": "classify-demo",
+  "description": "分类数据集-demo",
+  "type": 1,
+  "source": [
+    "/data/classify-demo.txt"
+  ],
+  "target": "/data/classify-demo.txt",
+  "fieldName": [
+    "value"
+  ],
+  "fieldType": [
+    "Double"
+  ],
+  "columns": 4,
+  "rows": [
+    24
+  ],
+  "dbType": 1,
+  "dbName": "statellite",
+  "table": "GPS",
+  "tag": {
+    "train": {
+      "1": {
+        "series1": "series1",
+        "series2": "series2",
+        "series3": "series3",
+        "series4": "series4",
+        "series5": "series5",
+        "series6": "series6"
+      },
+      "2": {
+        "series7": "series7",
+        "series8": "series8",
+        "series9": "series9",
+        "series10": "series10",
+        "series11": "series11",
+        "series12": "series12"
+      }
+    },
+    "test": {
+      "1": {
+        "series13": "series13",
+        "series14": "series14",
+        "series15": "series15",
+        "series16": "series16",
+        "series17": "series17",
+        "series18": "series18"
+      },
+      "2": {
+        "series19": "series19",
+        "series20": "series20",
+        "series21": "series21",
+        "series22": "series22",
+        "series23": "series23",
+        "series24": "series24"
+      }
+    }
+  }
+}

@@ -15,7 +15,47 @@
       "type": "file",
       "default": "",
       "enable": true,
-      "configurable": true
+      "configurable": true,
+      "tip": ""
+    },
+    {
+      "name": "orientation",
+      "label": {
+        "zh": "方向",
+        "en": "orientation"
+      },
+      "type": "list",
+      "list": ["行存储", "列存储"],
+      "default": "行存储",
+      "enable": true,
+      "configurable": true,
+      "tip": ""
+    },
+    {
+      "name": "save2database",
+      "label": {
+        "zh": "存储至数据库",
+        "en": "save to database"
+      },
+      "type": "checkbox",
+      "default": true,
+      "enable": true,
+      "configurable": true,
+      "tip": ""
+    },
+    {
+      "name": "db-type",
+      "label": {
+        "zh": "数据库类型",
+        "en": "database type"
+      },
+      "type": "list",
+      "list": ["InfluxDB", "IOTDB"],
+      "default": "InfluxDB",
+      "enable": true,
+      "configurable": true,
+      "dependsOn": "save2database",
+      "tip": ""
     },
     {
       "name": "name",
@@ -26,7 +66,9 @@
       "type": "text",
       "default": "",
       "enable": true,
-      "configurable": true
+      "configurable": true,
+      "dependsOn": "save2database",
+      "tip": ""
     },
     {
       "name": "variable",
@@ -37,7 +79,8 @@
       "type": "text",
       "default": "",
       "enable": false,
-      "configurable": true
+      "configurable": true,
+      "tip": ""
     },
     {
       "name": "inputs",

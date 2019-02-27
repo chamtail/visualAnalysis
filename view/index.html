@@ -10,29 +10,29 @@
     <meta name="description" content="数据流可视化分析平台">
     <meta name="author" content="yzs">
 
-    <link href="../public/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../public/css/font-awesome.min.css" rel="stylesheet">
-    <link href="../public/css/jquery-ui.min.css" rel="stylesheet">
-    <script src="../public/js/jquery.min.js"></script>
-    <script src="../public/js/popper.min.js"></script>
-    <script src="../public/js/bootstrap.min.js"></script>
-    <script src="../public/js/jquery-ui.min.js"></script>
-    <script src="../public/js/d3.min.js"></script>
-    <script src="../public/js/d3-transform.min.js"></script>
-    <script src="../public/js/vue.min.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="../public/js/multiple-select/multiple-select.css">
+    <link rel="stylesheet" type="text/css" href="../public/common/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../public/common/font-awesome/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../public/common/jquery-ui/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="../public/common/mutiple-select/multiple-select.css">
+    <link rel="stylesheet" type="text/css" href="../public/common/layui/css/layui.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/index/index.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/node/node.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/charts/cluster.css">
     <link rel="stylesheet" type="text/css" href="../public/custom/cmd/cmd.css">
-    <link rel="stylesheet" href="../public/layui/css/layui.css">
+
+    <script src="../public/common/jquery/jquery.min.js"></script>
+    <script src="../public/common/poper/popper.min.js"></script>
+    <script src="../public/common/bootstrap/bootstrap.min.js"></script>
+    <script src="../public/common/jquery-ui/jquery-ui.min.js"></script>
+    <script src="../public/common/d3/d3.min.js"></script>
+    <script src="../public/common/d3/d3-transform.min.js"></script>
+    <script src="../public/common/vue/vue.min.js"></script>
 </head>
 <body>
 <div id="vm">
     <div id="header">
         <span class="logo">
-            <img src="./public/node-red.png" title="0.19.5">
+            <img src="../public/images/node-red.png" title="0.19.5">
             <span>数据流可视化分析平台</span>
         </span>
         <ul class="header-toolbar hide" style="display: block;">
@@ -45,11 +45,11 @@
                 <span class="opt-button-group button-group">
                     <a id="btn-deploy" class="opt-button" @click="deployWorkflow">
                         <span class="opt-button-content" style="opacity: 1;">
-                            <img id="btn-deploy-icon" src="./public/deploy-full-o.png">
+                            <img id="btn-deploy-icon" src="../public/images/deploy-full-o.png">
                             <span>Deploy</span>
                         </span>
                         <span class="opt-button-spinner hide" style="display: none;">
-                            <img src="./public/spin.svg">
+                            <img src="../public/images/spin.svg">
                         </span>
                     </a>
                 </span>
@@ -62,7 +62,7 @@
                             <span>Run on docker</span>
                         </span>
                         <span class="opt-button-spinner hide" style="display: none;">
-                            <img src="./public/spin.svg"></span>
+                            <img src="../public/images/spin.svg"></span>
                     </a>
                 </span>
             </li>
@@ -74,7 +74,7 @@
                             <span>Run on k8s</span>
                         </span>
                         <span class="opt-button-spinner hide" style="display: none;">
-                            <img src="./public/spin.svg"></span>
+                            <img src="../public/images/spin.svg"></span>
                     </a>
                 </span>
             </li>
@@ -86,7 +86,7 @@
                             <span>logout</span>
                         </span>
                         <span class="opt-button-spinner hide" style="display: none;">
-                            <img src="./public/spin.svg"></span>
+                            <img src="../public/images/spin.svg"></span>
                     </a>
                 </span>
             </li>
@@ -99,7 +99,7 @@
                             <span>refresh</span>
                         </span>
                         <span class="opt-button-spinner hide" style="display: none;">
-                            <img src="./public/spin.svg"></span>
+                            <img src="../public/images/spin.svg"></span>
                     </a>
                 </span>
             </li>
@@ -118,7 +118,8 @@
             <div id="node-search" class="node-search">
                 <div class="searchBox-container">
                     <i class="fa fa-search"></i>
-                    <input type="text" data-i18n="[placeholder]node.filter" placeholder="filter nodes" v-model="nodeFilter">
+                    <input type="text" data-i18n="[placeholder]node.filter" placeholder="filter nodes"
+                           v-model="nodeFilter">
                     <a href="#"><i class="fa fa-times"></i></a>
                     <span class="searchBox-resultCount hide"></span>
                 </div>
@@ -285,19 +286,18 @@
                         <div id="matrixProfile2"></div>
                     </div>
                     <div class="visual-chart" id="hime">
-                        <div id ="himeChart" class="layui-col-md12"></div>
-                        <div id = "himeTableDiv" class="layui-col-md8">
+                        <div id="himeChart" class="layui-col-md12"></div>
+                        <div id="himeTableDiv" class="layui-col-md8">
                             <table id="himeTable" lay-filter="himeTable"></table>
                         </div>
-                        <div id ="subHimeChart" class="layui-col-md4"></div>
+                        <div id="subHimeChart" class="layui-col-md4"></div>
                     </div>
                     <div class="visual-chart" id="segment">
                         <div id="segmentTableDiv" class="layui-col-md2">
                             <table id="segmentTable" lay-filter="segmentTable"></table>
                         </div>
-                        <div id ="segmentChart" class="layui-col-md10"></div>
+                        <div id="segmentChart" class="layui-col-md10"></div>
                     </div>
-
                 </div>
             </div>
 
@@ -413,10 +413,10 @@
                                 </div>
                             </div>
                         </template>
-
                     </div>
                 </div>
                 <div style="height: 100%; display: none;">
+
                 </div>
                 <div style="height: 100%; display: none;">
                     <div class="sidebar-variable-space">
@@ -438,7 +438,8 @@
                                         <tbody>
                                         <template v-for="node in flow">
                                             <template v-if="node.name != ''">
-                                                <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']" @click="onRowSelected(node.id)">
+                                                <tr :class="['node-info-node-row', component.id == node.id ? 'active' : '']"
+                                                    @click="onRowSelected(node.id)">
                                                     <td>{{node.name}}</td>
                                                     <td>{{node.size}}</td>
                                                 </tr>
@@ -496,7 +497,8 @@
                                             <div class="col-sm-8">
                                                 <template v-if="model.type == 'list'">
                                                     <template v-if="model.name == 'data_set'">
-                                                        <select class="form-control" :name="model.name" v-model="model.default" @change="onDataSetChanged">
+                                                        <select class="form-control" :name="model.name"
+                                                                v-model="model.default" @change="onDataSetChanged">
                                                             <template v-for="(option, id) in dataSets">
                                                                 <option :value="id"
                                                                         :selected="model.default == id || model.default == option.subDataSet">
@@ -506,7 +508,8 @@
                                                         </select>
                                                     </template>
                                                     <template v-else>
-                                                        <select class="form-control" :name="model.name" v-model="model.default">
+                                                        <select class="form-control" :name="model.name"
+                                                                v-model="model.default">
                                                             <template v-for="(option, id) in model.list">
                                                                 <option :value="option"
                                                                         :selected="model.default == id || model.default == option">
@@ -518,7 +521,8 @@
                                                 </template>
                                                 <template v-else-if="model.type == 'multi-list'">
                                                     <template v-if="model.name == 'field_info'">
-                                                        <select class="multiple form-control" multiple="multiple" :name="model.name" v-model="model.default">
+                                                        <select class="multiple form-control" multiple="multiple"
+                                                                :name="model.name" v-model="model.default">
                                                             <template v-for="(fieldName, id) in dataSet.fieldName">
                                                                 <option :value="fieldName"
                                                                         :selected="model.default == id || model.default == fieldName">
@@ -530,7 +534,8 @@
                                                     <template v-else-if="model.name == 'tag'">
                                                         <template v-for="(tagMap, tagName) in dataSet.tag">
                                                             <label>{{tagName}}</label>
-                                                            <select class="multiple form-control" multiple="multiple" :name="tagName" v-model="model.default[tagName]">
+                                                            <select class="multiple form-control" multiple="multiple"
+                                                                    :name="tagName" v-model="model.default[tagName]">
                                                                 <template v-for="(value, key) in tagMap">
                                                                     <option :value="key"
                                                                             :selected="model.default[tagName]">
@@ -543,15 +548,19 @@
                                                 </template>
                                                 <template v-else-if="model.type == 'richtext'">
                                                     <textarea class="form-control" :type="model.type" :name="model.name"
-                                                              :placeholder="dataSet.description" :disabled="model.configurable ? '' : 'disabled'"
+                                                              :placeholder="dataSet.description"
+                                                              :disabled="model.configurable ? '' : 'disabled'"
                                                               v-model="model.default">{{dataSet.description}}</textarea>
                                                 </template>
                                                 <template v-else-if="model.type == 'checkbox'">
-                                                    <input class="form-control" :type="model.type" :name="model.name" :checked="model.default ? 'checked' : ''" v-model='model.default'>
+                                                    <input class="form-control" :type="model.type" :name="model.name"
+                                                           :checked="model.default ? 'checked' : ''"
+                                                           v-model='model.default'>
                                                 </template>
                                                 <template v-else>
                                                     <template v-if="model.name == 'variable'">
-                                                        <input :class="['form-control', repeatVariable ? 'has-error' : '']" :type="model.type" :name="model.name"
+                                                        <input :class="['form-control', repeatVariable ? 'has-error' : '']"
+                                                               :type="model.type" :name="model.name"
                                                                :placeholder="model.default" :value="model.default"
                                                                v-model="model.default">
                                                         <template v-if="repeatVariable">
@@ -559,7 +568,8 @@
                                                         </template>
                                                     </template>
                                                     <template v-else>
-                                                        <input class="form-control" :type="model.type" :name="model.name"
+                                                        <input class="form-control" :type="model.type"
+                                                               :name="model.name"
                                                                :placeholder="model.default" :value="model.default"
                                                                v-model="model.default">
                                                     </template>
@@ -574,7 +584,8 @@
                                             <label :for="model.name" class="col-sm-3 col-form-label">{{model.label[lang]}}</label>
                                             <div class="col-sm-8">
                                                 <template v-if="model.type == 'list'">
-                                                    <select class="form-control" :name="model.name" v-model="model.default">
+                                                    <select class="form-control" :name="model.name"
+                                                            v-model="model.default">
                                                         <option value="">全部</option>
                                                         <template v-for="(option, id) in model.list">
                                                             <option :value="option"
@@ -586,14 +597,16 @@
                                                 </template>
                                                 <template v-else-if="model.type == 'richtext'">
                                                     <textarea class="form-control" :type="model.type" :name="model.name"
-                                                              :placeholder="model.default" :disabled="model.configurable"
+                                                              :placeholder="model.default"
+                                                              :disabled="model.configurable"
                                                               v-model="model.default">{{model.default}}</textarea>
                                                 </template>
                                                 <template v-else-if="model.type == 'file'">
                                                     <a href="javascript:;" class="file-upload">
                                                         <span v-if="model.default==''">选择文件</span>
                                                         <span v-else>更改文件</span>
-                                                        <input :id="'file_'+component.id" :type="model.type" class="col-sm-8"
+                                                        <input :id="'file_'+component.id" :type="model.type"
+                                                               class="col-sm-8"
                                                                :name="model.name"
                                                                :placeholder="model.default"
                                                                accept="text/csv" @change="getFile($event)" multiple>
@@ -602,7 +615,8 @@
                                                 </template>
                                                 <template v-else>
                                                     <template v-if="model.name == 'variable'">
-                                                        <input :class="['form-control', repeatVariable ? 'has-error' : '']" :type="model.type" :name="model.name"
+                                                        <input :class="['form-control', repeatVariable ? 'has-error' : '']"
+                                                               :type="model.type" :name="model.name"
                                                                :placeholder="model.default" :value="model.default"
                                                                v-model="model.default">
                                                         <template v-if="repeatVariable">
@@ -610,7 +624,8 @@
                                                         </template>
                                                     </template>
                                                     <template v-else>
-                                                        <input class="form-control" :type="model.type" :name="model.name"
+                                                        <input class="form-control" :type="model.type"
+                                                               :name="model.name"
                                                                :placeholder="model.default" :value="model.default"
                                                                v-model="model.default">
                                                     </template>
@@ -641,8 +656,7 @@
 </html>
 
 <script src="../public/custom/debug/debug.js"></script>
-<script src="../config/config.min.js"></script>
-<!--<script src="../config/config.js"></script>-->
+<script src="../public/custom/config/config.min.js"></script>
 <script src="../public/custom/node/node.js"></script>
 <script src="../public/custom/index/index.js"></script>
 <script src="../public/custom/charts/charts.js"></script>
@@ -652,9 +666,9 @@
 <script src="../public/custom/charts/hime.js"></script>
 <script src="../public/custom/charts/segmentation.js"></script>
 <script src="../public/custom/cmd/cmd.js"></script>
-<script src="../public/js/cookie.js"></script>
+<script src="../public/custom/cookie/cookie.js"></script>
 <script src="../public/custom/webSocket/webSocket.js"></script>
-<script src="../public/js/multiple-select/multiple-select.js"></script>
+<script src="../public/common/mutiple-select/multiple-select.js"></script>
 <script>
     //vue 绑定
     var vm = new Vue({
@@ -665,7 +679,7 @@
             nodeCategory: {},
             nodeCategoryCopy: {},
             dataSets: {},
-            dataSet:{},
+            dataSet: {},
             workflowChanged: false,
             dataLoadConfigLock: false,
             dataLoadConfig: false,
@@ -774,7 +788,7 @@
             });
 
             // 如果配置
-            if(!vm.dataLoadConfigLock && vm.configFlag){
+            if (!vm.dataLoadConfigLock && vm.configFlag) {
                 $('.ms-parent').remove();
                 let selector = $("select.multiple");
                 selector.multipleSelect('destroy');
@@ -784,9 +798,9 @@
                     selectAll: true,
                     width: "100%"
                 });
-                for(let tagName in vm.dataSet.tag){
-                    let selectedList = workflow.task[vm.component.id].tag[tagName];
-                    $("select[name='"+tagName+"']").multipleSelect('setSelects', selectedList);
+                for (let t in vm.dataSet.tag) {
+                    let selectedList = workflow.task[vm.component.id].tag[t];
+                    $("select[name='" + t + "']").multipleSelect('setSelects', selectedList);
                 }
                 vm.dataLoadConfigLock = true;
             }
@@ -876,7 +890,7 @@
                 for (let index in vm.flows[vm.currentFlowId].nodes) {
                     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
                     vm.onNodeRun(nodeId);
-                    if(!vm.checkNodeStatus(nodeId)){
+                    if (!vm.checkNodeStatus(nodeId)) {
                         vm.onNodeStop(nodeId);
                         return false;
                     }
@@ -925,7 +939,7 @@
                     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
                     // 如果状态正确，显示启动
                     vm.onNodeRun(nodeId);
-                    if(!vm.checkNodeStatus(nodeId)){
+                    if (!vm.checkNodeStatus(nodeId)) {
                         vm.onNodeStop(nodeId);
                         return false;
                     }
@@ -1003,7 +1017,7 @@
                 // 更新vue值
                 vm.update();
             },
-            updateWorkflow: function (workflow, id=null) {
+            updateWorkflow: function (workflow, id = null) {
                 // 如果工作流为空，则增加默认的工作流任务栏
                 if (workflow == ''
                         || workflow == null
@@ -1017,14 +1031,14 @@
                 // 更新对象
                 let task = {};
                 // ID不为空，代表修改的是某组件的属性，不需要全部刷新
-                if (id != null){
+                if (id != null) {
                     // 代表是该flow发生了变化
-                    if(vm.flows[id]){
+                    if (vm.flows[id]) {
                         vm.flows[id] = workflow.task[id];
                         task[id] = workflow.task[id];
                     }
                     // 代表是flow下的节点发生了变化
-                    else if(workflow.task[id]){
+                    else if (workflow.task[id]) {
                         let flowId = workflow.task[id].z;
                         vm.variableSpace[flowId][id] = {
                             id: id,
@@ -1034,7 +1048,7 @@
                         console.log('更新完成');
                         return;
                     }
-                } else{
+                } else {
                     // 更新工作流
                     task = workflow.task;
                     vm.flows = {};
@@ -1043,16 +1057,16 @@
                 }
 
                 // 获取任务栏即变量空间
-                for(let id in task){
+                for (let id in task) {
                     console.log(id);
-                    if(!task[id]){
+                    if (!task[id]) {
                         continue;
                     }
-                    if(task[id].type == "flow"){
+                    if (task[id].type == "flow") {
                         vm.flows[id] = task[id];
                         vm.variableSpace[id] = {};
                         vm.variableSpaceMap[id] = {};
-                    } else{
+                    } else {
                         var flowId = task[id].z;
                         if (task[id].variable == "") {
                             continue;
@@ -1067,23 +1081,23 @@
                 }
                 console.log(workflow);
                 // 切换当前工作流
-                if(workflow.currentFlowId == null){
+                if (workflow.currentFlowId == null) {
                     console.log('默认工作流为空');
                     // 显示第一个任务栏
                     for (let flowId in vm.flows) {
                         vm.changeWorkflow(flowId, true);
                         break;
                     }
-                } else{
+                } else {
                     console.log('默认工作流为#flow:' + workflow.currentFlowId);
                     vm.changeWorkflow(workflow.currentFlowId, true);
                 }
             },
 
             upload: function (nodeId) {
-                console.log('上传文件' , nodeId);
+                console.log('上传文件', nodeId);
                 //vm.uploadFilePaths = vm.uploadFilePaths || getCookieValue(nodeId);
-                if(vm.uploadFilePaths == null){
+                if (vm.uploadFilePaths == null) {
                     console.error('文件为空');
                     return;
                 }
@@ -1125,14 +1139,14 @@
             },
             runNode: function (nodeId) {
                 vm.onNodeRun(nodeId);
-                if(!vm.checkNodeStatus(nodeId)){
+                if (!vm.checkNodeStatus(nodeId)) {
                     vm.onNodeStop(nodeId);
                     return false;
                 }
                 // 如果是上传文件
-                if(workflow.task[nodeId].type == "data-upload"){
+                if (workflow.task[nodeId].type == "data-upload") {
                     vm.upload(nodeId);
-                } else{
+                } else {
                     // 发送请求
                     $.ajax({
                         url: api_map.node_run,
@@ -1211,11 +1225,11 @@
                 onComponentDelete(vm.component.id, vm.component.type);
             },
 
-            checkNodeStatus: function (nodeId, callback=null) {
+            checkNodeStatus: function (nodeId, callback = null) {
                 // Check: 检测节点状态是否满足要求
                 var node = $('#' + nodeId);
                 var status = node.attr('status');
-                if (status == 1 && callback != null){
+                if (status == 1 && callback != null) {
                     callback();
                 }
                 if (status == 3 || status == 7) {
@@ -1235,12 +1249,12 @@
             },
             checkUploadFile: function (callback) {
                 let nodes = vm.flows[vm.currentFlowId].nodes;
-                for(let i=0, len=nodes.length; i<len; i++){
+                for (let i = 0, len = nodes.length; i < len; i++) {
                     let nodeId = nodes[i];
-                    if(workflow.task[nodeId].type == 'data-upload'
+                    if (workflow.task[nodeId].type == 'data-upload'
                             && workflow.task[nodeId].path
                             && (workflow.task[nodeId].status == 1
-                            || workflow.task[nodeId].status == 7)){
+                            || workflow.task[nodeId].status == 7)) {
                         vm.upload(nodeId);
                     }
                 }
@@ -1330,9 +1344,22 @@
                     error: function (res) {
                     }
                 });
+
+//                $.getJSON("../data/metaData_debug.json", function (res) {
+//                    if (res.code == 0) {
+//                        vm.dataSets = res.data;
+//
+//                        for (let id in vm.dataSets) {
+//                            vm.dataSet = vm.dataSets[id];
+//                            break;
+//                        }
+//                    } else {
+//                        alert(res.msg);
+//                    }
+//                });
             },
             onDataSetChanged: function (ele) {
-                if (ele.target.value < 0){
+                if (ele.target.value < 0) {
                     return;
                 }
                 vm.dataLoadConfigLock = false;
@@ -1362,7 +1389,7 @@
                 vm.uploadFile = false;
 
                 // 判断flowId是否存在
-                if(!workflow.task[workflow.currentFlowId]){
+                if (!workflow.task[workflow.currentFlowId]) {
                     return;
                 }
                 // 更新组件
@@ -1372,7 +1399,7 @@
                 // 更新各节点状态
                 let status = {};
                 let nodesList = workflow.task[workflow.currentFlowId].nodes;
-                for(let i=0, len=nodesList.length; i<len; i++){
+                for (let i = 0, len = nodesList.length; i < len; i++) {
                     let nodeId = nodesList[i];
                     status[nodeId] = workflow.task[nodeId].status;
                 }
@@ -1381,34 +1408,34 @@
             debug: function () {
             }
         },
-        watch:{
+        watch: {
             nodeFilter(filter){
                 let nodeCategoryAll = deepClone(this.nodeCategoryCopy);
-                for (let module in nodeCategoryAll){
-                    if(nodeCategoryAll[module].sub_modules){
+                for (let module in nodeCategoryAll) {
+                    if (nodeCategoryAll[module].sub_modules) {
                         let subModules = nodeCategoryAll[module].sub_modules;
-                        for(let subModule in subModules){
-                            for(let node in subModules[subModule].nodes){
+                        for (let subModule in subModules) {
+                            for (let node in subModules[subModule].nodes) {
                                 let nodeName = subModules[subModule].nodes[node][this.lang];
-                                if(nodeName.indexOf(filter) == -1){
+                                if (nodeName.indexOf(filter) == -1) {
                                     delete subModules[subModule].nodes[node];
                                 }
                             }
-                            if(JSON.stringify(subModules[subModule].nodes) == "{}"){
+                            if (JSON.stringify(subModules[subModule].nodes) == "{}") {
                                 delete subModules[subModule];
                             }
                         }
-                        if(JSON.stringify(subModules) == "{}"){
+                        if (JSON.stringify(subModules) == "{}") {
                             delete nodeCategoryAll[module];
                         }
-                    } else{
-                        for(let node in nodeCategoryAll[module].nodes){
+                    } else {
+                        for (let node in nodeCategoryAll[module].nodes) {
                             let nodeName = nodeCategoryAll[module].nodes[node][this.lang];
-                            if(nodeName.indexOf(filter) == -1){
+                            if (nodeName.indexOf(filter) == -1) {
                                 delete nodeCategoryAll[module].nodes[node];
                             }
                         }
-                        if(JSON.stringify(nodeCategoryAll[module].nodes) == "{}"){
+                        if (JSON.stringify(nodeCategoryAll[module].nodes) == "{}") {
                             delete nodeCategoryAll[module];
                         }
                     }
@@ -1417,7 +1444,7 @@
             },
             configFlag(flag){
                 console.log("正在配置", flag);
-                if(!flag){
+                if (!flag) {
                     $('.ms-parent').remove();
                 }
             }
@@ -1434,6 +1461,6 @@
         setCookie('lang', vm.lang, 24, "/");
     }
 </script>
-<script src="../public/js/echarts/echarts.js"></script>
-<script src="../public/js/underscore-1.8.2.min.js"></script>
-<script src="../public/layui/layui.js"></script>
+<script src="../public/common/echarts/echarts.js"></script>
+<script src="../public/common/underscore/underscore-1.8.2.min.js"></script>
+<script src="../public/common/layui/layui.js"></script>
