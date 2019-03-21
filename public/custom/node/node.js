@@ -68,7 +68,7 @@ function init() {
                 return;
             }
             // 判断id是否重复
-            if (workflow.task[node.id]){
+            if (workflow.task[node.id]) {
                 console.error("节点id重复！");
                 return;
             }
@@ -181,9 +181,8 @@ function addNode(svg, node) {
         .attr('font-family', 'FontAwesome')
         .attr('fill', '#1aad19 !important')
         .text('\uf04b')
-        .on('click', function () {
+        .on('click', function (event) {
             runNode(node.id);
-            d3.event.stopPropagation();
         });
 
     // input circle
@@ -277,7 +276,7 @@ function nodeInject(node) {
     let injectedNode = component_config[node.type]['params'];
     for (let i = 0, len = injectedNode.length; i < len; i++) {
         let paramKey = injectedNode[i].name;
-        if (node[paramKey] == undefined){
+        if (node[paramKey] == undefined) {
             node[paramKey] = injectedNode[i].default;
         }
     }
@@ -297,24 +296,27 @@ function updateNodeStatus(status) {
         //console.log('更新节点', nodeId);
         let s = $('#' + nodeId).attr('status');
         let statusNow = status[nodeId];
-        if(!node_status_map[statusNow]){
-            statusNow = 5;
+        if (!node_status_map[statusNow]) {
+            statusNow = status_map.RUN_ERROR;
         }
         workflow.task[nodeId].status = parseInt(statusNow);
 
         // 如果节点在当前flow，则更新
-        if(workflow.task[nodeId].z == workflow.currentFlowId){
+        if (workflow.task[nodeId].z == workflow.currentFlowId) {
             d3.selectAll('g[id="' + nodeId + '"]')
                 .attr('class', 'node ' + node_status_map[statusNow])
                 .attr('status', statusNow);
 
-            if (statusNow == 1 || statusNow == "1"){
+            if (statusNow == status_map.INIT_SUCCESS) {
                 vm.onNodeStop(nodeId);
             }
-            if (statusNow == 4 || statusNow == "4"){
+            if (statusNow == status_map.RUNNING) {
+                vm.onNodeRun(nodeId);
+            }
+            if (statusNow == status_map.RUN_SUCCESS) {
                 vm.onNodeReRun(nodeId);
             }
-            if (statusNow == 5 || statusNow == "5"){
+            if (statusNow == status_map.RUN_ERROR) {
                 vm.onNodeStop(nodeId);
             }
         }
@@ -324,12 +326,12 @@ function updateNodeStatus(status) {
 // 清除节点，注意不是删除，只是使其在界面上消失
 function hideNodesByFlow(flowId) {
     console.log("上一flowId：" + flowId);
-    if(!workflow.task[flowId]){
-        console.error('flow' + flowId + '不存在！');
+    if (!workflow.task[flowId]) {
+        // console.error('flow' + flowId + '不存在！');
         return;
     }
     let nodesList = workflow.task[flowId].nodes;
-    for(let i=0, len=nodesList.length; i<len; i++){
+    for (let i = 0, len = nodesList.length; i < len; i++) {
         d3.selectAll('path[from="' + nodesList[i] + '"]').remove();
         d3.selectAll('g[id="' + nodesList[i] + '"]').remove();
         d3.selectAll('path[to="' + nodesList[i] + '"]').remove();
@@ -342,15 +344,15 @@ function showNodesByFlow(flowId) {
     // 显示节点
     let links = {};
     let nodesList = workflow.task[flowId].nodes;
-    for(let i=0, len=nodesList.length; i<len; i++){
+    for (let i = 0, len = nodesList.length; i < len; i++) {
         let nodeId = nodesList[i];
         let node = workflow.task[nodeId];
         nodeInject(node);
         let g = addNode(svg, node);
-        if(g == null){
+        if (g == null) {
             console.error(node);
         }
-        if(node.links){
+        if (node.links) {
             links[nodeId] = node.links;
         }
     }
@@ -371,7 +373,7 @@ function showNodesByFlow(flowId) {
             let edy = eRect.height / (+eNode.attr('inputs') + 1);
             translate = getTranslate(eNode);
 
-            points[1] = [translate[0]-cableR, translate[1] + edy];
+            points[1] = [translate[0] - cableR, translate[1] + edy];
 
             let input = eRect.height / (+eNode.attr('inputs') + 1);
             activeLine = d3.select('#workflow svg')
@@ -442,7 +444,7 @@ function lineEnded() {
         let eNode = d3.select(anchor.node().parentNode);
         endNode = eNode.attr('id');
         // 如果没有连接至目标节点，或自连接则返回
-        if(endNode == null || endNode == startNode){
+        if (endNode == null || endNode == startNode) {
             console.error('没有连接至目标节点，或自连接');
             errorFlag = true;
         } else {
@@ -461,7 +463,7 @@ function lineEnded() {
     }
 
     // 如果有错误，则返回
-    if(errorFlag){
+    if (errorFlag) {
         activeLine.remove();
         resetPathParams();
         return;
@@ -510,9 +512,9 @@ function updatePath(id, translate) {
 
 // 获取path偏移量
 function getPathOffset(node) {
-    let inOut =  parseInt(node.attr('outputs')) + parseInt(node.attr('inputs'));
+    let inOut = parseInt(node.attr('outputs')) + parseInt(node.attr('inputs'));
     let XDelta = 0;
-    if(inOut > 1){
+    if (inOut > 1) {
         XDelta = -cableR;
     }
     let rect = node.node().getBoundingClientRect();
@@ -523,7 +525,7 @@ function getPathOffset(node) {
 
 // 获取Path曲线
 function getBezier(points) {
-    if(points[0][0] > points[1][0]){
+    if (points[0][0] > points[1][0]) {
         // console.log('四次平滑');
     }
     return 'M' + points[0][0] + ',' + points[0][1]
@@ -548,9 +550,9 @@ function resetPathParams() {
  * 组件相关 Start
  */
 // 显示组件
-function onComponentDetail(id, type, force=false){
+function onComponentDetail(id, type, force = false) {
     // 过滤重复事件
-    if(id == vm.component.id && type == vm.component.type && !force){
+    if (id == vm.component.id && type == vm.component.type && !force) {
         console.log(vm.component.id, vm.component.type);
         console.log('重复点击组件，事件无效！');
         return;
@@ -559,7 +561,7 @@ function onComponentDetail(id, type, force=false){
     vm.update();
     // 更新组件信息
     vm.component = getComponent(id, type, vm.lang);
-    if(type == 'flow'){
+    if (type == 'flow') {
         return;
     }
     let node = $('#' + id);
@@ -567,8 +569,8 @@ function onComponentDetail(id, type, force=false){
     console.log('显示节点细节&显示节点可视化');
     // 如果该节点状态为已运行, 则进行可视化
     let status = node.attr('status');
-    if (status == 4 ) {
-        if(vm.variableSpace[workflow.currentFlowId][id] && vm.variableSpace[workflow.currentFlowId][id].size == "1*1"){
+    if (status == status_map.RUN_SUCCESS) {
+        if (vm.variableSpace[workflow.currentFlowId][id] && vm.variableSpace[workflow.currentFlowId][id].size == "1*1") {
             return;
         }
         console.log("可视化");
@@ -606,7 +608,7 @@ function onComponentConfigSave(component) {
         },
         success: function () {
             let id = component.id;
-            if(component.type == 'data-upload'){
+            if (component.type == 'data-upload') {
                 vm.upload(id);
             }
             vm.repeatVariable = false;
@@ -618,10 +620,10 @@ function onComponentConfigSave(component) {
 // 删除组件
 function onComponentDelete(id, type) {
     console.log("删除" + type + "#" + id);
-    if(type == 'flow'){
+    if (type == 'flow') {
         // 删除工作流下的所有节点
         let nodesList = workflow.task[id].nodes;
-        for(let i=0, len=nodesList.length; i<len; i++) {
+        for (let i = 0, len = nodesList.length; i < len; i++) {
             let nodeId = nodesList[i];
             workflow.used[workflow.task[nodeId].type] -= 1;
             delete workflow.task[nodeId];
@@ -629,7 +631,7 @@ function onComponentDelete(id, type) {
         // 清除上一flow的节点
         hideNodesByFlow(id);
         workflow.currentFlowId = null;
-    } else{
+    } else {
         // 删除与之相连的路径
         d3.selectAll('path[from="' + id + '"]').remove();
         d3.selectAll('g[id="' + id + '"]').remove();
@@ -641,7 +643,7 @@ function onComponentDelete(id, type) {
         if (index > -1) {
             workflow.task[flowId].nodes.splice(index, 1);
         }
-        for(let i=0, len=workflow.task[flowId].nodes.length; i<len; i++){
+        for (let i = 0, len = workflow.task[flowId].nodes.length; i < len; i++) {
             let nodeId = workflow.task[flowId].nodes[i];
             let index = workflow.task[nodeId].links.indexOf(id.toString());
             if (index > -1) {
@@ -674,7 +676,7 @@ function getComponentParams(id, type) {
         keyList[key] = 1;
     }
     let params = {};
-    let attrInfo = component_config[type]['params'];
+    let attrInfo = deepClone(component_config[type]['params']);
     // 遍历配置
     for (let i = 0, len = attrInfo.length; i < len; i++) {
         // 更新可配置的参数
@@ -699,34 +701,34 @@ function updateComponentParams(component, callback) {
     let paramsUpdate = component.params;
     for (let paramName in paramsUpdate) {
         console.log(workflow.task[id][paramName], paramsUpdate[paramName].default);
-        if (paramName == 'variable'){
+        if (paramName == 'variable') {
             let v = vm.variableSpaceMap[workflow.currentFlowId][paramsUpdate[paramName].default];
             console.log(v);
-            if(v != undefined && v != id){
+            if (v != undefined && v != id) {
                 callback.error();
                 return;
             }
             vm.variableSpaceMap[workflow.currentFlowId][paramsUpdate[paramName].default] = id;
         }
-        if (workflow.task[id][paramName] != paramsUpdate[paramName].default){
+        if (workflow.task[id][paramName] != paramsUpdate[paramName].default) {
             workflow.task[id][paramName] = paramsUpdate[paramName].default;
             changeCount++;
         }
     }
-    if(component.type == 'data-load'){
+    if (component.type == 'data-load') {
         workflow.task[id].data_id = vm.dataSets[workflow.task[id].data_set].id;
         workflow.task[id].field_info = $("select[name='field_info']").multipleSelect('getSelects');
         workflow.task[id].tag = {};
-        for(let tagName in vm.dataSet.tag){
+        for (let tagName in vm.dataSet.tag) {
             workflow.task[id].tag[tagName] = [];
-            let selectedList = $("select[name='"+tagName+"']").multipleSelect('getSelects');
+            let selectedList = $("select[name='" + tagName + "']").multipleSelect('getSelects');
             console.log(selectedList);
             workflow.task[id].tag[tagName] = selectedList;
         }
         paramsUpdate['tag'].default = workflow.task[id].tag;
     }
     // 如果参数改变个数不为空，则代表workflow已改变
-    if(changeCount != 0){
+    if (changeCount != 0) {
         console.log('参数改变');
         vm.updateWorkflow(workflow, id);
         let status = {};
@@ -738,8 +740,8 @@ function updateComponentParams(component, callback) {
 }
 
 // 获取组件信息
-function getComponent(id, type, lang='zh') {
-    if(!workflow.task[id]){
+function getComponent(id, type, lang = 'zh') {
+    if (!workflow.task[id]) {
         return;
     }
     let component = {};
@@ -747,7 +749,7 @@ function getComponent(id, type, lang='zh') {
     component.name = component_config[type]['display'][lang];
     component.type = type;
     component.params = getComponentParams(id, type);
-    if(component_config[type].description){
+    if (component_config[type].description) {
         component.description = component_config[type].description;
     }
     return component;
@@ -759,7 +761,7 @@ function getComponent(id, type, lang='zh') {
 
 // 运行节点
 function runNode(id) {
-    vm.runNode(id);
+    return vm.runNode(id);
 }
 
 // 暂停节点
@@ -798,7 +800,7 @@ function onPathDelete(id) {
 
 // 加载工作流
 function loadWorkflow(workflowFile) {
-    $.getJSON('../config/'+workflowFile+'.json', function (data) {
+    $.getJSON('../config/' + workflowFile + '.json', function (data) {
         workflow = data;
         vm.updateWorkflow(workflow);
     });
@@ -843,7 +845,7 @@ function visualize(data) {
         case "lts":
         case "kshape":
             const cluster = $('#cluster');
-            cluster.resize(function() {
+            cluster.resize(function () {
                 refreshCluster()
             });
             cluster.attr('style', 'display:block');

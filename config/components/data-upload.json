@@ -19,15 +19,26 @@
       "tip": ""
     },
     {
-      "name": "orientation",
+      "name": "name",
       "label": {
-        "zh": "方向",
-        "en": "orientation"
+        "zh": "数据集名称",
+        "en": "data set name"
       },
-      "type": "list",
-      "list": ["行存储", "列存储"],
-      "default": "行存储",
+      "type": "text",
+      "default": "",
       "enable": true,
+      "configurable": true,
+      "tip": ""
+    },
+    {
+      "name": "variable",
+      "label": {
+        "zh": "变量名称",
+        "en": "variable name"
+      },
+      "type": "text",
+      "default": "",
+      "enable": false,
       "configurable": true,
       "tip": ""
     },
@@ -38,7 +49,7 @@
         "en": "save to database"
       },
       "type": "checkbox",
-      "default": true,
+      "default": false,
       "enable": true,
       "configurable": true,
       "tip": ""
@@ -58,28 +69,17 @@
       "tip": ""
     },
     {
-      "name": "name",
+      "name": "orientation",
       "label": {
-        "zh": "数据集名称",
-        "en": "data set name"
+        "zh": "方向",
+        "en": "orientation"
       },
-      "type": "text",
-      "default": "",
+      "type": "list",
+      "list": ["行存储", "列存储"],
+      "default": "行存储",
       "enable": true,
       "configurable": true,
       "dependsOn": "save2database",
-      "tip": ""
-    },
-    {
-      "name": "variable",
-      "label": {
-        "zh": "变量名称",
-        "en": "variable name"
-      },
-      "type": "text",
-      "default": "",
-      "enable": false,
-      "configurable": true,
       "tip": ""
     },
     {

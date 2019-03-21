@@ -43,7 +43,7 @@
             </li>
             <li>
                 <span class="opt-button-group button-group">
-                    <a id="btn-deploy" class="opt-button" @click="deployWorkflow">
+                    <a id="btn-deploy" class="opt-button" @click="deployWorkflow()">
                         <span class="opt-button-content" style="opacity: 1;">
                             <img id="btn-deploy-icon" src="../public/images/deploy-full-o.png">
                             <span>Deploy</span>
@@ -391,9 +391,9 @@
                                             </thead>
                                             <tbody>
                                             <template v-for="(model, index) in component.params">
-                                                <tr class="node-info-node-row">
+                                                <tr class="node-info-node-row" v-if="!('dependsOn' in model) || ('dependsOn' in model && component.params[model.dependsOn].default)">
                                                     <td>{{model.label[lang]}}</td>
-                                                    <td>{{model.default}}</td>
+                                                    <td>{{cutString(model.default)}}</td>
                                                 </tr>
                                             </template>
                                             </tbody>
@@ -492,7 +492,7 @@
                             <template v-if="component.params.length != 0">
                                 <template v-if="component.type == 'data-load'">
                                     <template v-for="(model, index) in component.params">
-                                        <div class="form-group row">
+                                        <div class="form-group row" v-if="!('dependsOn' in model) || ('dependsOn' in model && component.params[model.dependsOn].default)">
                                             <label :for="model.name" class="col-sm-3 col-form-label">{{model.label[lang]}}</label>
                                             <div class="col-sm-8">
                                                 <template v-if="model.type == 'list'">
@@ -580,7 +580,7 @@
                                 </template>
                                 <template v-else>
                                     <template v-for="(model, index) in component.params">
-                                        <div class="form-group row">
+                                        <div class="form-group row" v-if="!('dependsOn' in model) || ('dependsOn' in model && component.params[model.dependsOn].default)">
                                             <label :for="model.name" class="col-sm-3 col-form-label">{{model.label[lang]}}</label>
                                             <div class="col-sm-8">
                                                 <template v-if="model.type == 'list'">
@@ -596,10 +596,12 @@
                                                     </select>
                                                 </template>
                                                 <template v-else-if="model.type == 'richtext'">
-                                                    <textarea class="form-control" :type="model.type" :name="model.name"
-                                                              :placeholder="model.default"
-                                                              :disabled="model.configurable"
-                                                              v-model="model.default">{{model.default}}</textarea>
+                                                    <template v-if="model.dependsOn != undefined">
+                                                        <textarea class="form-control" :type="model.type" :name="model.name"
+                                                                  :placeholder="model.default"
+                                                                  :disabled="model.configurable"
+                                                                  v-model="model.default">{{model.default}}</textarea>
+                                                    </template>
                                                 </template>
                                                 <template v-else-if="model.type == 'file'">
                                                     <a href="javascript:;" class="file-upload">
@@ -611,7 +613,7 @@
                                                                :placeholder="model.default"
                                                                accept="text/csv" @change="getFile($event)" multiple>
                                                     </a>
-                                                    <span class="file-upload-path">{{model.default}}</span>
+                                                    <span class="file-upload-path">{{cutString(model.default)}}</span>
                                                 </template>
                                                 <template v-else>
                                                     <template v-if="model.name == 'variable'">
@@ -732,6 +734,7 @@
                         //逻辑处理
                         if (vm.path.id != "") {
                             onPathDelete(vm.path.id);
+                            return;
                         }
                         if (vm.component.id != "") {
                             onComponentDelete(vm.component.id, vm.component.type);
@@ -830,12 +833,7 @@
                     }
                 });
             },
-            deployWorkflow: function () {
-                // 工作流无节点，返回false
-                if (vm.flows[vm.currentFlowId].nodes.length == 0) {
-                    alert("工作流无节点！");
-                    return false;
-                }
+            deployWorkflow: function (callback=null) {
                 // 发送工作流
                 $.ajax({
                     url: api_map.workflow_deploy + "?type=1",
@@ -863,6 +861,9 @@
                         alert('啊哦，服务器连接失败了～');
                     }
                 });
+                if (callback != null) {
+                    callback();
+                }
             },
             saveWorkflow: function () {
                 console.log('保存工作流');
@@ -889,14 +890,16 @@
 
                 for (let index in vm.flows[vm.currentFlowId].nodes) {
                     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
-                    vm.onNodeRun(nodeId);
                     if (!vm.checkNodeStatus(nodeId)) {
-                        vm.onNodeStop(nodeId);
-                        return false;
+                        continue;
                     }
+                    let nodeStatus = {};
+                    nodeStatus[nodeId] = status_map.RUNNING;
+                    updateNodeStatus(nodeStatus);
                 }
 
-                console.log('运行节点');
+                console.log('run workflow on docker');
+
                 // 运行节点
                 $.ajax({
                     url: api_map.workflow_run,
@@ -937,15 +940,14 @@
 
                 for (let index in vm.flows[vm.currentFlowId].nodes) {
                     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
-                    // 如果状态正确，显示启动
-                    vm.onNodeRun(nodeId);
                     if (!vm.checkNodeStatus(nodeId)) {
-                        vm.onNodeStop(nodeId);
-                        return false;
+                        continue;
                     }
+                    let nodeStatus = {};
+                    nodeStatus[nodeId] = status_map.RUNNING;
+                    updateNodeStatus(nodeStatus);
                 }
-
-                console.log('运行节点');
+                console.log('run workflow on k8s');
                 // 运行节点
                 $.ajax({
                     url: api_map.workflow_run2,
@@ -1095,58 +1097,65 @@
             },
 
             upload: function (nodeId) {
-                console.log('上传文件', nodeId);
-                //vm.uploadFilePaths = vm.uploadFilePaths || getCookieValue(nodeId);
-                if (vm.uploadFilePaths == null) {
-                    console.error('文件为空');
-                    return;
-                }
-                JSON.stringify('文件', vm.uploadFilePaths.name);
-                var formData = new FormData();
-                formData.append('token', workflow.token);
-                formData.append('flowId', vm.currentFlowId);
-                formData.append('nodeId', nodeId);
-                formData.append('file', vm.uploadFilePaths);
-                JSON.stringify(formData);
-                $.ajax({
-                    url: api_map.data_upload,
-                    type: 'POST',
-                    data: formData,
-                    cache: false,       //上传文件不需缓存
-                    processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
-                    contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
-                    beforeSend: function () {
-                        vm.onNodeRun(nodeId);
-                    },
-                    success: function (res) {
-                        if (res.code == 0) {
-                            updateNodeStatus(res.data.status);
-                            return true;
-                        } else {
-                            alert(res.msg);
-                            vm.onNodeStop(nodeId);
-                            return false;
-                        }
-                    },
-                    error: function () {
-                        vm.onNodeStop(nodeId);
-                    },
-                    complete: function () {
-                        vm.uploadFilePaths = null;
-                        vm.uploadFile = false;
+                vm.deployWorkflow(function () {
+                    console.log('上传文件', nodeId);
+                    //vm.uploadFilePaths = vm.uploadFilePaths || getCookieValue(nodeId);
+                    if (vm.uploadFilePaths == null) {
+                        console.error('文件为空');
+                        alert('错误：文件为空！请选择上传文件。');
+                        return false;
                     }
+                    JSON.stringify('文件', vm.uploadFilePaths.name);
+                    var formData = new FormData();
+                    formData.append('token', workflow.token);
+                    formData.append('flowId', vm.currentFlowId);
+                    formData.append('nodeId', nodeId);
+                    formData.append('file', vm.uploadFilePaths);
+                    JSON.stringify(formData);
+                    $.ajax({
+                        url: api_map.data_upload,
+                        type: 'POST',
+                        data: formData,
+                        cache: false,       //上传文件不需缓存
+                        processData: false, //需设置为false。因为data值是FormData对象，不需要对数据做处理
+                        contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
+                        beforeSend: function () {
+                            vm.onNodeRun(nodeId);
+                        },
+                        success: function (res) {
+                            if (res.code == 0) {
+                                updateNodeStatus(res.data.status);
+                                return true;
+                            } else {
+                                alert(res.msg);
+                                vm.onNodeStop(nodeId);
+                                return false;
+                            }
+                        },
+                        error: function () {
+                            vm.onNodeStop(nodeId);
+                        },
+                        complete: function () {
+                            vm.uploadFilePaths = null;
+                            vm.uploadFile = false;
+                            vm.getDataSetList();
+                        }
+                    });
+                    return true;
                 });
             },
             runNode: function (nodeId) {
-                vm.onNodeRun(nodeId);
                 if (!vm.checkNodeStatus(nodeId)) {
-                    vm.onNodeStop(nodeId);
                     return false;
                 }
                 // 如果是上传文件
                 if (workflow.task[nodeId].type == "data-upload") {
-                    vm.upload(nodeId);
+
+                    return vm.upload(nodeId);
                 } else {
+                    let nodeStatus = {};
+                    nodeStatus[nodeId] = status_map.RUNNING;
+                    updateNodeStatus(nodeStatus);
                     // 发送请求
                     $.ajax({
                         url: api_map.node_run,
@@ -1156,15 +1165,21 @@
                             nodeId: nodeId
                         },
                         dataType: 'json',
+                        beforeSend: function () {
+
+                        },
                         success: function (res) {
                             if (res.code == 0) {
                                 console.log('节点运行中...');
                             } else {
                                 alert(res.msg);
-                                let nodeStatus = {};
                                 nodeStatus[nodeId] = res.code;
                                 updateNodeStatus(nodeStatus);
                             }
+                        },
+                        error: function () {
+                            nodeStatus[nodeId] = status_map.RUN_ERROR;
+                            updateNodeStatus(nodeStatus);
                         }
                     });
                 }
@@ -1229,15 +1244,17 @@
                 // Check: 检测节点状态是否满足要求
                 var node = $('#' + nodeId);
                 var status = node.attr('status');
-                if (status == 1 && callback != null) {
+                if (status == status_map.INIT_SUCCESS && callback != null) {
                     callback();
                 }
-                if (status == 3 || status == 7) {
-                    alert('状态不正确');
+                if (status == status_map.RUNNING || status == status_map.DEACTIVATE) {
+                    // alert('状态不正确');
                     return false;
                 }
-                if (status == 4) {
-                    console.log('run again');
+                if (status == status_map.RUN_SUCCESS) {
+                    if (run_policy == run_policy_map.MODIFIED_NODE) {
+                        return false;
+                    }
                 }
                 return true;
             },
@@ -1253,8 +1270,8 @@
                     let nodeId = nodes[i];
                     if (workflow.task[nodeId].type == 'data-upload'
                             && workflow.task[nodeId].path
-                            && (workflow.task[nodeId].status == 1
-                            || workflow.task[nodeId].status == 7)) {
+                            && (workflow.task[nodeId].status == status_map.INIT_SUCCESS
+                            || workflow.task[nodeId].status == status_map.DEACTIVATE)) {
                         vm.upload(nodeId);
                     }
                 }
@@ -1333,7 +1350,7 @@
                     success: function (res) {
                         if (res.code == 0) {
                             vm.dataSets = res.data;
-                            for (let id in vm.dataSets){
+                            for (let id in vm.dataSets) {
                                 vm.dataSet = vm.dataSets[id];
                                 break;
                             }
@@ -1368,6 +1385,9 @@
             onRowSelected: function (id) {
                 let type = workflow.task[id].type;
                 onComponentDetail(id, type);
+            },
+            cutString: function (str) {
+                return cutstr(str, 20);
             },
             update: function () {
                 // 先重置各状态

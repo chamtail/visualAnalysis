@@ -108,7 +108,8 @@
       "list": ["Long", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH", "yyyy-MM-dd"],
       "default": "Long",
       "enable": true,
-      "configurable": true
+      "configurable": true,
+      "dependsOn": "with_timestamp"
     },
     {
       "name": "read_number",
