@@ -6,11 +6,11 @@
     "api": "/user/login"
   },
   "user_logout": {
-  "protocol": "http",
-  "host": "localhost",
-  "port": 8000,
-  "api": "/user/logout"
-},
+    "protocol": "http",
+    "host": "localhost",
+    "port": 8000,
+    "api": "/user/logout"
+  },
   "user_register": {
     "protocol": "http",
     "host": "localhost",

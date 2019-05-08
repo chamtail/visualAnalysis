@@ -1,6 +1,6 @@
 {
   "display": {
-    "zh": "matrix-profile",
+    "zh": "模式挖掘(matrix-profile)",
     "en": "compute mp for timeseries"
   },
   "in": 1,

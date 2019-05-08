@@ -1,6 +1,6 @@
 {
   "display": {
-    "zh": "mpmotif",
+    "zh": "模式挖掘(mpmotif)",
     "en": "compute motif based on matrix-profile"
   },
   "in": 1,

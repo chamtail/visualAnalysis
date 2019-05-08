@@ -1,6 +1,6 @@
 {
   "display": {
-    "zh": "stl",
+    "zh": "异常检测(STL)",
     "en": "outlier detection"
   },
   "in": 1,
@@ -62,6 +62,6 @@
       "configurable": false
     }
   ],
-  "description": "",
+  "description": "异常检测",
   "category": "process/outlier"
 }

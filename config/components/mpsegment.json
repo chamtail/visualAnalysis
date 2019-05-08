@@ -1,6 +1,6 @@
 {
   "display": {
-    "zh": "mpsegment",
+    "zh": "分段(mpsegment)",
     "en": "segmentation based on matrix-profile"
   },
   "in": 1,

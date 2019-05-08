@@ -13,7 +13,7 @@
         "en": "data set file"
       },
       "type": "file",
-      "default": "",
+      "default": [],
       "enable": true,
       "configurable": true,
       "tip": ""
