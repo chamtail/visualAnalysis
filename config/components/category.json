@@ -25,38 +25,14 @@
   },
   "outlier":{
     "display": {
-      "zh": "异常处理模块",
-      "en": "outlier module"
+      "zh": "无监督聚类模块",
+      "en": "unsupervised cluster module"
     }
   },
   "classification":{
     "display": {
       "zh": "分类模块",
       "en": "classification module"
-    }
-  },
-  "segmentation":{
-    "display": {
-      "zh": "分段模块",
-      "en": "segmentation module"
-    }
-  },
-  "clustering":{
-    "display": {
-      "zh": " 聚类模块",
-      "en": "clustering module"
-    }
-  },
-  "motif":{
-    "display": {
-      "zh": "模式挖掘模块",
-      "en": "motif module"
-    }
-  },
-  "coefficient":{
-    "display": {
-      "zh": " 相关系数模块",
-      "en": "coefficient module"
     }
   }
 }

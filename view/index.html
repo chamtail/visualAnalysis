@@ -835,35 +835,40 @@
             },
             deployWorkflow: function (callback=null) {
                 // 发送工作流
-                $.ajax({
-                    url: api_map.workflow_deploy + "?type=1",
-                    type: 'POST',
-                    data: JSON.stringify(workflow),
-                    contentType: 'application/json',
-                    beforeSend: function () {
+                // $.ajax({
+                //     url: api_map.workflow_deploy + "?type=1",
+                //     type: 'POST',
+                //     data: JSON.stringify(workflow),
+                //     contentType: 'application/json',
+                //     beforeSend: function () {
                         console.log('before deploy');
-                        // 防止多次部署
+                //         // 防止多次部署
                         vm.disabledA('#btn-deploy');
-                    },
-                    success: function (res) {
-                        if (res.code == 0) {
-                            workflow.token = res.data.token;
-                            updateNodeStatus(res.data.status);
-                        } else {
-                            alert(res.msg);
-                            vm.enableA('#btn-deploy');
-                        }
-                    },
-                    complete: function () {
-                        console.log('deploy complete');
-                    },
-                    error: function (res) {
-                        alert('啊哦，服务器连接失败了～');
-                    }
-                });
-                if (callback != null) {
-                    callback();
-                }
+                //     },
+                //     success: function (res) {
+                //         if (res.code == 0) {
+                            workflow.token = "admin";
+                            console.log("deployWorkFlow");
+                            let status = {};
+              for (let taskKey in workflow.task) {
+                status[taskKey] = 1;
+              }
+                            updateNodeStatus(status);
+                //         } else {
+                //             alert(res.msg);
+                //             vm.enableA('#btn-deploy');
+                //         }
+                //     },
+                //     complete: function () {
+                //         console.log('deploy complete');
+                //     },
+                //     error: function (res) {
+                //         alert('啊哦，服务器连接失败了～');
+                //     }
+                // });
+                // if (callback != null) {
+                //     callback();
+                // }
             },
             saveWorkflow: function () {
                 console.log('保存工作流');
@@ -882,53 +887,72 @@
                 });
             },
             runWorkflow: function () {
+              console.log("run workflow");
+              setInterval(function(){
+                let status = {};
+                for (let taskKey in workflow.task) {
+                  status[taskKey] = workflow.task[taskKey].status;
+                }
+                for (let taskKey in workflow.task) {
+                  if (workflow.task[taskKey].status === 3) {
+                    status[taskKey] = 4;
+                  }
+                }
+                for (let taskKey in workflow.task) {
+                  if (workflow.task[taskKey].status === 1) {
+                    status[taskKey] = 3;
+                    break;
+                  }
+                }
+                updateNodeStatus(status);
+              }, 1000);
                 // 如果无节点，返回false
-                if (vm.flows[vm.currentFlowId].nodes.length == 0) {
-                    alert("工作流无节点！");
-                    return false;
-                }
-
-                for (let index in vm.flows[vm.currentFlowId].nodes) {
-                    let nodeId = vm.flows[vm.currentFlowId].nodes[index];
-                    if (!vm.checkNodeStatus(nodeId)) {
-                        continue;
-                    }
-                    let nodeStatus = {};
-                    nodeStatus[nodeId] = status_map.RUNNING;
-                    updateNodeStatus(nodeStatus);
-                }
-
-                console.log('run workflow on docker');
-
-                // 运行节点
-                $.ajax({
-                    url: api_map.workflow_run,
-                    type: 'POST',
-                    data: {
-                        token: workflow.token,
-                        flowId: vm.currentFlowId
-                    },
-                    dataType: 'json',
-                    beforeSend: function () {
-                        vm.disabledA('#btn-run');
-                    },
-                    success: function (res) {
-                        if (res.code == 0) {
-                            console.log("节点们正在运行。。。");
-                        } else {
-                            alert(res.msg);
-                            let nodeStatus = {};
-                            for (let index in workflow.task[vm.currentFlowId].nodes) {
-                                let nodeId = workflow.task[vm.currentFlowId].nodes[index];
-                                nodeStatus[nodeId] = res.code;
-                            }
-                            updateNodeStatus(nodeStatus);
-                        }
-                    },
-                    complete: function () {
-                        vm.enableA('#btn-run');
-                    }
-                });
+                // if (vm.flows[vm.currentFlowId].nodes.length == 0) {
+                //     alert("工作流无节点！");
+                //     return false;
+                // }
+                //
+                // for (let index in vm.flows[vm.currentFlowId].nodes) {
+                //     let nodeId = vm.flows[vm.currentFlowId].nodes[index];
+                //     if (!vm.checkNodeStatus(nodeId)) {
+                //         continue;
+                //     }
+                //     let nodeStatus = {};
+                //     nodeStatus[nodeId] = status_map.RUNNING;
+                //     updateNodeStatus(nodeStatus);
+                // }
+                //
+                // console.log('run workflow on docker');
+                //
+                // // 运行节点
+                // $.ajax({
+                //     url: api_map.workflow_run,
+                //     type: 'POST',
+                //     data: {
+                //         token: workflow.token,
+                //         flowId: vm.currentFlowId
+                //     },
+                //     dataType: 'json',
+                //     beforeSend: function () {
+                //         vm.disabledA('#btn-run');
+                //     },
+                //     success: function (res) {
+                //         if (res.code == 0) {
+                //             console.log("节点们正在运行。。。");
+                //         } else {
+                //             alert(res.msg);
+                //             let nodeStatus = {};
+                //             for (let index in workflow.task[vm.currentFlowId].nodes) {
+                //                 let nodeId = workflow.task[vm.currentFlowId].nodes[index];
+                //                 nodeStatus[nodeId] = res.code;
+                //             }
+                //             updateNodeStatus(nodeStatus);
+                //         }
+                //     },
+                //     complete: function () {
+                //         vm.enableA('#btn-run');
+                //     }
+                // });
 
             },
             runWorkflow2: function () {
@@ -1097,7 +1121,7 @@
             },
 
             upload: function (nodeId) {
-                vm.deployWorkflow(function () {
+                //vm.deployWorkflow(function () {
                     console.log('上传文件', nodeId);
                     //vm.uploadFilePaths = vm.uploadFilePaths || getCookieValue(nodeId);
                     if (vm.uploadFilePaths == null) {
@@ -1142,7 +1166,7 @@
                         }
                     });
                     return true;
-                });
+                // });
             },
             runNode: function (nodeId) {
                 if (!vm.checkNodeStatus(nodeId)) {

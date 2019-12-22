@@ -9,9 +9,9 @@
       "description": "这是一个新flow",
       "nodes": [
         "1546927651975",
+        "1546927653868",
         "1546927655331",
-        "1546927655332",
-        "1546927655333"
+        "1544772782611"
       ]
     },
     "1546927651975": {
@@ -19,9 +19,8 @@
       "type": "data-upload",
       "status": 7,
       "links": [
-        "1546927655331",
-        "1546927655332",
-        "1546927655333"
+        "1546927653868",
+        "1544772782611"
       ],
       "show": true,
       "x": 35.5,
@@ -34,6 +33,25 @@
       "variable": "a",
       "size": "100*2",
       "inputs": 0,
+      "outputs": 1
+    },
+    "1546927653868": {
+      "id": 1546927653868,
+      "type": "prehandle",
+      "status": 7,
+      "links": [
+        "1546927655331"
+      ],
+      "show": true,
+      "x": 213.5,
+      "y": 65,
+      "z": "1",
+      "label": "标准化   ",
+      "strategy": "zscore",
+      "description": "",
+      "variable": "b",
+      "size": "100*2",
+      "inputs": 1,
       "outputs": 1
     },
     "1546927655331": {
@@ -54,39 +72,20 @@
       "inputs": 1,
       "outputs": 1
     },
-    "1546927655332": {
-      "id": 1546927655332,
-      "type": "stl",
+    "1544772782611": {
+      "id": 1544772782611,
+      "type": "prehandle",
       "status": 7,
       "links": [],
-      "show": true,
-      "x": 284.5,
-      "y": 158,
+      "show": false,
+      "x": 52,
+      "y": 196,
       "z": "1",
-      "label": "异常检测   ",
-      "maxanoms": 0.02,
-      "day": "day",
+      "label": "标准化   ",
+      "strategy": "zscore",
       "description": "",
-      "variable": "c",
-      "size": "100*1",
-      "inputs": 1,
-      "outputs": 1
-    },
-    "1546927655333": {
-      "id": 1546927655333,
-      "type": "stl",
-      "status": 7,
-      "links": [],
-      "show": true,
-      "x": 284.5,
-      "y": 158,
-      "z": "1",
-      "label": "异常检测   ",
-      "maxanoms": 0.02,
-      "day": "day",
-      "description": "",
-      "variable": "c",
-      "size": "100*1",
+      "variable": "d",
+      "size": "100*2",
       "inputs": 1,
       "outputs": 1
     }
@@ -94,7 +93,7 @@
   "used": {
     "flow": 1,
     "data-upload": 1,
-    "prehandle": 0,
+    "prehandle": 2,
     "stl": 1
   }
 }

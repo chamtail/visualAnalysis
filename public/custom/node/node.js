@@ -292,6 +292,7 @@ function updateNode(id, translate) {
 
 // 更新节点状态
 function updateNodeStatus(status) {
+    console.log("updateNodeStatus");
     for (let nodeId in status) {
         //console.log('更新节点', nodeId);
         let s = $('#' + nodeId).attr('status');
@@ -552,47 +553,49 @@ function resetPathParams() {
 // 显示组件
 function onComponentDetail(id, type, force = false) {
     // 过滤重复事件
-    if (id == vm.component.id && type == vm.component.type && !force) {
-        console.log(vm.component.id, vm.component.type);
-        console.log('重复点击组件，事件无效！');
-        return;
-    }
-    // 更新状态
-    vm.update();
-    // 更新组件信息
-    vm.component = getComponent(id, type, vm.lang);
-    if (type == 'flow') {
-        return;
-    }
-    let node = $('#' + id);
-    node.addClass('active');
-    console.log('显示节点细节&显示节点可视化');
-    // 如果该节点状态为已运行, 则进行可视化
-    let status = node.attr('status');
-    if (status == status_map.RUN_SUCCESS) {
-        if (vm.variableSpace[workflow.currentFlowId][id] && vm.variableSpace[workflow.currentFlowId][id].size == "1*1") {
-            return;
-        }
-        console.log("可视化");
-        $.ajax({
-            url: api_map.data_info,
-            type: 'POST',
-            data: {
-                token: workflow.token,
-                nodeId: id,
-                limit: 0
-            },
-            dataType: 'json',
-            success: function (res) {
-                if (res.code == 0) {
-                    console.log(res);
-                    visualize(res.data);
-                } else {
-                    alert(res.msg);
-                }
-            }
-        });
-    }
+    // if (id == vm.component.id && type == vm.component.type && !force) {
+    //     console.log(vm.component.id, vm.component.type);
+    //     console.log('重复点击组件，事件无效！');
+    //     return;
+    // }
+    // // 更新状态
+    // vm.update();
+    // // 更新组件信息
+    // vm.component = getComponent(id, type, vm.lang);
+    // if (type == 'flow') {
+    //     return;
+    // }
+    // let node = $('#' + id);
+    // node.addClass('active');
+    // console.log('显示节点细节&显示节点可视化');
+    // // 如果该节点状态为已运行, 则进行可视化
+    // let status = node.attr('status');
+    // if (status == status_map.RUN_SUCCESS) {
+    //     if (vm.variableSpace[workflow.currentFlowId][id] && vm.variableSpace[workflow.currentFlowId][id].size == "1*1") {
+    //         return;
+    //     }
+    //     console.log("可视化");
+    //     $.ajax({
+    //         url: api_map.data_info,
+    //         type: 'POST',
+    //         data: {
+    //             token: workflow.token,
+    //             nodeId: id,
+    //             limit: 0
+    //         },
+    //         dataType: 'json',
+    //         success: function (res) {
+    //             if (res.code == 0) {
+    //                 console.log(res);
+    //                 visualize(res.data);
+    //             } else {
+    //                 alert(res.msg);
+    //             }
+    //         }
+    //     });
+    // }
+
+  // visualize(data);
 }
 
 // 配置组件
@@ -800,10 +803,14 @@ function onPathDelete(id) {
 
 // 加载工作流
 function loadWorkflow(workflowFile) {
-    $.getJSON('../config/' + workflowFile + '.json', function (data) {
+    $.getJSON('../debug/workflow/' + workflowFile + '.json', function (data) {
         workflow = data;
         vm.updateWorkflow(workflow);
     });
+}
+
+function saveWorkflow(){
+    console.log(JSON.stringify(workflow));
 }
 
 // 可视化
@@ -815,6 +822,11 @@ function visualize(data) {
         case "data-upload":
         case "data-load":
         case "prehandle":
+        case "build-feature-database":
+        case "feature-select":
+      case "kmeans":
+      case "knn":
+      case "svm":
             $('#data-load').attr('style', 'display:block');
             showGraph(data.result);
             break;

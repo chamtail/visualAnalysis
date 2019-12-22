@@ -1,42 +1,21 @@
 {
   "display": {
-    "zh": "异常检测(STL)",
-    "en": "outlier detection"
+    "zh": "kmeans",
+    "en": "kmeans"
   },
   "in": 1,
   "out": 1,
   "params": [
     {
-      "name": "maxanoms",
+      "name": "Number",
       "label": {
-        "zh": "最大异常",
-        "en": "max anoms"
+        "zh": "聚类数目",
+        "en": "Cluster number"
       },
       "type": "number",
-      "default": 0.02,
+      "min": 1,
+      "default": 1,
       "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "time",
-      "label": {
-        "zh": "时间粒度",
-        "en": "time"
-      },
-      "type": "text",
-      "default": "day",
-      "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "variable",
-      "label": {
-        "zh": "变量名称",
-        "en": "variable name"
-      },
-      "type": "text",
-      "default": "",
-      "enable": false,
       "configurable": true
     },
     {
@@ -62,6 +41,6 @@
       "configurable": false
     }
   ],
-  "description": "异常检测",
+  "description": "kmeans",
   "category": "process/outlier"
 }

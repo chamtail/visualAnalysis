@@ -43,43 +43,15 @@
       "tip": ""
     },
     {
-      "name": "save2database",
+      "name": "tagColumnNo",
       "label": {
-        "zh": "存储至数据库",
+        "zh": "标签列号",
         "en": "save to database"
       },
-      "type": "checkbox",
-      "default": false,
+      "type": "text",
+      "default": "",
       "enable": true,
       "configurable": true,
-      "tip": ""
-    },
-    {
-      "name": "db-type",
-      "label": {
-        "zh": "数据库类型",
-        "en": "database type"
-      },
-      "type": "list",
-      "list": ["InfluxDB", "IOTDB"],
-      "default": "InfluxDB",
-      "enable": true,
-      "configurable": true,
-      "dependsOn": "save2database",
-      "tip": ""
-    },
-    {
-      "name": "orientation",
-      "label": {
-        "zh": "方向",
-        "en": "orientation"
-      },
-      "type": "list",
-      "list": ["行存储", "列存储"],
-      "default": "行存储",
-      "enable": true,
-      "configurable": true,
-      "dependsOn": "save2database",
       "tip": ""
     },
     {

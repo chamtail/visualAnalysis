@@ -3,18 +3,11 @@
   "data-upload": "enable",
   "data-load": "enable",
   "prehandle": "enable",
-  "stl": "enable",
-  "fsh": "enable",
+  "build-feature-database": "enable",
+  "feature-select": "enable",
+  "knn": "enable",
+  "svm": "enable",
   "data-save": "enable",
-  "model-save": "enable",
-  "seql": "enable",
-  "elis": "enable",
   "kshape":"enable",
-  "hime":"enable",
-  "rshash":"enable",
-  "jocor":"enable",
-  "matrix-profile":"enable",
-  "lts":"enable",
-  "mpmotif":"enable",
-  "mpsegment":"enable"
+  "kmeans":"enable"
 }

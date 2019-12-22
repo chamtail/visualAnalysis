@@ -1,22 +1,11 @@
 {
   "display": {
-    "zh": "导出模型",
-    "en": "export model"
+    "zh": "构建特征库",
+    "en": "build feature database"
   },
   "in": 1,
-  "out": 0,
+  "out": 1,
   "params": [
-    {
-      "name": "model_path",
-      "label": {
-        "zh": "模型名称",
-        "en": "model name"
-      },
-      "type": "text",
-      "default": "",
-      "enable": true,
-      "configurable": true
-    },
     {
       "name": "inputs",
       "label": {
@@ -35,11 +24,11 @@
         "en": "output number"
       },
       "type": "number",
-      "default": 0,
+      "default": 1,
       "enable": false,
       "configurable": false
     }
   ],
   "description": "",
-  "category": "output"
+  "category": "process/pre-process"
 }

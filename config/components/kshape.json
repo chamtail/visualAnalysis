@@ -1,34 +1,11 @@
 {
   "display": {
-    "zh": "聚类(KShape)",
-    "en": "clustering"
+    "zh": "kshape",
+    "en": "kshape"
   },
   "in": 1,
   "out": 1,
   "params": [
-    {
-      "name": "num_of_clusters",
-      "label": {
-        "zh": "聚类类数",
-        "en": "num_of_clusters"
-      },
-      "type": "number",
-      "min": 1,
-      "default": 2,
-      "enable": true,
-      "configurable": true
-    },
-    {
-      "name": "variable",
-      "label": {
-        "zh": "变量名称",
-        "en": "variable name"
-      },
-      "type": "text",
-      "default": "",
-      "enable": false,
-      "configurable": true
-    },
     {
       "name": "inputs",
       "label": {
@@ -52,6 +29,6 @@
       "configurable": false
     }
   ],
-  "description": "A node for time series data clustering",
-  "category": "process/clustering"
+  "description": "kshape",
+  "category": "process/outlier"
 }
