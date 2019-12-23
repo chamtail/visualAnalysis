@@ -1,0 +1,34 @@
+{
+  "display": {
+    "zh": "可视化",
+    "en": "visualize"
+  },
+  "in": 1,
+  "out": 0,
+  "params": [
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 0,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "可视化",
+  "category": "output"
+}

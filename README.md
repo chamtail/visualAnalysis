@@ -1,7 +1,7 @@
 # visualAnalysis
 
 #### Description
-数据流可视化分析平台
+时间序列聚类分类可视化分析平台
 
 #### Software Architecture
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1123/100828_73209334_2141312.jpeg "实验室时间序列可视化分析平台.jpg")

@@ -6,6 +6,8 @@
   "build-feature-database": "enable",
   "feature-select": "enable",
   "knn": "enable",
+  "decision-tree": "enable",
+  "visualize": "enable",
   "svm": "enable",
   "data-save": "enable",
   "kshape":"enable",

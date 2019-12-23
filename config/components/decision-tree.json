@@ -1,0 +1,34 @@
+{
+  "display": {
+    "zh": "决策树",
+    "en": "decision-tree"
+  },
+  "in": 1,
+  "out": 1,
+  "params": [
+    {
+      "name": "inputs",
+      "label": {
+        "zh": "输入节点个数",
+        "en": "input number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    },
+    {
+      "name": "outputs",
+      "label": {
+        "zh": "输出节点个数",
+        "en": "output number"
+      },
+      "type": "number",
+      "default": 1,
+      "enable": false,
+      "configurable": false
+    }
+  ],
+  "description": "决策树",
+  "category": "process/classification"
+}

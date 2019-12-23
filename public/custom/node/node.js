@@ -75,14 +75,14 @@ function init() {
             // 记录节点
             workflow.task[node.id] = node;
             // 当前flow下记录该节点
-            workflow.task[workflow.currentFlowId].nodes.push(node.id.toString());
+            // workflow.task[workflow.currentFlowId].nodes.push(node.id.toString());
             // 计录节点使用情况
             if (!workflow.used[node.type]) {
                 workflow.used[node.type] = 0;
             }
             workflow.used[node.type] += 1;
             // 更新workflow
-            vm.updateWorkflow(workflow, node.id);
+            // vm.updateWorkflow(workflow, node.id);
             vm.enableA('#btn-deploy');
         }
     });
@@ -595,6 +595,7 @@ function onComponentDetail(id, type, force = false) {
     //     });
     // }
 
+  // todo 可视化
   // visualize(data);
 }
 
