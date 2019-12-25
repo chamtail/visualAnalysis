@@ -553,47 +553,47 @@ function resetPathParams() {
 // 显示组件
 function onComponentDetail(id, type, force = false) {
     // 过滤重复事件
-    // if (id == vm.component.id && type == vm.component.type && !force) {
-    //     console.log(vm.component.id, vm.component.type);
-    //     console.log('重复点击组件，事件无效！');
-    //     return;
-    // }
-    // // 更新状态
-    // vm.update();
-    // // 更新组件信息
-    // vm.component = getComponent(id, type, vm.lang);
-    // if (type == 'flow') {
-    //     return;
-    // }
-    // let node = $('#' + id);
-    // node.addClass('active');
-    // console.log('显示节点细节&显示节点可视化');
-    // // 如果该节点状态为已运行, 则进行可视化
-    // let status = node.attr('status');
-    // if (status == status_map.RUN_SUCCESS) {
-    //     if (vm.variableSpace[workflow.currentFlowId][id] && vm.variableSpace[workflow.currentFlowId][id].size == "1*1") {
-    //         return;
-    //     }
-    //     console.log("可视化");
-    //     $.ajax({
-    //         url: api_map.data_info,
-    //         type: 'POST',
-    //         data: {
-    //             token: workflow.token,
-    //             nodeId: id,
-    //             limit: 0
-    //         },
-    //         dataType: 'json',
-    //         success: function (res) {
-    //             if (res.code == 0) {
-    //                 console.log(res);
-    //                 visualize(res.data);
-    //             } else {
-    //                 alert(res.msg);
-    //             }
-    //         }
-    //     });
-    // }
+    if (id == vm.component.id && type == vm.component.type && !force) {
+        console.log(vm.component.id, vm.component.type);
+        console.log('重复点击组件，事件无效！');
+        return;
+    }
+    // 更新状态
+    vm.update();
+    // 更新组件信息
+    vm.component = getComponent(id, type, vm.lang);
+    if (type == 'flow') {
+        return;
+    }
+    let node = $('#' + id);
+    node.addClass('active');
+    console.log('显示节点细节&显示节点可视化');
+    // 如果该节点状态为已运行, 则进行可视化
+    let status = node.attr('status');
+    if (status == status_map.RUN_SUCCESS) {
+        if (vm.variableSpace[workflow.currentFlowId][id] && vm.variableSpace[workflow.currentFlowId][id].size == "1*1") {
+            return;
+        }
+        console.log("可视化");
+        $.ajax({
+            url: api_map.data_info,
+            type: 'POST',
+            data: {
+                token: workflow.token,
+                nodeId: id,
+                limit: 0
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (res.code == 0) {
+                    console.log(res);
+                    visualize(res.data);
+                } else {
+                    alert(res.msg);
+                }
+            }
+        });
+    }
 
   // todo 可视化
   // visualize(data);
