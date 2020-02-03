@@ -15,7 +15,7 @@ var colors = [
     "#ee8b22"
 ];
 
-const pageSize = 2;
+const pageSize = 3;
 
 let imageCount = [];
 
@@ -83,7 +83,7 @@ function showCluster(data) {
         rightContainer.setAttribute('class', 'right-container');
         line.appendChild(rightContainer);
 
-        for (var j = 0; j < seriesInfo[i].length && j < imageIndex[i] + pageSize + 1; ++j) {
+        for (var j = imageIndex[i] + 1; j < seriesInfo[i].length && j < imageIndex[i] + pageSize + 1; ++j) {
             var imageContainer;
             let id= i.toString() + ',' + j.toString();
             if (j === 0) {
@@ -157,9 +157,9 @@ function showCluster(data) {
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
             }
-            if (j === 0) {
-                j = imageIndex[i];
-            }
+            // if (j === 0) {
+            //     j = imageIndex[i];
+            // }
         }
         let pageContainer = document.createElement("div");
         pageContainer.setAttribute('class', 'page-container');

@@ -1,7 +1,7 @@
 {
   "display": {
-    "zh": "kmeans",
-    "en": "kmeans"
+    "zh": "k-means",
+    "en": "k-means"
   },
   "in": 1,
   "out": 1,
