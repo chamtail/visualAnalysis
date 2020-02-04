@@ -15,7 +15,7 @@ var colors = [
     "#ee8b22"
 ];
 
-const pageSize = 3;
+const pageSize = 1;
 
 let imageCount = [];
 
@@ -51,7 +51,6 @@ function refreshCluster() {
 }
 
 function initCluster(data) {
-    currentData = data;
     const clusterNum = data.Num;
     const seriesInfo = data.Series;
     imageCount = [];
@@ -64,6 +63,9 @@ function initCluster(data) {
 }
 
 function showCluster(data) {
+    if (currentData === data) {
+        return;
+    }
     currentData = data;
     var dom = document.getElementById("cluster");
     while (dom.firstChild) {
@@ -72,6 +74,7 @@ function showCluster(data) {
     var clusterNum = data.Num;
     var seriesInfo = data.Series;
     for (var i = 0; i < clusterNum; i++) {
+        let j;
         const line = document.createElement("div");
         line.setAttribute("class", "line");
         dom.appendChild(line);
@@ -83,23 +86,11 @@ function showCluster(data) {
         rightContainer.setAttribute('class', 'right-container');
         line.appendChild(rightContainer);
 
-        for (var j = imageIndex[i] + 1; j < seriesInfo[i].length && j < imageIndex[i] + pageSize + 1; ++j) {
-            var imageContainer;
-            let id= i.toString() + ',' + j.toString();
-            if (j === 0) {
-                imageContainer = leftContainer;
-            } else {
-                let container = document.createElement("div");
-
-                container.setAttribute('class', 'cluster-image');
-                container.setAttribute('id',id);
-                rightContainer.appendChild(container);
-                imageContainer = container;
-            }
-            var myChart = echarts.init(imageContainer);
-            let option = null;
+        const seriesData = [];
+        console.log("show cluster");
+        for (j = 1; j < seriesInfo[i].length; ++j) {
             var lineColor = j === 0 ? '#000000' : colors[i];
-            var series = [
+            seriesData.push(
                 {
                     type: 'line',
                     itemStyle: {
@@ -113,8 +104,20 @@ function showCluster(data) {
                     },
                     data: seriesInfo[i][j].map(function (item) {
                         return item[1];
-                    }),
-                }];
+                    })
+                });
+        }
+
+            var imageContainer;
+            let id= i.toString();
+                let container = document.createElement("div");
+
+                container.setAttribute('class', 'cluster-image');
+                container.setAttribute('id',id);
+                rightContainer.appendChild(container);
+                imageContainer = container;
+            var myChart = echarts.init(imageContainer);
+            let option = null;
             let xAxis = seriesInfo[i].map(function (items) {
                 return items.map(function (item) {
                     return item[0];
@@ -122,7 +125,7 @@ function showCluster(data) {
             })[0];
             myChart.setOption(option = {
                 title: {
-                    text: j === 0 ? "分类中心" + " " + (i + 1) : "序列 " + j + " / " + (seriesInfo[i].length - 1),
+                    text: "Class " + i,
                     x: 'center',
                     align: 'right'
                 },
@@ -148,7 +151,7 @@ function showCluster(data) {
                 }, {
                     type: 'inside'
                 }],
-                series: series,
+                series: seriesData,
             });
             myChart.setOption(option);
             $("#"+ id).resize(function () {
@@ -160,7 +163,6 @@ function showCluster(data) {
             // if (j === 0) {
             //     j = imageIndex[i];
             // }
-        }
         let pageContainer = document.createElement("div");
         pageContainer.setAttribute('class', 'page-container');
         line.appendChild(pageContainer);
