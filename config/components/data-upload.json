@@ -31,16 +31,16 @@
       "tip": ""
     },
     {
-      "name": "variable",
+      "name": "method",
       "label": {
-        "zh": "变量名称",
-        "en": "variable name"
+        "zh": "处理方式",
+        "en": "strategy"
       },
-      "type": "text",
-      "default": "",
-      "enable": false,
-      "configurable": true,
-      "tip": ""
+      "type": "list",
+      "list": ["聚类", "分类"],
+      "default": "聚类",
+      "enable": true,
+      "configurable": true
     },
     {
       "name": "tagColumnNo",

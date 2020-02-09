@@ -7,6 +7,138 @@
   "out": 1,
   "params": [
     {
+      "name": "zhouqixing",
+      "label": {
+        "zh": "周期性",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "qushi",
+      "label": {
+        "zh": "趋势",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "xufeixianxingzihuiguijiegou",
+      "label": {
+        "zh": "序非线性自回归结构",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "piandu",
+      "label": {
+        "zh": "偏度",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "zixiangguanxing",
+      "label": {
+        "zh": "自相关性",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "hundundu",
+      "label": {
+        "zh": "混沌度",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "jinshishang",
+      "label": {
+        "zh": "近似熵",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "jubutezheng",
+      "label": {
+        "zh": "局部特征",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "pinpuzhixin",
+      "label": {
+        "zh": "频谱质心",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "pinpufangcha",
+      "label": {
+        "zh": "频谱方差",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "pinpupiandu",
+      "label": {
+        "zh": "频谱偏度",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "pinpufengdu",
+      "label": {
+        "zh": "频谱峰度",
+        "en": "input number"
+      },
+      "type": "checkbox",
+      "default": false,
+      "enable": true,
+      "configurable": true
+    },
+    {
       "name": "inputs",
       "label": {
         "zh": "输入节点个数",

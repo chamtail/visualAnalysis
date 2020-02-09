@@ -10,6 +10,7 @@
   "visualize": "enable",
   "svm": "enable",
   "data-save": "enable",
+  "data-save-classification": "enable",
   "kshape":"enable",
   "kmeans":"enable"
 }

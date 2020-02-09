@@ -595,6 +595,9 @@ function onComponentDetail(id, type, force = false) {
     //     });
     // }
 
+    if (vm.component.type !== "visualize") {
+        return;
+    }
     let data = JSON.parse(visualizeData);
     const cluster = $('#cluster');
     cluster.resize(function () {

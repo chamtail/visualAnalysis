@@ -19,17 +19,6 @@
       "configurable": true
     },
     {
-      "name": "variable",
-      "label": {
-        "zh": "变量名称",
-        "en": "variable name"
-      },
-      "type": "text",
-      "default": "",
-      "enable": false,
-      "configurable": true
-    },
-    {
       "name": "inputs",
       "label": {
         "zh": "输入节点个数",

@@ -15,7 +15,7 @@ var colors = [
     "#ee8b22"
 ];
 
-const pageSize = 1;
+const pageSize = 3;
 
 let imageCount = [];
 
@@ -73,18 +73,22 @@ function showCluster(data) {
     }
     var clusterNum = data.Num;
     var seriesInfo = data.Series;
+    let line;
+    let leftContainer;
+    let rightContainer;
     for (var i = 0; i < clusterNum; i++) {
+        if (i % pageSize === 0) {
+            line = document.createElement("div");
+            line.setAttribute("class", "line");
+            dom.appendChild(line);
+            leftContainer = document.createElement("div");
+            leftContainer.setAttribute('class', 'left-container');
+            line.appendChild(leftContainer);
+            rightContainer = document.createElement("div");
+            rightContainer.setAttribute('class', 'right-container');
+            line.appendChild(rightContainer);
+        }
         let j;
-        const line = document.createElement("div");
-        line.setAttribute("class", "line");
-        dom.appendChild(line);
-        let leftContainer = document.createElement("div");
-
-        leftContainer.setAttribute('class', 'left-container');
-        line.appendChild(leftContainer);
-        let rightContainer = document.createElement("div");
-        rightContainer.setAttribute('class', 'right-container');
-        line.appendChild(rightContainer);
 
         const seriesData = [];
         console.log("show cluster");
@@ -163,26 +167,26 @@ function showCluster(data) {
             // if (j === 0) {
             //     j = imageIndex[i];
             // }
-        let pageContainer = document.createElement("div");
-        pageContainer.setAttribute('class', 'page-container');
-        line.appendChild(pageContainer);
-        let leftArrow = document.createElement("a");
-        leftArrow.setAttribute('class', 'page-component left-arrow');
-        leftArrow.text = "<";
-        leftArrow.style.color = "#4285f4";
-        const index = i;
-        leftArrow.addEventListener('click', function () {
-            clickPagePrev(index, data);
-        });
-        pageContainer.appendChild(leftArrow);
-        let rightArrow = document.createElement("a");
-        rightArrow.setAttribute('class', 'page-component right-arrow');
-        rightArrow.text = ">";
-        rightArrow.style.color = "#4285f4";
-        rightArrow.addEventListener('click', function () {
-            clickPageNext(index, data);
-        });
-        pageContainer.appendChild(rightArrow);
+        // let pageContainer = document.createElement("div");
+        // pageContainer.setAttribute('class', 'page-container');
+        // line.appendChild(pageContainer);
+        // let leftArrow = document.createElement("a");
+        // leftArrow.setAttribute('class', 'page-component left-arrow');
+        // leftArrow.text = "<";
+        // leftArrow.style.color = "#4285f4";
+        // const index = i;
+        // leftArrow.addEventListener('click', function () {
+        //     clickPagePrev(index, data);
+        // });
+        // pageContainer.appendChild(leftArrow);
+        // let rightArrow = document.createElement("a");
+        // rightArrow.setAttribute('class', 'page-component right-arrow');
+        // rightArrow.text = ">";
+        // rightArrow.style.color = "#4285f4";
+        // rightArrow.addEventListener('click', function () {
+        //     clickPageNext(index, data);
+        // });
+        // pageContainer.appendChild(rightArrow);
     }
 }
 (function($, h, c) {

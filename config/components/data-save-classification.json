@@ -1,6 +1,6 @@
 {
   "display": {
-    "zh": "导出聚类结果",
+    "zh": "导出分类结果",
     "en": "export data"
   },
   "in": 1,
@@ -18,10 +18,10 @@
       "configurable": true
     },
     {
-      "name": "ARI",
+      "name": "accuracy",
       "label": {
-        "zh": "ARI",
-        "en": "ARI"
+        "zh": "Accuracy",
+        "en": "Accuracy"
       },
       "type": "text",
       "default": "0.98",

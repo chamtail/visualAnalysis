@@ -7,6 +7,30 @@
   "out": 1,
   "params": [
     {
+      "name": "K",
+      "label": {
+        "zh": "K",
+        "en": "K"
+      },
+      "type": "number",
+      "min": 1,
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
+      "name": "Number",
+      "label": {
+        "zh": "分类数目",
+        "en": "Class number"
+      },
+      "type": "number",
+      "min": 1,
+      "default": 1,
+      "enable": true,
+      "configurable": true
+    },
+    {
       "name": "inputs",
       "label": {
         "zh": "输入节点个数",
