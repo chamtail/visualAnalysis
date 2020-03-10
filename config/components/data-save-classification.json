@@ -24,18 +24,18 @@
         "en": "Accuracy"
       },
       "type": "text",
-      "default": "0.98",
+      "default": "1.000",
       "enable": false,
       "configurable": true
     },
     {
       "name": "best_feature_set",
       "label": {
-        "zh": "最优特征子集",
+        "zh": "最优特征子集数目",
         "en": "Best feature set"
       },
       "type": "text",
-      "default": "趋势/自相关",
+      "default": "2",
       "enable": false,
       "configurable": true
     },

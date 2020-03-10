@@ -653,6 +653,8 @@ function onComponentDelete(id, type) {
         hideNodesByFlow(id);
         workflow.currentFlowId = null;
     } else if (type === 'all') {
+        const vd = {};
+        initCluster(vd);
         let tasksList = workflow.task;
         let idList = [];
         for (const key in tasksList) {
