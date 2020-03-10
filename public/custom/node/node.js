@@ -595,11 +595,11 @@ function onComponentDetail(id, type, force = false) {
     //     });
     // }
 
-    let data = JSON.parse(visualizeData);
+    let data = JSON.parse(visualizeData2);
     let tasks = workflow.task;
     for (const key in tasks) {
         if (tasks[key].type === 'kshape' || tasks[key].type === 'kmeans') {
-            data = JSON.parse(visualizeData2);
+            data = JSON.parse(visualizeData);
             break;
         }
     }

@@ -586,7 +586,6 @@
                                                 <template v-if="model.type == 'list'">
                                                     <select class="form-control" :name="model.name"
                                                             v-model="model.default">
-                                                        <option value="">全部</option>
                                                         <template v-for="(option, id) in model.list">
                                                             <option :value="option"
                                                                     :selected="model.default == id || model.default == option">
