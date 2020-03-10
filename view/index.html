@@ -96,7 +96,7 @@
                     <a id="btn-refresh" class="opt-button" @click="cleanCache">
                         <span class="opt-button-content" style="opacity: 1;">
                             <i class="fa fa-play-circle" aria-hidden="true"></i>
-                            <span>refresh</span>
+                            <span>clear</span>
                         </span>
                         <span class="opt-button-spinner hide" style="display: none;">
                             <img src="../public/images/spin.svg"></span>
@@ -1107,17 +1107,17 @@
                 }
                 console.log(workflow);
                 // 切换当前工作流
-                if (workflow.currentFlowId == null) {
-                    console.log('默认工作流为空');
-                    // 显示第一个任务栏
-                    for (let flowId in vm.flows) {
-                        vm.changeWorkflow(flowId, true);
-                        break;
-                    }
-                } else {
-                    console.log('默认工作流为#flow:' + workflow.currentFlowId);
-                    vm.changeWorkflow(workflow.currentFlowId, true);
-                }
+                // if (workflow.currentFlowId == null) {
+                //     console.log('默认工作流为空');
+                //     // 显示第一个任务栏
+                //     for (let flowId in vm.flows) {
+                //         vm.changeWorkflow(flowId, true);
+                //         break;
+                //     }
+                // } else {
+                //     console.log('默认工作流为#flow:' + workflow.currentFlowId);
+                //     vm.changeWorkflow(workflow.currentFlowId, true);
+                // }
             },
 
             upload: function (nodeId) {
@@ -1342,25 +1342,26 @@
             },
 
             cleanCache: function () {
-                $.ajax({
-                    url: api_map.cache_clean,
-                    type: 'POST',
-                    data: {
-                        token: workflow.token
-                    },
-                    dataType: 'json',
-                    success: function (res) {
-                        if (res.code == 0) {
-                            console.log('缓存清除成功');
-                            window.location.href = 'login.html';
-                        } else {
-                            alert(res.msg);
-                        }
-                    },
-                    error: function (res) {
-                        alert('缓存清除失败！');
-                    }
-                });
+                // $.ajax({
+                //     url: api_map.cache_clean,
+                //     type: 'POST',
+                //     data: {
+                //         token: workflow.token
+                //     },
+                //     dataType: 'json',
+                //     success: function (res) {
+                //         if (res.code == 0) {
+                //             console.log('缓存清除成功');
+                //             window.location.href = 'login.html';
+                //         } else {
+                //             alert(res.msg);
+                //         }
+                //     },
+                //     error: function (res) {
+                //         alert('缓存清除失败！');
+                //     }
+                // });
+                onComponentDelete(null, 'all');
             },
 
             getDataSetList: function () {
