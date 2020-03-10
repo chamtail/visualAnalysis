@@ -24,7 +24,7 @@
         "en": "ARI"
       },
       "type": "text",
-      "default": "0.693",
+      "default": "1.000",
       "enable": false,
       "configurable": true
     },
@@ -35,7 +35,7 @@
         "en": "Best feature set"
       },
       "type": "text",
-      "default": "7",
+      "default": "4",
       "enable": false,
       "configurable": true
     },
